@@ -1,11 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import VersionInfo from "./components/VersionInfo";
+import {Box, Card, CardBody, CardHeader, Center, ChakraProvider, Heading, Stack} from '@chakra-ui/react'
 
 export default function App() {
-  return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  )
+    return (
+        <ChakraProvider>
+            <Center h="60vh">
+                <Box p="10" maxW="100%" w="90%" borderWidth="1px">
+                    <Stack>
+                        <Card
+                            p={1}
+                            rounded="md"
+                            boxShadow="md"
+                            w="90%"
+                            mx="auto"
+                            size="sm"
+                        >
+                            <CardHeader>
+                                <Heading size='s'>Admin Dashboard</Heading>
+                            </CardHeader>
+                        </Card>
+                        <VersionInfo/>
+                    </Stack>
+                </Box>
+            </Center>
+        </ChakraProvider>
+    )
 }
