@@ -1,6 +1,7 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, {FC, useContext, useState} from 'react';
 import {Card, CardHeader, CardBody, CardFooter, Heading} from '@chakra-ui/react'
+import { ConfigContext } from './ConfigProvider';
 
 type VersionInfoProps = {};
 
@@ -8,10 +9,14 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
     const tailwind = require('tailwindcss/defaultTheme');
 
     const [version, setVersion] = useState<string>('');
+    const [ frontendversion, setFrontendVersion] = useState<string>('');
+    const { serverUrl } = useContext(ConfigContext);
+    const { frontendDisplayVersion } = useContext(ConfigContext);
     const fetchVersion = async () => {
-        axios.get('https://localhost:7065/api/Version')
+        axios.get(serverUrl + '/api/Version')
             .then(response => {
                 setVersion(response.data);
+                setFrontendVersion(frontendDisplayVersion);
             }, error => {
                 console.log(error);
             });
@@ -38,7 +43,7 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
                 <Heading size='s'>Frontend version</Heading>
             </CardHeader>
             <CardBody>
-                TBA
+                {frontendversion}
             </CardBody>
         </Card>
     );

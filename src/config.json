@@ -1,0 +1,5 @@
+{
+  "serverUrl": "https://localhost:7065",
+  "apiKey": "your-api-key",
+  "frontendDisplayVersion": "0.0.0.1"
+}
