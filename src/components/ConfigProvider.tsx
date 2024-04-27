@@ -1,5 +1,5 @@
-import React, { createContext, FC, useContext, useEffect, useState } from 'react';
-import config from '../config.json'; // Предполагаем, что config.json находится в той же директории, что и ваш компонент
+import { createContext } from 'react';
+import config from '../config.json';
 
 interface Config {
     serverUrl: string;
@@ -8,7 +8,7 @@ interface Config {
 }
 
 const defaultConfig: Config = {
-    serverUrl: config.serverUrl || '', // Используем значение из config.json, если оно есть, иначе пустую строку
+    serverUrl: config.serverUrl || '',
     apiKey: config.apiKey || '',
     frontendDisplayVersion: config.frontendDisplayVersion || ''
 };

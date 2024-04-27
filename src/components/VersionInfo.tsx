@@ -1,12 +1,12 @@
 import axios from 'axios';
-import React, {FC, useContext, useState} from 'react';
-import {Card, CardHeader, CardBody, CardFooter, Heading} from '@chakra-ui/react'
+import React, {useContext, useState} from 'react';
+import {Card, CardHeader, CardBody, Heading} from '@chakra-ui/react'
 import { ConfigContext } from './ConfigProvider';
 
 type VersionInfoProps = {};
 
 const VersionInfo: React.FC<VersionInfoProps> = () => {
-    const tailwind = require('tailwindcss/defaultTheme');
+    require('tailwindcss/defaultTheme');
 
     const [version, setVersion] = useState<string>('');
     const [ frontendversion, setFrontendVersion] = useState<string>('');

@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import VersionInfo from "./components/VersionInfo";
-import {Box, Card, CardBody, CardHeader, Center, ChakraProvider, Heading, Stack} from '@chakra-ui/react'
+import {Box, Card, CardHeader, Center, ChakraProvider, Heading, Stack} from '@chakra-ui/react'
 
 export default function App() {
     return (
