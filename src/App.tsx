@@ -21,7 +21,7 @@ export default function App() {
                                 <Heading size='s'>Admin Dashboard</Heading>
                             </CardHeader>
                         </Card>
-                        <VersionInfo/>
+                        <VersionInfo />
                     </Stack>
                 </Box>
             </Center>

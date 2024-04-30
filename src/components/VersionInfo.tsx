@@ -1,28 +1,43 @@
 import axios from 'axios';
-import React, {useContext, useState} from 'react';
-import {Card, CardHeader, CardBody, Heading} from '@chakra-ui/react'
+import React, { useContext, useEffect, useState } from 'react';
+import { Card, CardHeader, CardBody, Heading } from '@chakra-ui/react';
 import { ConfigContext } from './ConfigProvider';
 
 type VersionInfoProps = {};
 
+/**
+ * Displays information about the API version and frontend version.
+ * The fetched versions are then displayed within a Card component with appropriate headings.
+ *
+ * Used in: admin dashboard.
+ *
+ * @example
+ * <VersionInfo />
+ */
 const VersionInfo: React.FC<VersionInfoProps> = () => {
     require('tailwindcss/defaultTheme');
 
+    // State variables for storing version information
     const [version, setVersion] = useState<string>('');
-    const [ frontendversion, setFrontendVersion] = useState<string>('');
-    const { serverUrl } = useContext(ConfigContext);
-    const { frontendDisplayVersion } = useContext(ConfigContext);
-    const fetchVersion = async () => {
-        axios.get(serverUrl + '/api/Version')
-            .then(response => {
+    const [frontendVersion, setFrontendVersion] = useState<string>('');
+
+    // Accessing serverUrl and frontendDisplayVersion from the ConfigContext
+    const { serverUrl, frontendDisplayVersion } = useContext(ConfigContext);
+
+    useEffect(() => {
+        const fetchVersion = async () => {
+            try {
+                const response = await axios.get(serverUrl + '/api/Version');
                 setVersion(response.data);
                 setFrontendVersion(frontendDisplayVersion);
-            }, error => {
+            } catch (error) {
                 console.log(error);
-            });
-    };
+            }
+        };
 
-    fetchVersion();
+        fetchVersion();
+
+    }, []);
 
     return (
         <Card
@@ -43,7 +58,7 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
                 <Heading size='s'>Frontend version</Heading>
             </CardHeader>
             <CardBody>
-                {frontendversion}
+                {frontendVersion}
             </CardBody>
         </Card>
     );
