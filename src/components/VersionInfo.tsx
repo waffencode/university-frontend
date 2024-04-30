@@ -26,11 +26,13 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
 
     useEffect(() => {
         const fetchVersion = async () => {
+            setFrontendVersion(frontendDisplayVersion);
+
             try {
                 const response = await axios.get(serverUrl + '/api/Version');
                 setVersion(response.data);
-                setFrontendVersion(frontendDisplayVersion);
             } catch (error) {
+                setVersion("Unable to fetch version");
                 console.log(error);
             }
         };
