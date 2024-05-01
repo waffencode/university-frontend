@@ -14,6 +14,8 @@ type VersionInfoProps = {};
  *
  * @example
  * <VersionInfo />
+ * @author
+ * waffencode@gmail.com
  */
 const VersionInfo: React.FC<VersionInfoProps> = () => {
     require('tailwindcss/defaultTheme');
@@ -80,7 +82,7 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
                 }
             </CardBody>
             <CardHeader>
-                <Heading size='s'>Frontend version</Heading>
+                <Heading size='s'>Frontend Version</Heading>
             </CardHeader>
             <CardBody>
                 <Text pt='2' fontSize='sm'>
