@@ -22,7 +22,7 @@ export default function HeaderBar() {
                         <p className="font-bold">John Doe</p>
                         <p className="text-slate-500">john.doe@gmail.com</p>
                     </VStack>
-                    <img className="w-16 rounded-full align-baseline"
+                    <img className="w-16 h-16 object-cover rounded-full align-baseline"
                          src="" alt="User profile"></img>
                     <Icon as={BsBoxArrowRight} w={24} boxSize={10} />
                 </HStack>
