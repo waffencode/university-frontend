@@ -1,6 +1,16 @@
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
-import {Text, Card, CardHeader, CardBody, Heading, HStack, Spinner} from '@chakra-ui/react';
+import {
+    Text,
+    Card,
+    CardHeader,
+    CardBody,
+    Heading,
+    Stack,
+    HStack,
+    Spinner,
+    Textarea
+} from '@chakra-ui/react';
 import {ConfigContext} from './ConfigProvider';
 import { WarningIcon} from "@chakra-ui/icons";
 
@@ -39,9 +49,9 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
                 setVersion(response.data);
             } catch (error: any) {
                 if (error instanceof Error) {
-                    setErrorText(`Network Error. Check your server connection and try again. Technical information: ${error.stack}` as string);
+                    setErrorText(`Сетевая ошибка. Проверьте соединение с сервером и повторите попытку. Техническая информация: ${error.stack}` as string);
                 }
-                setVersion("Unable to fetch version");
+                setVersion("Ошибка при получении версии");
                 setIsVersionFetchError(true);
                 console.log(error);
             }
@@ -53,6 +63,7 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
 
     }, [frontendDisplayVersion, serverUrl, errorText, isVersionFetchError]);
 
+    // @ts-ignore
     return (
         <Card
             p={1}
@@ -63,7 +74,7 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
             size="sm"
         >
             <CardHeader>
-                <Heading size='s'>API Version</Heading>
+                <Heading size='s'>Версия API</Heading>
             </CardHeader>
             <CardBody>
                 {isStillLoading &&
@@ -82,7 +93,7 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
                 }
             </CardBody>
             <CardHeader>
-                <Heading size='s'>Frontend Version</Heading>
+                <Heading size='s'>Версия Frontend</Heading>
             </CardHeader>
             <CardBody>
                 <Text pt='2' fontSize='sm'>
