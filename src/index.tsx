@@ -2,27 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './app/App';
-import reportWebVitals from './reportWebVitals';
-import {DevSupport} from "@react-buddy/ide-toolbox";
-import {ComponentPreviews, useInitial} from "./dev";
-import { BrowserRouter } from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+// import { ChakraProvider } from "@chakra-ui/react";
+import LoginPage from "./pages/LoginPage";
+import { Provider } from "./components/ui/provider.tsx"
 
-const root = ReactDOM.createRoot(
-    document.getElementById('root') as HTMLElement
-);
-root.render(
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <LoginPage />
+    }
+])
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-        <DevSupport ComponentPreviews={ComponentPreviews}
-                    useInitialHook={useInitial}
-        >
-            <BrowserRouter>
-                <App  />
-            </BrowserRouter>
-        </DevSupport>
+                <Provider>
+                    <RouterProvider router={router} />
+                </Provider>
     </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

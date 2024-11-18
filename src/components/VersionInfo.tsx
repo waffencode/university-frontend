@@ -6,15 +6,11 @@ import {
     CardHeader,
     CardBody,
     Heading,
-    Stack,
     HStack,
-    Spinner,
-    Textarea
+    Spinner
 } from '@chakra-ui/react';
 import {ConfigContext} from './ConfigProvider';
 import { WarningIcon} from "@chakra-ui/icons";
-
-type VersionInfoProps = {};
 
 /**
  * Displays information about the API version and frontend version.
@@ -27,7 +23,7 @@ type VersionInfoProps = {};
  * @author
  * waffencode@gmail.com
  */
-const VersionInfo: React.FC<VersionInfoProps> = () => {
+const VersionInfo: React.FC = () => {
     require('tailwindcss/defaultTheme');
 
     // State variables for storing version information
@@ -63,7 +59,6 @@ const VersionInfo: React.FC<VersionInfoProps> = () => {
 
     }, [frontendDisplayVersion, serverUrl, errorText, isVersionFetchError]);
 
-    // @ts-ignore
     return (
         <Card
             p={1}

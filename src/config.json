@@ -1,4 +1,4 @@
 {
-  "serverUrl": "https://localhost:7065",
+  "serverUrl": "https://localhost:7065/api",
   "frontendDisplayVersion": "0.0.0.1"
 }

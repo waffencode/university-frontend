@@ -1,25 +1,12 @@
 import React from 'react';
 import './App.css';
 import VersionInfo from "../components/VersionInfo";
-import {Box, Card, CardHeader, Center, ChakraProvider, extendTheme, Heading, Stack} from '@chakra-ui/react';
+import { Box, Card, CardHeader, Center, Heading, Stack } from '@chakra-ui/react';
 import HeaderBar from "../components/HeaderBar";
 
-const theme = extendTheme({
-    styles: {
-        global: () => ({
-            body: {
-                color: 'default',
-                bg: '#F5F5F5',
-            },
-        }),
-    },
-});
-
-// @ts-ignore
-export default function App() {
+const App: React.FC = () => {
     return (
-        <ChakraProvider theme={theme}>
-                        <body className="">
+        <div>
                 <HeaderBar/>
                 <Center h="60vh">
                     <Box p="10" maxW="100%" w="90%">
@@ -40,7 +27,8 @@ export default function App() {
                         </Stack>
                     </Box>
                 </Center>
-            </body>
-        </ChakraProvider>
+            </div>
     )
 }
+
+export default App;
