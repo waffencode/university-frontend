@@ -6,11 +6,9 @@ import {
     CardHeader,
     CardBody,
     Heading,
-    HStack,
-    Spinner
+    HStack
 } from '@chakra-ui/react';
 import {ConfigContext} from './ConfigProvider';
-import { WarningIcon} from "@chakra-ui/icons";
 
 /**
  * Displays information about the API version and frontend version.
@@ -60,7 +58,7 @@ const VersionInfo: React.FC = () => {
     }, [frontendDisplayVersion, serverUrl, errorText, isVersionFetchError]);
 
     return (
-        <Card
+        <Card.Root
             p={1}
             rounded="md"
             boxShadow="md"
@@ -68,34 +66,34 @@ const VersionInfo: React.FC = () => {
             mx="auto"
             size="sm"
         >
-            <CardHeader>
-                <Heading size='s'>Версия API</Heading>
-            </CardHeader>
-            <CardBody>
+            <Card.Header>
+                <Heading size='sm'>Версия API</Heading>
+            </Card.Header>
+            <Card.Body>
                 {isStillLoading &&
-                    <Spinner />
+                    "Загрузка..."
                 }
                 <Text pt='2' fontSize='sm'>
                     {version}
                 </Text>
                 {isVersionFetchError &&
-                    <HStack spacing='1em'>
-                        <WarningIcon boxSize='1.4em' color='red.500'/>
+                    <HStack gap='1em'>
+                        {/*<WarningIcon boxSize='1.4em' color='red.500'/>*/}
                         <Text pt='2' fontSize='sm'>
                             {errorText}
                         </Text>
                     </HStack>
                 }
-            </CardBody>
+            </Card.Body>
             <CardHeader>
-                <Heading size='s'>Версия Frontend</Heading>
+                <Heading size='sm'>Версия Frontend</Heading>
             </CardHeader>
             <CardBody>
                 <Text pt='2' fontSize='sm'>
                     {frontendVersion}
                 </Text>
             </CardBody>
-        </Card>
+        </Card.Root>
     );
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import HeaderBar from "../components/HeaderBar";
-import {Box, Card, CardHeader, Center, Heading, Stack} from "@chakra-ui/react";
+import {Box, Card, Center, Heading, Stack} from "@chakra-ui/react";
 import VersionInfo from "../components/VersionInfo";
 
 const AdminPage: React.FC = () => {
@@ -10,7 +10,7 @@ const AdminPage: React.FC = () => {
             <Center h="60vh">
                 <Box p="10" maxW="100%" w="90%">
                     <Stack>
-                        <Card
+                        <Card.Root
                             p={1}
                             rounded="md"
                             boxShadow="md"
@@ -18,11 +18,13 @@ const AdminPage: React.FC = () => {
                             mx="auto"
                             size="sm"
                         >
-                            <CardHeader>
-                                <Heading size='s'>Панель администратора</Heading>
-                            </CardHeader>
-                        </Card>
-                        <VersionInfo/>
+                            <Card.Header>
+                                <Heading size='sm'>Панель администратора</Heading>
+                            </Card.Header>
+                        </Card.Root>
+                        <Card.Body>
+                            <VersionInfo/>
+                        </Card.Body>
                     </Stack>
                 </Box>
             </Center>

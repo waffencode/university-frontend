@@ -1,24 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './app/App';
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
-// import { ChakraProvider } from "@chakra-ui/react";
-import LoginPage from "./pages/LoginPage";
-import { Provider } from "./components/ui/provider.tsx"
+import App from "./app/App.tsx";
+import { Provider } from "./components/ui/provider.tsx";
+import { BrowserRouter } from "react-router-dom";
+import {ChakraProvider, createSystem, defaultConfig, defaultSystem, defineConfig} from "@chakra-ui/react";
+import {ColorModeProviderProps} from "@/components/ui/color-mode.tsx";
 
+// const theme = extendTheme({
+//     styles: {
+//         global: () => ({
+//             body: {
+//                 color: 'default',
+//                 bg: '#F5F5F5',
+//             },
+//         }),
+//     },
+// // });
+//
+// const config = defineConfig({
+//     globalCss: {
+//         "body": {
+//             background: "#f5f5f5",
+//         },
+//     },
+// })
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <LoginPage />
-    }
-])
+// const system = createSystem(defaultConfig, config);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-                <Provider>
-                    <RouterProvider router={router} />
-                </Provider>
-    </React.StrictMode>
+    // <React.StrictMode>
+        <Provider>
+            {/*<BrowserRouter>*/}
+
+                    <App />
+
+            {/*</BrowserRouter>*/}
+        </Provider>
+    // {/*</React.StrictMode>*/}
 );

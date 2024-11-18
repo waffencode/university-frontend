@@ -1,6 +1,5 @@
 import React from 'react';
-import {HStack, Icon, VStack} from "@chakra-ui/react";
-import { BsBoxArrowRight } from "react-icons/bs";
+import {HStack, VStack} from "@chakra-ui/react";
 
 /**
  * Displays header information about the user.
@@ -17,14 +16,14 @@ export default function HeaderBar() {
     return (
         <div className="w-full h-26 shadow bg-white align-baseline p-2">
             <div className="w-full flex items-end justify-end align-text-top">
-                <HStack spacing={5}>
-                    <VStack align='end' spacing={1}>
+                <HStack gap={5}>
+                    <VStack align='end' gap={1}>
                         <p className="font-bold">John Doe</p>
                         <p className="text-slate-500">john.doe@gmail.com</p>
                     </VStack>
                     <img className="w-16 h-16 object-cover rounded-full align-baseline"
                          src="" alt="User profile"></img>
-                    <Icon as={BsBoxArrowRight} w={24} boxSize={10} />
+                    {/*<Icon as={BsBoxArrowRight} w={24} boxSize={10} />*/}
                 </HStack>
             </div>
         </div>

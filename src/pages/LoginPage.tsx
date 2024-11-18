@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import HeaderBar from "../components/HeaderBar";
-import {Box, Button, Card, CardHeader, Center, Heading, Input, Stack, Text, VStack} from "@chakra-ui/react";
+import {Box, Button, Card, Center, Heading, Input, Stack, Text, VStack} from "@chakra-ui/react";
 import axios from "axios";
 import {ConfigContext} from "../components/ConfigProvider";
 import CryptoJS from 'crypto-js';
@@ -23,10 +23,9 @@ const LoginPage: React.FC = () => {
         });
     }
 
-
     return (
-        <body className="">
-            <HeaderBar/>
+        <>
+            <HeaderBar />
             <Center h="60vh">
                 <Box p="10" maxW="100%" w="40%">
                     <Stack>
@@ -38,25 +37,23 @@ const LoginPage: React.FC = () => {
                             mx="auto"
                             size="sm">
                             <Card.Header>
-                                <Heading size='sm'>Авторизация</Heading>
+                                <Heading size='md'>Авторизация</Heading>
                             </Card.Header>
                             <Card.Body>
-                                <center>
-                                    <VStack>
-                                        <Input onChange={(e) => setEmail(e.target.value)} value={email}
-                                               placeholder="Логин" width="60%"/>
-                                        <Input onChange={(e) => setPassword(e.target.value)} value={password}
-                                               placeholder="Пароль" width="60%"/>
-                                        <Button onClick={handleLogin}>Войти</Button>
-                                        <Text>{response}</Text>
-                                    </VStack>
-                                </center>
+                                <VStack>
+                                    <Input onChange={(e) => setEmail(e.target.value)} value={email}
+                                           placeholder="Логин" width="60%"/>
+                                    <Input onChange={(e) => setPassword(e.target.value)} value={password}
+                                           placeholder="Пароль" width="60%"/>
+                                    <Button onClick={handleLogin}>Войти</Button>
+                                    <Text>{response}</Text>
+                                </VStack>
                             </Card.Body>
                         </Card.Root>
                     </Stack>
                 </Box>
             </Center>
-        </body>
+        </>
     );
 };
 
