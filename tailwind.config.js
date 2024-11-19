@@ -7,4 +7,8 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  // Disabling the preflight to fix the issue with ChakraUI.
+  corePlugins: {
+    preflight: false,
+  }
 }
