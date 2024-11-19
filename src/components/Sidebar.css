@@ -5,15 +5,9 @@
 }
 
 .sidebar {
-    /*clip-path: inset(5px 0 0 0);*/
     width: var(--sidebar-expanded-width);
     animation: sidebar-coll;
     animation-duration: var(--animation-duration-sidebar);
-}
-
-.sticky_button {
-    position: sticky;
-    top: 0;
 }
 
 .sidebar.collapsed {
