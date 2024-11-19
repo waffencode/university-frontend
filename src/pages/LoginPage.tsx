@@ -1,12 +1,13 @@
-import React, {useContext} from 'react';
-import HeaderBar from "../components/HeaderBar";
-import {Box, Button, Card, Center, HStack, Input, Stack, VStack} from "@chakra-ui/react";
 import axios from "axios";
-import {ConfigContext} from "../components/ConfigProvider";
+import {Box, Button, Card, Center, HStack, Input, Stack, VStack} from "@chakra-ui/react";
 import CryptoJS from 'crypto-js';
-import {PasswordInput} from "../components/ui/password-input.tsx";
-import {Alert} from "../components/ui/alert.tsx";
+import React, {useContext} from 'react';
 import {useNavigate} from "react-router-dom";
+
+import {ConfigContext} from "../components/ConfigProvider";
+import HeaderBar from "../components/HeaderBar";
+import {Alert} from "../components/ui/alert.tsx";
+import {PasswordInput} from "../components/ui/password-input.tsx";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -21,9 +22,10 @@ const LoginPage: React.FC = () => {
         const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
 
         axios.get(serverUrl + "/User/login", {params: {email: email, passwordHash: hashedPassword}})
-            .then((response) => {
+            .then(() => {
                 setIsError(false);
                 setResponse("Success!");
+                navigate("/dashboard");
             })
         .catch((error) => {
             setIsError(true);
@@ -31,8 +33,7 @@ const LoginPage: React.FC = () => {
         });
     }
 
-    function redirectToRegistrationPage(event: React.MouseEvent) {
-        event.preventDefault();
+    function redirectToRegistrationPage() {
         navigate("/register");
     }
 
@@ -70,7 +71,7 @@ const LoginPage: React.FC = () => {
                                                        placeholder="Пароль" />
                                         <HStack marginY={2}>
                                             <Button onClick={handleLogin}>Войти</Button>
-                                            <Button variant="subtle" onClick={(e) => redirectToRegistrationPage(e)}>Регистрация</Button>
+                                            <Button variant="subtle" onClick={() => redirectToRegistrationPage()}>Регистрация</Button>
                                         </HStack>
                                     </VStack>
                                 </Center>
