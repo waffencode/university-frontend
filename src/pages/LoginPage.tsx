@@ -1,13 +1,17 @@
 import React, {useContext} from 'react';
 import HeaderBar from "../components/HeaderBar";
-import {Box, Button, Card, Center, Heading, Input, Stack, Text, VStack} from "@chakra-ui/react";
+import {Box, Button, Card, Center, Heading, HStack, Input, Stack, Text, VStack} from "@chakra-ui/react";
 import axios from "axios";
 import {ConfigContext} from "../components/ConfigProvider";
 import CryptoJS from 'crypto-js';
 import {PasswordInput} from "../components/ui/password-input.tsx";
 import {Alert} from "../components/ui/alert.tsx";
+import {Navigate, redirect, Route, Routes, useNavigate} from "react-router-dom";
+import RegistrationPage from "../pages/RegistrationPage.tsx";
 
 const LoginPage: React.FC = () => {
+    const navigate = useNavigate();
+
     const [email, setEmail] = React.useState<string>("");
     const [password, setPassword] = React.useState<string>("");
     const [response, setResponse] = React.useState<string>("");
@@ -28,6 +32,11 @@ const LoginPage: React.FC = () => {
         });
     }
 
+    function redirectToRegistrationPage(event: React.MouseEvent) {
+        event.preventDefault();
+        navigate("/register");
+    }
+
     return (
         <>
             <HeaderBar />
@@ -43,7 +52,7 @@ const LoginPage: React.FC = () => {
                             size="sm">
                             <Card.Header>
                                 <Card.Title>
-                                    <Heading size='lg'>Авторизация</Heading>
+                                    Авторизация
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
@@ -60,7 +69,10 @@ const LoginPage: React.FC = () => {
                                                placeholder="Логин" />
                                         <PasswordInput onChange={(e) => setPassword(e.target.value)} value={password}
                                                        placeholder="Пароль" />
-                                        <Button onClick={handleLogin}>Войти</Button>
+                                        <HStack>
+                                            <Button onClick={handleLogin}>Войти</Button>
+                                            <Button variant="subtle" onClick={(e) => redirectToRegistrationPage(e)}>Регистрация</Button>
+                                        </HStack>
                                     </VStack>
                                 </Center>
                             </Card.Body>
