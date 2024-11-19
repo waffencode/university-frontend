@@ -20,9 +20,8 @@ const Sidebar: React.FC = () => {
     };
 
     return (
-        <Box>
-            <Box marginY={2} shadow="md" rounded={3} p={4} bg="white" h="100%" className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-                <VStack w="100%" minH="200vh">
+            <Box shadow="md" rounded={3} p={4} bg="white" h="100%" className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+                <VStack w="100%" minH="100vh">
                     <VStack minW="100%" gap={1} className="sticky_button">
                         <IconButton minW="90%" variant="ghost" onClick={() => toggleSidebar()}>
                             {
@@ -62,7 +61,6 @@ const Sidebar: React.FC = () => {
                     </VStack>
                 </VStack>
             </Box>
-        </Box>
     )
 }
 

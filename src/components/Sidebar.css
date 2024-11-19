@@ -1,5 +1,5 @@
 :root {
-    --animation-duration-sidebar: 0.5s;
+    --animation-duration-sidebar: 0.3s;
     --sidebar-expanded-width: 12%;
     --sidebar-collapsed-width: 5%;
 }
