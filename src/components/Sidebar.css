@@ -1,0 +1,42 @@
+:root {
+    --animation-duration-sidebar: 0.5s;
+    --sidebar-expanded-width: 12%;
+    --sidebar-collapsed-width: 5%;
+}
+
+.sidebar {
+    /*clip-path: inset(5px 0 0 0);*/
+    width: var(--sidebar-expanded-width);
+    animation: sidebar-coll;
+    animation-duration: var(--animation-duration-sidebar);
+}
+
+.sticky_button {
+    position: sticky;
+    top: 0;
+}
+
+.sidebar.collapsed {
+    position: sticky;
+    width: var(--sidebar-collapsed-width);
+    animation: sidebar-exp;
+    animation-duration: var(--animation-duration-sidebar);
+}
+
+@keyframes sidebar-exp {
+    from {
+        width: var(--sidebar-expanded-width);
+    }
+    to {
+        width: var(--sidebar-collapsed-width);
+    }
+}
+
+@keyframes sidebar-coll {
+    from {
+        width: var(--sidebar-collapsed-width);
+    }
+    to {
+        width: var(--sidebar-expanded-width);
+    }
+}
