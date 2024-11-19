@@ -8,7 +8,8 @@ import {
     createListCollection, Heading, HStack, Image,
     Input,
     Stack,
-    VStack
+    VStack,
+    Text
 } from "@chakra-ui/react";
 import { Field } from "../components/ui/field"
 import {
@@ -19,11 +20,16 @@ import {
     SelectTrigger,
     SelectValueText
 } from "../components/ui/select.tsx";
-import {PasswordInput} from "../components/ui/password-input.tsx";
+import {PasswordInput, PasswordStrengthMeter} from "../components/ui/password-input.tsx";
 import {useNavigate} from "react-router-dom";
+import {Checkbox} from "../components/ui/checkbox.tsx";
 
 const RegistrationPage: React.FC = () => {
     const navigate = useNavigate();
+    // Password strength meter.
+    const zxcvbn = require('zxcvbn');
+
+    const [password, setPassword] = React.useState<string>("");
 
     const roles = createListCollection({
         items: [
@@ -34,11 +40,15 @@ const RegistrationPage: React.FC = () => {
         ],
     })
 
+    function handleRegistration() {
+        navigate("/register/confirm");
+    }
+
     return (
         <>
             <HeaderBar/>
             <Center>
-                <Box p="10" maxW="100%" w="90%">
+                <Box p="5" maxW="100%" w="90%">
                     <Stack>
                         <Card.Root
                             p={1}
@@ -55,12 +65,15 @@ const RegistrationPage: React.FC = () => {
                             </Card.Header>
                             <Card.Body>
                                 <HStack gap={30}>
-                                    <VStack gap={2} w="60%">
+                                    <VStack gap={1} w="60%">
                                         <Field label="Email">
                                             <Input placeholder="me@example.com" />
                                         </Field>
                                         <Field label="Логин">
-                                            <Input placeholder="me@example.com" />
+                                            <Input placeholder="i.i.ivanov" />
+                                        </Field>
+                                        <Field label="ФИО">
+                                            <Input placeholder="Иванов Иван Иванович" />
                                         </Field>
                                         <Field>
                                             <SelectRoot collection={roles} colorPalette="red">
@@ -77,16 +90,29 @@ const RegistrationPage: React.FC = () => {
                                                     }
                                                 </SelectContent>
                                             </SelectRoot>
+                                            <Text textStyle="xs" color="fg.muted">
+                                                Ваша роль будет проверена и утверждена администратором системы.
+                                            </Text>
                                         </Field>
                                         <Field label="Пароль">
-                                            <PasswordInput />
+                                            <Stack maxW="100%">
+                                                <PasswordInput onChange={(e) => setPassword(e.target.value)}/>
+                                                <PasswordStrengthMeter value={ zxcvbn(password).score }/>
+                                            </Stack>
                                         </Field>
                                         <Field label="Повторите пароль">
-                                            <PasswordInput />
+                                            <Stack maxW="100%">
+                                                <PasswordInput />
+                                            </Stack>
                                         </Field>
+                                        <Checkbox marginY={3} alignItems="flex-start">
+                                            <Box lineHeight="1">Даю согласие на сбор, обработку и хранение персональных данных</Box>
+
+                                            <Box color="fg.muted" fontWeight="normal">В соответствии с №152-ФЗ «О персональных данных»</Box>
+                                        </Checkbox>
                                         <HStack>
                                             <Button variant="subtle" onClick={() => navigate(-1)}>Назад</Button>
-                                            <Button>Зарегистрироваться</Button>
+                                            <Button onClick={ () => handleRegistration() }>Зарегистрироваться</Button>
                                         </HStack>
                                     </VStack>
                                     <Center w="50%">
