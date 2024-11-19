@@ -1,6 +1,7 @@
 # University Frontend
 
 Используемый стек:
+
 [![React, TS, Tailwind](https://skillicons.dev/icons?i=react,ts,tailwind)](https://skillicons.dev/)
 * [React](https://github.com/facebook/react)
 * [Typescript](https://github.com/microsoft/TypeScript)
