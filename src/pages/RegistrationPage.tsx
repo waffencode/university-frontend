@@ -20,8 +20,11 @@ import {
     SelectValueText
 } from "../components/ui/select.tsx";
 import {PasswordInput} from "../components/ui/password-input.tsx";
+import {useNavigate} from "react-router-dom";
 
 const RegistrationPage: React.FC = () => {
+    const navigate = useNavigate();
+
     const roles = createListCollection({
         items: [
             { label: "Студент", value: "student" },
@@ -82,7 +85,7 @@ const RegistrationPage: React.FC = () => {
                                             <PasswordInput />
                                         </Field>
                                         <HStack>
-                                            <Button variant="subtle">Назад</Button>
+                                            <Button variant="subtle" onClick={() => navigate(-1)}>Назад</Button>
                                             <Button>Зарегистрироваться</Button>
                                         </HStack>
                                     </VStack>

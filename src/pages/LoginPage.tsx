@@ -1,13 +1,12 @@
 import React, {useContext} from 'react';
 import HeaderBar from "../components/HeaderBar";
-import {Box, Button, Card, Center, Heading, HStack, Input, Stack, Text, VStack} from "@chakra-ui/react";
+import {Box, Button, Card, Center, HStack, Input, Stack, VStack} from "@chakra-ui/react";
 import axios from "axios";
 import {ConfigContext} from "../components/ConfigProvider";
 import CryptoJS from 'crypto-js';
 import {PasswordInput} from "../components/ui/password-input.tsx";
 import {Alert} from "../components/ui/alert.tsx";
-import {Navigate, redirect, Route, Routes, useNavigate} from "react-router-dom";
-import RegistrationPage from "../pages/RegistrationPage.tsx";
+import {useNavigate} from "react-router-dom";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -64,12 +63,12 @@ const LoginPage: React.FC = () => {
                                     <Alert status="success" marginY={2} title={response}>Успешный вход!</Alert>
                                 }
                                 <Center>
-                                    <VStack>
+                                    <VStack gap={2}>
                                         <Input onChange={(e) => setEmail(e.target.value)} value={email}
                                                placeholder="Логин" />
                                         <PasswordInput onChange={(e) => setPassword(e.target.value)} value={password}
                                                        placeholder="Пароль" />
-                                        <HStack>
+                                        <HStack marginY={2}>
                                             <Button onClick={handleLogin}>Войти</Button>
                                             <Button variant="subtle" onClick={(e) => redirectToRegistrationPage(e)}>Регистрация</Button>
                                         </HStack>

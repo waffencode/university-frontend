@@ -5,7 +5,7 @@ import VersionInfo from "../components/VersionInfo";
 
 const AdminPage: React.FC = () => {
     return (
-        <body className="">
+        <>
             <HeaderBar/>
             <Center h="60vh">
                 <Box p="10" maxW="100%" w="90%">
@@ -28,7 +28,7 @@ const AdminPage: React.FC = () => {
                     </Stack>
                 </Box>
             </Center>
-        </body>
+        </>
     );
 };
 
