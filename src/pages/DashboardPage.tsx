@@ -1,7 +1,7 @@
 import React from "react";
 import HeaderBar from "../components/HeaderBar.tsx";
 import Sidebar from "../components/Sidebar.tsx";
-import {Button, Card, Flex, Group, Heading, HStack, Text} from "@chakra-ui/react";
+import {Card, Flex, Heading, Text} from "@chakra-ui/react";
 
 const DashboardPage: React.FC = () => {
     return (

@@ -4,6 +4,7 @@ import {UUID} from "node:crypto";
 interface User {
     id: UUID;
     username: string;
+    fullName: string;
     email: string;
     role: UserRole;
 }
