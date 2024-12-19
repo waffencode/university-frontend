@@ -9,6 +9,7 @@ import RegistrationConfirmationPage from "../pages/RegistrationConfirmationPage.
 import UserProvider from "../service/UserProvider.tsx";
 import ApiProvider from "../service/ApiProvider.tsx";
 import {CookiesProvider} from "react-cookie";
+import AdminPage from "../pages/AdminPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
                             <Route path="/register" element={<RegistrationPage />} />
                             <Route path="/register/confirm" element={<RegistrationConfirmationPage />} />
                             <Route path="/dashboard" element={<DashboardPage />} />
+                            <Route path="/admin" element={<AdminPage />} />
                         </Routes>
                     </UserProvider>
                 </ApiProvider>

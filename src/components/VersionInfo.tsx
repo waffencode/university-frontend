@@ -39,7 +39,7 @@ const VersionInfo: React.FC = () => {
             setFrontendVersion(frontendDisplayVersion);
 
             try {
-                const response = await axios.get(serverUrl + '/api/Version');
+                const response = await axios.get(serverUrl + '/Version');
                 setVersion(response.data);
             } catch (error: any) {
                 if (error instanceof Error) {
@@ -78,7 +78,6 @@ const VersionInfo: React.FC = () => {
                 </Text>
                 {isVersionFetchError &&
                     <HStack gap='1em'>
-                        {/*<WarningIcon boxSize='1.4em' color='red.500'/>*/}
                         <Text pt='2' fontSize='sm'>
                             {errorText}
                         </Text>

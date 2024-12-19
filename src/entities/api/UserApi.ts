@@ -1,26 +1,27 @@
 import {UUID} from "node:crypto";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 import config from '../../config.json';
 import User from "../domain/User";
 
 class UserApi {
-    getUser(userId: UUID): Promise<User> {
-        // TODO: Potential config inconsistency.
-        const serverUrl = config.serverUrl || '';
+    // TODO: Potential config inconsistency.
+    serverUrl = config.serverUrl || '';
+
+    async getUser(userId: UUID): Promise<User> {
 
         // TODO: Add error handling and data checks.
-        return axios.get(serverUrl + "/User/" + userId.toString(), { withCredentials: true })
-            .then((response: AxiosResponse<User>) => {
-                let user: User = {
-                    id: response.data.id,
-                    username: response.data.username,
-                    fullName: response.data.fullName,
-                    email: response.data.email,
-                    role: response.data.role,
-                };
+        const response = await axios.get(this.serverUrl + "/User/" + userId.toString(), {withCredentials: true});
+        return {
+            id: response.data.id,
+            username: response.data.username,
+            fullName: response.data.fullName,
+            email: response.data.email,
+            role: response.data.role,
+        };
+    }
 
-                return user;
-            });
+    async logout(): Promise<void> {
+        return await axios.get(this.serverUrl + "/User/logout", { withCredentials: true });
     }
 }
 

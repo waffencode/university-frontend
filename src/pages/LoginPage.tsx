@@ -68,10 +68,6 @@ const LoginPage: React.FC = () => {
                                 {isError &&
                                     <Alert status="error" marginY={2} title="Ошибка!">{response}</Alert>
                                 }
-                                {
-                                    (response.toString().length > 0 && !isError) &&
-                                    <Alert status="success" marginY={2} title={response}>Успешный вход!</Alert>
-                                }
                                 <Center>
                                     <VStack gap={2}>
                                         <Input onChange={(e) => setEmail(e.target.value)} value={email}
