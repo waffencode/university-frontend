@@ -3,11 +3,13 @@ import {Box, Button, Card, Center, HStack, Input, Stack, VStack} from "@chakra-u
 import CryptoJS from 'crypto-js';
 import React, {useContext} from 'react';
 import {useNavigate} from "react-router-dom";
-
+import {UUID} from "node:crypto";
 import {ConfigContext} from "../components/ConfigProvider";
 import HeaderBar from "../components/HeaderBar";
 import {Alert} from "../components/ui/alert.tsx";
 import {PasswordInput} from "../components/ui/password-input.tsx";
+import {UserContext} from "../service/UserProvider.tsx";
+import {ApiContext} from "../service/ApiProvider.tsx";
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -16,20 +18,27 @@ const LoginPage: React.FC = () => {
     const [password, setPassword] = React.useState<string>("");
     const [response, setResponse] = React.useState<string>("");
     const [isError, setIsError] = React.useState<boolean>(false);
+
     const {serverUrl} = useContext(ConfigContext);
+    const userContext = useContext(UserContext);
+    const apiContext = useContext(ApiContext);
 
     function handleLogin() {
         const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
 
-        axios.get(serverUrl + "/User/login", {params: {email: email, passwordHash: hashedPassword}})
-            .then(() => {
+        axios.get(serverUrl + "/User/login", {params: {email: email, passwordHash: hashedPassword}, withCredentials: true})
+            .then(async (response) => {
                 setIsError(false);
                 setResponse("Success!");
+                const id: UUID = response.data;
+                userContext?.setUser(await apiContext.user.getUser(id));
                 navigate("/dashboard");
             })
         .catch((error) => {
             setIsError(true);
-            setResponse(error.message);
+            if (error.response) {
+                setResponse(error.response.data);
+            }
         });
     }
 
@@ -57,7 +66,7 @@ const LoginPage: React.FC = () => {
                             </Card.Header>
                             <Card.Body>
                                 {isError &&
-                                    <Alert status="error" marginY={2} title={response}>Неверный логин или пароль.</Alert>
+                                    <Alert status="error" marginY={2} title="Ошибка!">{response}</Alert>
                                 }
                                 {
                                     (response.toString().length > 0 && !isError) &&

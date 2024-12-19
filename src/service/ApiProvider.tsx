@@ -1,7 +1,7 @@
 import React from 'react';
 import Api from "../entities/api/Api";
 
-const ApiContext = React.createContext<Api>({} as Api);
+export const ApiContext = React.createContext<Api>(new Api());
 
 type Props = {
     children: React.ReactNode;

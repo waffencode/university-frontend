@@ -23,7 +23,7 @@ export default function HeaderBar() {
         <div className="w-full h-16 shadow bg-white align-baseline p-2">
             <div className="w-full flex items-end justify-end align-text-top">
                 {
-                    user &&
+                    (user !== null) &&
                     <HStack gap={5}>
                         <VStack align='end' gap={1}>
                             <p className="font-bold">{user?.fullName}</p>
