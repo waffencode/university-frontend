@@ -15,9 +15,11 @@ import SidebarButton from "./SidebarButton.tsx";
 import {ApiContext} from "../service/ApiProvider.tsx";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
+import {UserContext} from "../service/UserProvider.tsx";
 
 const Sidebar: React.FC = () => {
     const apiContext = useContext(ApiContext);
+    const userContext = useContext(UserContext);
     const navigate = useNavigate();
 
     const [isCollapsed, setIsCollapsed] = React.useState<boolean>(false);
@@ -35,12 +37,21 @@ const Sidebar: React.FC = () => {
     const onLogoutButtonClick = () => {
         apiContext.user.logout().then(() => {
             removeCookies("token");
+            userContext?.setUser(null);
             navigate("/");
         })
     }
 
     const onAdminPanelButtonClick = () => {
         navigate("/admin");
+    }
+
+    const onSettingsButtonClick = () => {
+        navigate("/settings");
+    }
+
+    const onMessagesButtonClick = () => {
+        navigate("/messages");
     }
 
     return (
@@ -69,11 +80,13 @@ const Sidebar: React.FC = () => {
                             isCollapsed={isCollapsed}
                         />
                         <SidebarButton
+                            onClick={onMessagesButtonClick}
                             icon={<LuMessageCircle />}
                             label="Сообщения"
                             isCollapsed={isCollapsed}
                         />
                         <SidebarButton
+                            onClick={onSettingsButtonClick}
                             icon={<LuSettings />}
                             label="Настройки"
                             isCollapsed={isCollapsed}

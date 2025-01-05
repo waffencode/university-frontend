@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {HStack, IconButton, VStack} from "@chakra-ui/react";
 import {LuLogOut} from "react-icons/lu";
 import {UserContext} from "../service/UserProvider.tsx";
@@ -10,11 +10,7 @@ import {UserContext} from "../service/UserProvider.tsx";
  * waffencode@gmail.com
  */
 export default function HeaderBar() {
-    const context = useContext(UserContext);
-
-    if (!context) {
-        return null;
-    }
+    const context = useContext(UserContext)!;
 
     const {user} = context;
 

@@ -4,12 +4,13 @@ import {Box, Button, Card, Center, Heading, HStack, Image, Stack, Text, VStack} 
 import {PinInput} from "../components/ui/pin-input.tsx";
 import {useNavigate} from "react-router-dom";
 
-const RegistrationConfirmationPage: React.FC<{}> = () => {
+const RegistrationConfirmationPage: React.FC = () => {
     const navigate = useNavigate();
 
     const [otp, setOtp] = React.useState(["", "", "", ""])
 
     function handleSubmit() {
+        // TODO: Add auth cookie.
         navigate('/dashboard');
     }
 

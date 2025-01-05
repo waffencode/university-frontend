@@ -10,6 +10,8 @@ import UserProvider from "../service/UserProvider.tsx";
 import ApiProvider from "../service/ApiProvider.tsx";
 import {CookiesProvider} from "react-cookie";
 import AdminPage from "../pages/AdminPage.tsx";
+import SettingsPage from "../pages/SettingsPage.tsx";
+import MessagesPage from "../pages/MessagesPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -24,6 +26,8 @@ const App: React.FC = () => {
                             <Route path="/register/confirm" element={<RegistrationConfirmationPage />} />
                             <Route path="/dashboard" element={<DashboardPage />} />
                             <Route path="/admin" element={<AdminPage />} />
+                            <Route path="/settings" element={<SettingsPage />} />
+                            <Route path="/messages" element={<MessagesPage />} />
                         </Routes>
                     </UserProvider>
                 </ApiProvider>

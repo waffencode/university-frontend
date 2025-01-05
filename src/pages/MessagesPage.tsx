@@ -1,10 +1,9 @@
-import React from 'react';
-import HeaderBar from "../components/HeaderBar";
-import {Card, Flex, Heading} from "@chakra-ui/react";
-import VersionInfo from "../components/VersionInfo";
+import React from "react";
+import HeaderBar from "../components/HeaderBar.tsx";
 import Sidebar from "../components/Sidebar.tsx";
+import {Card, Flex, Heading, Text} from "@chakra-ui/react";
 
-const AdminPage: React.FC = () => {
+const MessagesPage: React.FC = () => {
     return (
         <>
             <HeaderBar />
@@ -12,15 +11,17 @@ const AdminPage: React.FC = () => {
                 <Sidebar />
                 <Card.Root w="80%" shadow="md" border="0" rounded={3}  p={4}>
                     <Card.Header>
-                        <Heading>Панель администратора</Heading>
+                        <Heading>Сообщения</Heading>
                     </Card.Header>
                     <Card.Body>
-                        <VersionInfo/>
+                        <Text>
+                            TBA
+                        </Text>
                     </Card.Body>
                 </Card.Root>
             </Flex>
         </>
-    )
-};
+    );
+}
 
-export default AdminPage;
+export default MessagesPage;
