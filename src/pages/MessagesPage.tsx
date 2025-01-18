@@ -1,19 +1,42 @@
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import HeaderBar from "../components/HeaderBar.tsx";
 import Sidebar from "../components/Sidebar.tsx";
-import {Card, createListCollection, Flex, Heading, HStack, VStack} from "@chakra-ui/react";
+import {Card, createListCollection, Flex, Heading, HStack, ListCollection, VStack} from "@chakra-ui/react";
 import {Button} from "../components/ui/button.tsx";
+import {ApiContext} from "../service/ApiProvider.tsx";
+import {UserContext} from "../service/UserProvider.tsx";
+import Message from "../entities/domain/Message.ts";
 
 const MessagesPage: React.FC = () => {
-    const [isMessageViewShown, setIsMessageViewShown] = useState<boolean>(false);
+    const apiContext = useContext(ApiContext);
+    const userContext = useContext(UserContext);
 
-    const messagesPlaceholder = createListCollection({
-        items: [
-            { key: 1, theme: "Message1", text: "Hello" },
-            { key: 2, theme: "Message2", text: "World" },
-            { key: 3, theme: "Message3", text: "Example message" },
-        ],
-    })
+    const [isMessageViewShown, setIsMessageViewShown] = useState<boolean>(false);
+    const [messages, setMessages] = useState<ListCollection<Message> | null>(null);
+
+    const loadMessages = () => {
+        if (!userContext || !userContext.user)
+        {
+            return;
+        }
+
+        apiContext.message.getMessages(userContext.user.id).then((response) => {
+            setMessages(createListCollection({items: response}));
+        });
+    };
+
+    async function sendMessage(message: Message) {
+        await apiContext.message.sendMessage(message);
+    }
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            loadMessages();
+            console.log(new Date().toString() + ": Loading messages");
+        }, 10000);
+
+        return () => clearInterval(timer);
+    });
 
     return (
         <>
@@ -28,11 +51,11 @@ const MessagesPage: React.FC = () => {
                         <Button>Новое сообщение</Button>
                         <HStack>
                             <VStack>
-                                {messagesPlaceholder.items.map((message) => {
+                                {messages && messages.items.map((message: Message) => {
                                         return (
                                             <Card.Root className="message_card">
                                                 <Card.Body>
-                                                    <Card.Title mt="2">{message.theme}</Card.Title>
+                                                    <Card.Title mt="2">{message.topic}</Card.Title>
                                                     <Card.Description>
                                                     {message.text}
                                                     </Card.Description>
