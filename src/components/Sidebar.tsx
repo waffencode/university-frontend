@@ -5,7 +5,7 @@ import {
     LuAppWindow,
     LuCalendarClock,
     LuChevronsLeft,
-    LuChevronsRight, LuHome,
+    LuChevronsRight, LuHouse,
     LuLogOut,
     LuMessageCircle,
     LuSchool,
@@ -65,7 +65,7 @@ const Sidebar: React.FC = () => {
                         </IconButton>
                         <SidebarButton
                             onClick={onHomeButtonClick}
-                            icon={<LuHome />}
+                            icon={<LuHouse />}
                             label="Главная"
                             isCollapsed={isCollapsed}
                         />
