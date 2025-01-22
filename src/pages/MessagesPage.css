@@ -1,7 +1,18 @@
 .message_card:hover {
-    background-color: #818181;
+    background-color: #fafafa;
 }
 
 .message_card {
-    background-color: #818181;
+    max-width: 100%;
+}
+
+.message_description {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.message_wide_card {
+    max-width: 100%;
 }

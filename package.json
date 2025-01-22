@@ -16,6 +16,7 @@
     "react-cookie": "^7.2.2",
     "react-dom": "^18.2.0",
     "react-icons": "^5.4.0",
+    "react-markdown": "^9.0.3",
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.1.0-next.14",
     "source-map-explorer": "^2.5.3",
