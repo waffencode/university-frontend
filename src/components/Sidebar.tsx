@@ -34,6 +34,10 @@ const Sidebar: React.FC = () => {
         navigate("/dashboard");
     }
 
+    const onScheduleButtonClick = () => {
+        navigate("/schedule");
+    }
+
     const onLogoutButtonClick = () => {
         apiContext.user.logout().then(() => {
             removeCookies("token");
@@ -70,6 +74,7 @@ const Sidebar: React.FC = () => {
                             isCollapsed={isCollapsed}
                         />
                         <SidebarButton
+                            onClick={onScheduleButtonClick}
                             icon={<LuCalendarClock />}
                             label="Расписание"
                             isCollapsed={isCollapsed}

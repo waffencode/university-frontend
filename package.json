@@ -21,6 +21,7 @@
     "react-scripts": "^5.1.0-next.14",
     "source-map-explorer": "^2.5.3",
     "typescript": "^5.7.3",
+    "uuid": "^11.0.5",
     "zxcvbn": "^4.4.2"
   },
   "scripts": {

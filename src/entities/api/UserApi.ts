@@ -20,6 +20,11 @@ class UserApi {
         };
     }
 
+    async getAllUsers(): Promise<User[]> {
+        const response = await axios.get(this.serverUrl + "/User/", {withCredentials: true});
+        return response.data as User[];
+    }
+
     async logout(): Promise<void> {
         return await axios.get(this.serverUrl + "/User/logout", { withCredentials: true });
     }

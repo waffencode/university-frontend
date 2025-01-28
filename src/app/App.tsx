@@ -12,6 +12,7 @@ import {CookiesProvider} from "react-cookie";
 import AdminPage from "../pages/AdminPage.tsx";
 import SettingsPage from "../pages/SettingsPage.tsx";
 import MessagesPage from "../pages/MessagesPage.tsx";
+import SchedulePage from "../pages/SchedulePage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -28,6 +29,7 @@ const App: React.FC = () => {
                             <Route path="/admin" element={<AdminPage />} />
                             <Route path="/settings" element={<SettingsPage />} />
                             <Route path="/messages" element={<MessagesPage />} />
+                            <Route path="/schedule" element={<SchedulePage />} />
                         </Routes>
                     </UserProvider>
                 </ApiProvider>
