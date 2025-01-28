@@ -1,6 +1,4 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
-import HeaderBar from "../components/HeaderBar.tsx";
-import Sidebar from "../components/Sidebar.tsx";
 import {
     Box,
     Card,
@@ -8,7 +6,7 @@ import {
     Flex,
     Heading,
     HStack,
-    Input,
+    Input, Link,
     ListCollection, StackSeparator,
     Textarea,
     VStack
@@ -35,6 +33,10 @@ import {
     DialogTrigger
 } from "../components/ui/dialog.tsx";
 import User from "../entities/domain/User.ts";
+import AppPage from "../components/AppPage.tsx";
+import {LuSend, LuTrash} from "react-icons/lu";
+import MessageView from "../components/MessageView.tsx";
+import formatDate from "../service/FormatDate.ts";
 
 const MessagesPage: React.FC = () => {
 
@@ -67,6 +69,11 @@ const MessagesPage: React.FC = () => {
     }
 
     function showExistingMessage(message: Message) {
+        if (isNewMessageModeActive)
+        {
+            return;
+        }
+
         setIsMessageViewShown(true);
         setShownMessage(message);
     }
@@ -82,24 +89,36 @@ const MessagesPage: React.FC = () => {
             return;
         }
 
-        let emptyMessage: Message = {
-            id: v4() as UUID,
-            topic: "",
-            text: "",
-            date: new Date(),
-            isImportant: false,
-            sender: userContext.user,
-            receivers: [],
-            receiversStudyGroup: []
-        };
+        if (isMessageViewShown)
+        {
+            return;
+        }
 
-        setNewMessage(emptyMessage);
+        if (!newMessage) {
+            let emptyMessage: Message = {
+                id: v4() as UUID,
+                topic: "",
+                text: "",
+                date: new Date(),
+                isImportant: false,
+                sender: userContext.user,
+                receivers: [],
+                receiversStudyGroup: []
+            };
+
+
+            setNewMessage(emptyMessage);
+        }
+
         setIsNewMessageModeActive(true);
     }
 
     function disableNewMessageMode() {
-        setNewMessage(null);
         setIsNewMessageModeActive(false);
+    }
+
+    function deleteNewMessage() {
+        setNewMessage(null);
     }
 
     // function getReceivers(): User[] {
@@ -131,135 +150,109 @@ const MessagesPage: React.FC = () => {
     });
 
     return (
-        <>
-            <HeaderBar />
-            <Flex gap={10} marginY={2} grow={5} >
-                <Sidebar />
-                <Card.Root w="80%" shadow="md" border="0" rounded={3} p={4}>
-                    <Card.Header>
-                        <Heading>Сообщения</Heading>
-                    </Card.Header>
-                    <Card.Body>
-                        <Button onClick={() => enableNewMessageMode()}>Новое сообщение</Button>
-                        <HStack p={3} align="top" separator={<StackSeparator />}>
-                            <VStack w="20%">
-                                {(!messages || (messages.items.length === 0)) && (
-                                    <div>
-                                        Сообщений нет
-                                    </div>
-                                )}
-                                {messages && messages.items.map((message: Message) => {
-                                        return (
-                                            <Card.Root className="message_card" onClick={() => showExistingMessage(message)}>
-                                                <Card.Body>
-                                                    <Card.Title mt="2">{message.topic}</Card.Title>
-                                                    <Card.Description className="message_description">
-                                                    {message.text}<br/>
-                                                        Sender: {message.sender.id}<br/>
-                                                        Date: {message.date.toString()}<br/>
-                                                    </Card.Description>
-                                                </Card.Body>
-                                            </Card.Root>
-                                        )
-                                    })
-                                }
-                            </VStack>
-                            {isMessageViewShown && shownMessage &&
-                                <Card.Root className="message_wide_card" w="80%">
+        <AppPage title="Сообщения">
+            <Button variant="surface" onClick={() => enableNewMessageMode()}>Новое сообщение</Button>
+            <HStack p={3} align="top" separator={<StackSeparator />}>
+                <VStack w="20%">
+                    {(!messages || (messages.items.length === 0)) && (
+                        <div>
+                            Сообщений нет
+                        </div>
+                    )}
+                    {messages && messages.items.map((message: Message) => {
+                            return (
+                                <Card.Root className="message_card" onClick={() => showExistingMessage(message)}>
                                     <Card.Body>
-                                        <Button style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}  w="10%" onClick={() => hideExistingMessage()}>Закрыть</Button>
-                                        <Card.Title mt="2">{shownMessage.topic}</Card.Title>
-                                        <Card.Description>
-                                            <Prose>
-                                                <ReactMarkdown>
-                                                    {shownMessage.text}
-                                                </ReactMarkdown>
-                                            </Prose>
-                                            <br/>
-                                            Sender: {shownMessage.sender.id}<br/>
-                                            Date: {shownMessage.date.toString()}<br/>
+                                        <Card.Title mt="2">{message.topic}</Card.Title>
+                                        <Card.Description className="message_description">
+                                        {message.text}<br/>
+                                            {message.sender.fullName}<br/>
+                                            {formatDate(message.date)}<br/>
                                         </Card.Description>
                                     </Card.Body>
                                 </Card.Root>
-                            }
-                            {isNewMessageModeActive && newMessage &&
-                                <Card.Root className="message_wide_card" w="80%">
-                                    <Card.Body>
-                                        <Button style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}  w="10%" onClick={() => disableNewMessageMode()}>Закрыть</Button>
-                                        <Card.Title mt="2">Новое сообщение</Card.Title>
-                                        <Card.Description>
-                                            <Flex justify="flex-start" gap={5} direction="column">
-                                                <Field label="Тема">
-                                                    <Input placeholder="Тема" value={newMessage.topic} onChange={(e) => setNewMessage({ ...newMessage, topic: e.target.value })} />
-                                                </Field>
-                                                <Checkbox checked={newMessage.isImportant} onCheckedChange={(e) => setNewMessage({ ...newMessage, isImportant: !!e.checked })}>Это сообщение с высокой важностью</Checkbox>
-                                                <Field label="Текст сообщения (поддерживается Markdown)">
-                                                    { isPreviewEnabled &&
-                                                        <>
-                                                            <Box
-                                                                p="2"
-                                                                borderWidth="1px"
-                                                                borderColor="border.disabled"
-                                                                borderRadius="5px"
-                                                                color="fg.disabled"
-                                                                w="100%"
-                                                            >
-                                                                <Prose>
-                                                                    <ReactMarkdown>
-                                                                        {newMessage.text}
-                                                                    </ReactMarkdown>
-                                                                </Prose>
-                                                            </Box>
+                            )
+                        })
+                    }
+                </VStack>
+                {isMessageViewShown && shownMessage &&
+                    <MessageView shownMessage={shownMessage} hideExistingMessage={hideExistingMessage} />
+                }
+                {isNewMessageModeActive && newMessage &&
+                    <Card.Root className="message_wide_card" w="80%">
+                        <Card.Body>
+                            <Button className="close_message_button" w="10%" onClick={() => disableNewMessageMode()}>Закрыть</Button>
+                            <Card.Title mt="2">Новое сообщение</Card.Title>
+                            <Card.Description>
+                                <Flex justify="flex-start" gap={5} direction="column">
+                                    <Field label="Тема">
+                                        <Input placeholder="Тема" value={newMessage.topic} onChange={(e) => setNewMessage({ ...newMessage, topic: e.target.value })} />
+                                    </Field>
+                                    <Checkbox checked={newMessage.isImportant} onCheckedChange={(e) => setNewMessage({ ...newMessage, isImportant: !!e.checked })}>Это сообщение с высокой важностью</Checkbox>
+                                    <Field label="Текст сообщения (поддерживается Markdown)">
+                                        { isPreviewEnabled &&
+                                            <>
+                                                <Box
+                                                    p="2"
+                                                    borderWidth="1px"
+                                                    borderColor="border.disabled"
+                                                    borderRadius="5px"
+                                                    color="fg.disabled"
+                                                    w="100%"
+                                                >
+                                                    <Prose>
+                                                        <ReactMarkdown>
+                                                            {newMessage.text}
+                                                        </ReactMarkdown>
+                                                    </Prose>
+                                                </Box>
 
-                                                            <Button variant="outline" onClick={() => setIsPreviewEnabled(false)}>Отключить предпросмотр</Button>
-                                                        </>
-                                                    }
-                                                    { !isPreviewEnabled &&
-                                                        <>
-                                                            <Textarea resize="vertical" placeholder="Текст сообщения" value={newMessage.text} onChange={(e) => setNewMessage({ ...newMessage, text: e.target.value })} />
-                                                            <Button variant="outline" onClick={() => setIsPreviewEnabled(true)}>Предпросмотр</Button>
-                                                        </>
-                                                    }
-                                                </Field>
-                                                <Field label="Получатели">
-                                                    <DialogRoot size="cover" placement="center" motionPreset="slide-in-bottom">
-                                                        <DialogTrigger>
-                                                            <Button variant="outline">Выбрать</Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent>
-                                                            <DialogCloseTrigger />
-                                                            <DialogHeader>
-                                                                <DialogTitle>Выбрать получателей</DialogTitle>
-                                                            </DialogHeader>
-                                                            <DialogBody>
-                                                                {/*{getReceivers().map((receiver) => (*/}
-                                                                {/*        <CheckboxCard label={receiver.fullName} description={receiver.email} key={receiver.id} maxW="240px" />*/}
-                                                                {/*    ))*/}
-                                                                {/*}*/}
-                                                            </DialogBody>
-                                                            <DialogFooter>
-                                                                <DialogActionTrigger asChild>
-                                                                    <Button variant="outline">Отмена</Button>
-                                                                </DialogActionTrigger>
-                                                                <Button>Сохранить</Button>
-                                                            </DialogFooter>
-                                                        </DialogContent>
-                                                    </DialogRoot>
-                                                </Field>
-                                                <Flex style={{ marginTop: '1.5rem'}} gap={2} justify="flex-end">
-                                                    <Button onClick={() => sendMessage(newMessage)}>Отправить</Button>
-                                                    <Button>Удалить</Button>
-                                                </Flex>
-                                            </Flex>
-                                        </Card.Description>
-                                    </Card.Body>
-                                </Card.Root>
-                            }
-                        </HStack>
-                    </Card.Body>
-                </Card.Root>
-            </Flex>
-        </>
+                                                <Button variant="outline" onClick={() => setIsPreviewEnabled(false)}>Отключить предпросмотр</Button>
+                                            </>
+                                        }
+                                        { !isPreviewEnabled &&
+                                            <>
+                                                <Textarea resize="vertical" placeholder="Текст сообщения" value={newMessage.text} onChange={(e) => setNewMessage({ ...newMessage, text: e.target.value })} />
+                                                <Button variant="outline" onClick={() => setIsPreviewEnabled(true)}>Предпросмотр</Button>
+                                            </>
+                                        }
+                                    </Field>
+                                    <Field label="Получатели">
+                                        <DialogRoot size="cover" placement="center" motionPreset="slide-in-bottom">
+                                            <DialogTrigger>
+                                                <Button variant="outline">Выбрать</Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogCloseTrigger />
+                                                <DialogHeader>
+                                                    <DialogTitle>Выбрать получателей</DialogTitle>
+                                                </DialogHeader>
+                                                <DialogBody>
+                                                    {/*{getReceivers().map((receiver) => (*/}
+                                                    {/*        <CheckboxCard label={receiver.fullName} description={receiver.email} key={receiver.id} maxW="240px" />*/}
+                                                    {/*    ))*/}
+                                                    {/*}*/}
+                                                </DialogBody>
+                                                <DialogFooter>
+                                                    <DialogActionTrigger asChild>
+                                                        <Button variant="outline">Отмена</Button>
+                                                    </DialogActionTrigger>
+                                                    <Button>Сохранить</Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </DialogRoot>
+                                    </Field>
+                                    <Flex style={{ marginTop: '1.5rem'}} gap={2} justify="flex-end">
+                                        <Button backgroundColor="red.500" _hover={{backgroundColor: 'red.600'}} onClick={() => deleteNewMessage()}><LuTrash />Удалить</Button>
+                                        <Button onClick={() => sendMessage(newMessage)}><LuSend />Отправить</Button>
+                                    </Flex>
+                                </Flex>
+                            </Card.Description>
+                        </Card.Body>
+                    </Card.Root>
+                }
+            </HStack>
+        </AppPage>
     );
 }
 

@@ -42,6 +42,7 @@ const Sidebar: React.FC = () => {
         apiContext.user.logout().then(() => {
             removeCookies("token");
             userContext?.setUser(null);
+            localStorage.removeItem("user");
             navigate("/");
         })
     }

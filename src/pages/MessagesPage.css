@@ -16,3 +16,9 @@
 .message_wide_card {
     max-width: 100%;
 }
+
+.close_message_button {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+}

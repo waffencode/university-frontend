@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useContext, useEffect} from "react";
 import HeaderBar from "./HeaderBar";
 import {Card, Flex, Heading} from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
+import {UserContext} from "../service/UserProvider.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface AppPageProps {
     title: string;
@@ -9,6 +11,16 @@ interface AppPageProps {
 }
 
 const AppPage: React.FC<AppPageProps> = ({ title, children }) => {
+    const {user} = useContext(UserContext)!;
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user)
+        {
+            navigate("/");
+        }
+    });
+
     return (
         <>
             <HeaderBar />
