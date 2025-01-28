@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {
     Box,
-    Card,
+    Card, CheckboxGroup,
     createListCollection,
     Flex,
     Heading,
@@ -37,6 +37,7 @@ import AppPage from "../components/AppPage.tsx";
 import {LuSend, LuTrash} from "react-icons/lu";
 import MessageView from "../components/MessageView.tsx";
 import formatDate from "../service/FormatDate.ts";
+import { toaster } from "../components/ui/toaster"
 
 const MessagesPage: React.FC = () => {
 
@@ -50,6 +51,8 @@ const MessagesPage: React.FC = () => {
     const [isNewMessageModeActive, setIsNewMessageModeActive] = useState<boolean>(false);
     const [messages, setMessages] = useState<ListCollection<Message> | null>(null);
     const [isPreviewEnabled, setIsPreviewEnabled] = useState<boolean>(false);
+    const [receivers, setReceivers] = useState<User[] | null>(null);
+    const [selectedReceivers, setSelectedReceivers] = useState<User[] | null>(null);
 
     const loadMessages = useCallback(() => {
         console.log(new Date().toString() + ": Loading messages");
@@ -66,6 +69,13 @@ const MessagesPage: React.FC = () => {
 
     async function sendMessage(message: Message) {
         await apiContext.message.sendMessage(message);
+        deleteNewMessage();
+        disableNewMessageMode();
+
+        toaster.create({
+            title: `Сообщение успешно отправлено`,
+            type: "success",
+        });
     }
 
     function showExistingMessage(message: Message) {
@@ -121,15 +131,24 @@ const MessagesPage: React.FC = () => {
         setNewMessage(null);
     }
 
-    // function getReceivers(): User[] {
-    //     console.log(new Date().toString() + ": Getting receivers");
-    //
-    //     apiContext.user.getAllUsers().then((response) => {
-    //         console.log(new Date().toString() + ": Receivers loaded");
-    //         console.log(response);
-    //         return response;
-    //     });
-    // }
+    function loadReceivers() {
+        console.log(new Date().toString() + ": Getting receivers");
+
+        apiContext.user.getAllUsers().then((response) => {
+            console.log(new Date().toString() + ": Receivers loaded");
+            console.log(response);
+            setReceivers(response);
+        });
+    }
+
+    function onDialogOpenClose() {
+        loadReceivers();
+        newMessage!.receivers = selectedReceivers!;
+    }
+
+    function markReceivers(markedReceivers: string[]) {
+        setSelectedReceivers(receivers!.filter((user) => markedReceivers.includes(user.id)));
+    }
 
     // Check messages once after page load.
     useEffect(() => {
@@ -151,7 +170,7 @@ const MessagesPage: React.FC = () => {
 
     return (
         <AppPage title="Сообщения">
-            <Button variant="surface" onClick={() => enableNewMessageMode()}>Новое сообщение</Button>
+            <Button variant="surface" onClick={() => enableNewMessageMode()} disabled={isNewMessageModeActive || isMessageViewShown}>Новое сообщение</Button>
             <HStack p={3} align="top" separator={<StackSeparator />}>
                 <VStack w="20%">
                     {(!messages || (messages.items.length === 0)) && (
@@ -159,7 +178,7 @@ const MessagesPage: React.FC = () => {
                             Сообщений нет
                         </div>
                     )}
-                    {messages && messages.items.map((message: Message) => {
+                    {messages && messages.items.sort((a, b) => b.date.getTime() - a.date.getTime()).map((message: Message) => {
                             return (
                                 <Card.Root className="message_card" onClick={() => showExistingMessage(message)}>
                                     <Card.Body>
@@ -218,7 +237,7 @@ const MessagesPage: React.FC = () => {
                                         }
                                     </Field>
                                     <Field label="Получатели">
-                                        <DialogRoot size="cover" placement="center" motionPreset="slide-in-bottom">
+                                        <DialogRoot size="cover" placement="center" motionPreset="slide-in-bottom" onOpenChange={() => onDialogOpenClose()}>
                                             <DialogTrigger>
                                                 <Button variant="outline">Выбрать</Button>
                                             </DialogTrigger>
@@ -228,19 +247,31 @@ const MessagesPage: React.FC = () => {
                                                     <DialogTitle>Выбрать получателей</DialogTitle>
                                                 </DialogHeader>
                                                 <DialogBody>
-                                                    {/*{getReceivers().map((receiver) => (*/}
-                                                    {/*        <CheckboxCard label={receiver.fullName} description={receiver.email} key={receiver.id} maxW="240px" />*/}
-                                                    {/*    ))*/}
-                                                    {/*}*/}
+                                                    <CheckboxGroup onValueChange={(e) => markReceivers(e)}>
+                                                        {receivers?.map((receiver) => (
+                                                            <CheckboxCard label={receiver.fullName} description={receiver.email} key={receiver.id} value={receiver.id} maxW="240px"/>
+                                                        ))
+                                                        }
+                                                    </CheckboxGroup>
                                                 </DialogBody>
                                                 <DialogFooter>
                                                     <DialogActionTrigger asChild>
-                                                        <Button variant="outline">Отмена</Button>
+                                                        <Button variant="outline" onClick={() => setSelectedReceivers(null)}>Сброс</Button>
                                                     </DialogActionTrigger>
-                                                    <Button>Сохранить</Button>
+                                                    <DialogActionTrigger asChild>
+                                                        <Button>Сохранить</Button>
+                                                    </DialogActionTrigger>
                                                 </DialogFooter>
                                             </DialogContent>
                                         </DialogRoot>
+                                        <HStack gap={2}>
+                                            {selectedReceivers?.map((receiver) => (
+                                                <div className="receiver_card">
+                                                    {receiver.fullName}<br />
+                                                    {"<" + receiver.email + ">"}
+                                                </div>
+                                            ))}
+                                        </HStack>
                                     </Field>
                                     <Flex style={{ marginTop: '1.5rem'}} gap={2} justify="flex-end">
                                         <Button backgroundColor="red.500" _hover={{backgroundColor: 'red.600'}} onClick={() => deleteNewMessage()}><LuTrash />Удалить</Button>

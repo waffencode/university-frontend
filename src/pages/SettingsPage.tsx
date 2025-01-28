@@ -9,22 +9,14 @@ import {ApiContext} from "../service/ApiProvider.tsx";
 import {useNavigate} from "react-router-dom";
 import {Alert} from "../components/ui/alert.tsx";
 import {UserRoleNamesCollection} from "../entities/domain/UserRole.ts";
+import {toaster} from "../components/ui/toaster.tsx";
 
 const SettingsPage: React.FC = () => {
     const apiContext = useContext(ApiContext)!;
     const userContext = useContext(UserContext)!;
     const navigate = useNavigate();
 
-    const [isAlertShown, setIsAlertShown] = useState<boolean>(false);
     const [userEdited] = useState<User>(userContext.user!);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsAlertShown(false);
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [isAlertShown]);
 
     const onSubmitButtonClicked = async () => {
         await apiContext.user.updateUser(userEdited).then(() => {
@@ -32,7 +24,10 @@ const SettingsPage: React.FC = () => {
 
                 // TODO: Replace with HeaderBar re-rendering.
                 navigate("/settings");
-                setIsAlertShown(true);
+                toaster.create({
+                    title: "Данные успешно обновлены",
+                    type: "success",
+                });
         });
     }
 
@@ -48,9 +43,6 @@ const SettingsPage: React.FC = () => {
                     <Card.Body>
                         <VStack alignItems="left" gap={3}>
                             <Heading size="sm">Профиль</Heading>
-                            {isAlertShown &&
-                                <Alert status="success" title="Данные успешно обновлены"/>
-                            }
                             {(userContext.user !== null) &&
                                 <>
                                     <Heading size="xs">Email</Heading>

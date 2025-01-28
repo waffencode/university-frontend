@@ -13,7 +13,7 @@ class MessageApi {
             id: element.id,
             topic: element.topic,
             text: element.text,
-            date: element.date,
+            date: new Date(element.date),
             isImportant: element.isImportant,
             sender: element.sender,
             receivers: element.receivers,

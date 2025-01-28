@@ -22,3 +22,9 @@
     top: 1.5rem;
     right: 1.5rem;
 }
+
+.receiver_card {
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    padding: 10px;
+}
