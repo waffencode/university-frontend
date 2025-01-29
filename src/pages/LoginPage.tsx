@@ -1,7 +1,7 @@
 import axios from "axios";
 import {Box, Button, Card, Center, HStack, Input, Stack, VStack} from "@chakra-ui/react";
 import CryptoJS from 'crypto-js';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
 import {UUID} from "node:crypto";
 import {ConfigContext} from "../components/ConfigProvider";
@@ -45,6 +45,12 @@ const LoginPage: React.FC = () => {
     function redirectToRegistrationPage() {
         navigate("/register");
     }
+
+    useEffect(() => {
+        if (userContext?.user) {
+            navigate("/dashboard");
+        }
+    });
 
     return (
         <>

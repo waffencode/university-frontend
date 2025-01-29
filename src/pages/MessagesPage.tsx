@@ -39,6 +39,7 @@ import MessageView from "../components/MessageView.tsx";
 import formatDate from "../service/FormatDate.ts";
 import { toaster } from "../components/ui/toaster"
 
+// TODO: Refactor.
 const MessagesPage: React.FC = () => {
 
     const apiContext = useContext(ApiContext);
@@ -242,14 +243,18 @@ const MessagesPage: React.FC = () => {
                                                 <Button variant="outline">Выбрать</Button>
                                             </DialogTrigger>
                                             <DialogContent>
-                                                <DialogCloseTrigger />
                                                 <DialogHeader>
                                                     <DialogTitle>Выбрать получателей</DialogTitle>
                                                 </DialogHeader>
                                                 <DialogBody>
                                                     <CheckboxGroup onValueChange={(e) => markReceivers(e)}>
                                                         {receivers?.map((receiver) => (
-                                                            <CheckboxCard label={receiver.fullName} description={receiver.email} key={receiver.id} value={receiver.id} maxW="240px"/>
+                                                            <CheckboxCard
+                                                                label={receiver.fullName}
+                                                                description={receiver.email}
+                                                                key={receiver.id}
+                                                                value={receiver.id}
+                                                                maxW="240px"/>
                                                         ))
                                                         }
                                                     </CheckboxGroup>
