@@ -1,19 +1,36 @@
-import React from "react";
-import HeaderBar from "../components/HeaderBar";
+import React, {useContext} from "react";
 import {Box, Button, Card, Center, Heading, HStack, Image, Stack, Text, VStack} from "@chakra-ui/react";
 import {PinInput} from "../components/ui/pin-input.tsx";
 import {useNavigate} from "react-router-dom";
+import User from "../entities/domain/User.ts";
+import {ApiContext} from "../service/ApiProvider.tsx";
+import AppPage from "../components/AppPage.tsx";
+import {UserContext} from "../service/UserProvider.tsx";
+import user from "../entities/domain/User.ts";
+import HeaderBar from "../components/HeaderBar.tsx";
 
 const RegistrationConfirmationPage: React.FC = () => {
     const navigate = useNavigate();
+    const api = useContext(ApiContext);
 
     const [otp, setOtp] = React.useState(["", "", "", ""])
 
+    const userContext = useContext(UserContext)!;
+
     function handleSubmit() {
+        if (!userContext.user) {
+            // TODO: Handle error.
+            return;
+        }
+
+        api.user.register(userContext.user).then(r => {
+            userContext.setUser(null);
+            navigate('/login');
+        });
         // TODO: Add auth cookie.
-        navigate('/dashboard');
     }
 
+    // Do not use <AppPage> here.
     return (
         <>
             <HeaderBar/>

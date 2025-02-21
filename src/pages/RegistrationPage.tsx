@@ -1,17 +1,18 @@
 import React from 'react';
-import HeaderBar from "../components/HeaderBar";
 import {
     Box,
-    Button,
-    Card,
+    Button, Card,
     Center,
-    createListCollection, Heading, HStack, Image,
+    createListCollection,
+    Heading,
+    HStack,
+    Image,
     Input,
     Stack,
-    VStack,
-    Text
+    Text,
+    VStack
 } from "@chakra-ui/react";
-import { Field } from "../components/ui/field"
+import {Field} from "../components/ui/field"
 import {
     SelectContent,
     SelectItem,
@@ -23,27 +24,48 @@ import {
 import {PasswordInput, PasswordStrengthMeter} from "../components/ui/password-input.tsx";
 import {useNavigate} from "react-router-dom";
 import {Checkbox} from "../components/ui/checkbox.tsx";
+import AppPage from "../components/AppPage.tsx";
+import {UserContext} from "../service/UserProvider.tsx";
+import User from "../entities/domain/User.ts";
+import UserRole from "../entities/domain/UserRole.ts";
+import {v4} from "uuid";
+import {UUID} from "node:crypto";
+import HeaderBar from "../components/HeaderBar.tsx";
+
+const dummyUser: User = {
+    id: v4() as UUID,
+    passwordHash: "",
+    username: "",
+    fullName: "",
+    email: "",
+    role: UserRole.Unauthorized
+};
 
 const RegistrationPage: React.FC = () => {
     const navigate = useNavigate();
+    const userContext = React.useContext(UserContext)!;
+
     // Password strength meter.
     const zxcvbn = require('zxcvbn');
 
+    const [newUser, setNewUser] = React.useState<User>(dummyUser);
     const [password, setPassword] = React.useState<string>("");
 
     const roles = createListCollection({
         items: [
-            { label: "Студент", value: "student" },
-            { label: "Преподаватель", value: "teacher" },
-            { label: "Методист", value: "manager" },
-            { label: "Администратор", value: "administrator" },
+            { label: "Студент", value: UserRole.Student },
+            { label: "Преподаватель", value: UserRole.Teacher },
+            { label: "Методист", value: UserRole.Manager },
+            { label: "Администратор", value: UserRole.Admin },
         ],
     })
 
     function handleRegistration() {
+        userContext.setUser(newUser);
         navigate("/register/confirm");
     }
 
+    // Do not use <AppPage> here.
     return (
         <>
             <HeaderBar/>

@@ -1,13 +1,10 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {
     Box,
-    Card, CheckboxGroup,
-    createListCollection,
+    Card, createListCollection,
     Flex,
-    Heading,
     HStack,
-    Input, Link,
-    ListCollection, StackSeparator,
+    Input, ListCollection, StackSeparator,
     Textarea,
     VStack
 } from "@chakra-ui/react";
@@ -27,7 +24,6 @@ import {UUID} from "node:crypto";
 import {
     DialogActionTrigger,
     DialogBody,
-    DialogCloseTrigger,
     DialogContent, DialogFooter, DialogHeader,
     DialogRoot, DialogTitle,
     DialogTrigger
@@ -43,7 +39,7 @@ import { toaster } from "../components/ui/toaster"
 const MessagesPage: React.FC = () => {
 
     const apiContext = useContext(ApiContext);
-    const userContext = useContext(UserContext);
+    const userContext = useContext(UserContext)!;
     const navigate = useNavigate();
 
     const [isMessageViewShown, setIsMessageViewShown] = useState<boolean>(false);
@@ -74,7 +70,7 @@ const MessagesPage: React.FC = () => {
         disableNewMessageMode();
 
         toaster.create({
-            title: `Сообщение успешно отправлено`,
+            title: "Сообщение успешно отправлено",
             type: "success",
         });
     }
@@ -95,11 +91,6 @@ const MessagesPage: React.FC = () => {
     }
 
     function enableNewMessageMode() {
-        if (!userContext || !userContext.user)
-        {
-            return;
-        }
-
         if (isMessageViewShown)
         {
             return;
@@ -112,7 +103,7 @@ const MessagesPage: React.FC = () => {
                 text: "",
                 date: new Date(),
                 isImportant: false,
-                sender: userContext.user,
+                sender: userContext.user!,
                 receivers: [],
                 receiversStudyGroup: []
             };
@@ -137,7 +128,6 @@ const MessagesPage: React.FC = () => {
 
         apiContext.user.getAllUsers().then((response) => {
             console.log(new Date().toString() + ": Receivers loaded");
-            console.log(response);
             setReceivers(response);
         });
     }
@@ -149,6 +139,12 @@ const MessagesPage: React.FC = () => {
 
     function markReceivers(markedReceivers: string[]) {
         setSelectedReceivers(receivers!.filter((user) => markedReceivers.includes(user.id)));
+    }
+
+    function addReceiver(selectedUser: User)  {
+        let newSelectedReceivers = selectedReceivers ?? [];
+        newSelectedReceivers.push(selectedUser);
+        setSelectedReceivers(newSelectedReceivers);
     }
 
     // Check messages once after page load.
@@ -203,87 +199,95 @@ const MessagesPage: React.FC = () => {
                         <Card.Body>
                             <Button className="close_message_button" w="10%" onClick={() => disableNewMessageMode()}>Закрыть</Button>
                             <Card.Title mt="2">Новое сообщение</Card.Title>
-                            <Card.Description>
-                                <Flex justify="flex-start" gap={5} direction="column">
-                                    <Field label="Тема">
-                                        <Input placeholder="Тема" value={newMessage.topic} onChange={(e) => setNewMessage({ ...newMessage, topic: e.target.value })} />
-                                    </Field>
-                                    <Checkbox checked={newMessage.isImportant} onCheckedChange={(e) => setNewMessage({ ...newMessage, isImportant: !!e.checked })}>Это сообщение с высокой важностью</Checkbox>
-                                    <Field label="Текст сообщения (поддерживается Markdown)">
-                                        { isPreviewEnabled &&
-                                            <>
-                                                <Box
-                                                    p="2"
-                                                    borderWidth="1px"
-                                                    borderColor="border.disabled"
-                                                    borderRadius="5px"
-                                                    color="fg.disabled"
-                                                    w="100%"
-                                                >
-                                                    <Prose>
-                                                        <ReactMarkdown>
-                                                            {newMessage.text}
-                                                        </ReactMarkdown>
-                                                    </Prose>
-                                                </Box>
+                            <Flex justify="flex-start" gap={5} direction="column">
+                                <Field label="Тема">
+                                    <Input placeholder="Тема" value={newMessage.topic}
+                                           onChange={(e) => setNewMessage({ ...newMessage, topic: e.target.value })} />
+                                </Field>
+                                <Checkbox checked={newMessage.isImportant}
+                                          onCheckedChange={(e) => setNewMessage({ ...newMessage, isImportant: !!e.checked })}>
+                                    Это сообщение с высокой важностью
+                                </Checkbox>
+                                <Field label="Текст сообщения (поддерживается Markdown)">
+                                    { isPreviewEnabled &&
+                                        <>
+                                            <Box
+                                                p="2"
+                                                borderWidth="1px"
+                                                borderColor="border.disabled"
+                                                borderRadius="5px"
+                                                color="fg.disabled"
+                                                w="100%"
+                                            >
+                                                <Prose>
+                                                    <ReactMarkdown>
+                                                        {newMessage.text}
+                                                    </ReactMarkdown>
+                                                </Prose>
+                                            </Box>
 
-                                                <Button variant="outline" onClick={() => setIsPreviewEnabled(false)}>Отключить предпросмотр</Button>
-                                            </>
-                                        }
-                                        { !isPreviewEnabled &&
-                                            <>
-                                                <Textarea resize="vertical" placeholder="Текст сообщения" value={newMessage.text} onChange={(e) => setNewMessage({ ...newMessage, text: e.target.value })} />
-                                                <Button variant="outline" onClick={() => setIsPreviewEnabled(true)}>Предпросмотр</Button>
-                                            </>
-                                        }
-                                    </Field>
-                                    <Field label="Получатели">
-                                        <DialogRoot size="cover" placement="center" motionPreset="slide-in-bottom" onOpenChange={() => onDialogOpenClose()}>
-                                            <DialogTrigger>
-                                                <Button variant="outline">Выбрать</Button>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogHeader>
-                                                    <DialogTitle>Выбрать получателей</DialogTitle>
-                                                </DialogHeader>
-                                                <DialogBody>
-                                                    <CheckboxGroup onValueChange={(e) => markReceivers(e)}>
-                                                        {receivers?.map((receiver) => (
-                                                            <CheckboxCard
-                                                                label={receiver.fullName}
-                                                                description={receiver.email}
-                                                                key={receiver.id}
-                                                                value={receiver.id}
-                                                                maxW="240px"/>
-                                                        ))
-                                                        }
-                                                    </CheckboxGroup>
-                                                </DialogBody>
-                                                <DialogFooter>
-                                                    <DialogActionTrigger asChild>
-                                                        <Button variant="outline" onClick={() => setSelectedReceivers(null)}>Сброс</Button>
-                                                    </DialogActionTrigger>
-                                                    <DialogActionTrigger asChild>
-                                                        <Button>Сохранить</Button>
-                                                    </DialogActionTrigger>
-                                                </DialogFooter>
-                                            </DialogContent>
-                                        </DialogRoot>
-                                        <HStack gap={2}>
-                                            {selectedReceivers?.map((receiver) => (
-                                                <div className="receiver_card">
-                                                    {receiver.fullName}<br />
-                                                    {"<" + receiver.email + ">"}
-                                                </div>
-                                            ))}
-                                        </HStack>
-                                    </Field>
-                                    <Flex style={{ marginTop: '1.5rem'}} gap={2} justify="flex-end">
-                                        <Button backgroundColor="red.500" _hover={{backgroundColor: 'red.600'}} onClick={() => deleteNewMessage()}><LuTrash />Удалить</Button>
-                                        <Button onClick={() => sendMessage(newMessage)}><LuSend />Отправить</Button>
-                                    </Flex>
+                                            <Button variant="outline" onClick={() => setIsPreviewEnabled(false)}>Отключить предпросмотр</Button>
+                                        </>
+                                    }
+                                    { !isPreviewEnabled &&
+                                        <>
+                                            <Textarea resize="vertical" placeholder="Текст сообщения" value={newMessage.text} onChange={(e) => setNewMessage({ ...newMessage, text: e.target.value })} />
+                                            <Button variant="outline" onClick={() => setIsPreviewEnabled(true)}>Предпросмотр</Button>
+                                        </>
+                                    }
+                                </Field>
+                                <Field label="Получатели">
+                                    <DialogRoot size="cover" placement="center" motionPreset="slide-in-bottom" onOpenChange={() => onDialogOpenClose()}>
+                                        <DialogTrigger>
+                                            <Button variant="outline">Выбрать</Button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>Выбрать получателей</DialogTitle>
+                                            </DialogHeader>
+                                            <DialogBody>
+                                                {receivers?.map((receiver) => (
+                                                    <CheckboxCard
+                                                        label={receiver.fullName}
+                                                        description={receiver.email}
+                                                        key={receiver.id}
+                                                        value={receiver.id}
+                                                        checked={selectedReceivers?.some(r => r.id === receiver.id)}
+                                                        onCheckedChange={() => addReceiver(receiver)}
+                                                        maxW="240px"/>
+                                                ))}
+                                            </DialogBody>
+                                            <DialogFooter>
+                                                <DialogActionTrigger asChild>
+                                                    <Button variant="outline"
+                                                            onClick={() => setSelectedReceivers(null)}>
+                                                        Сброс
+                                                    </Button>
+                                                </DialogActionTrigger>
+                                                <DialogActionTrigger asChild>
+                                                    <Button>Сохранить</Button>
+                                                </DialogActionTrigger>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </DialogRoot>
+                                    <HStack gap={2}>
+                                        {selectedReceivers?.map((receiver) => (
+                                            <div className="receiver_card">
+                                                {receiver.fullName}<br />
+                                                {"<" + receiver.email + ">"}
+                                            </div>
+                                        ))}
+                                    </HStack>
+                                </Field>
+                                <Flex style={{ marginTop: '1.5rem'}} gap={2} justify="flex-end">
+                                    <Button backgroundColor="red.500" _hover={{backgroundColor: 'red.600'}}
+                                            onClick={() => deleteNewMessage()}><LuTrash />Удалить
+                                    </Button>
+                                    <Button onClick={() => sendMessage(newMessage)}>
+                                        <LuSend />Отправить
+                                    </Button>
                                 </Flex>
-                            </Card.Description>
+                            </Flex>
                         </Card.Body>
                     </Card.Root>
                 }

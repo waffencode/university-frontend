@@ -1,5 +1,5 @@
 import {UUID} from "node:crypto";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 import config from '../../config.json';
 import User from "../domain/User";
 
@@ -30,7 +30,11 @@ class UserApi {
     }
 
     async updateUser(userEdited: User): Promise<void> {
-         return await axios.put(this.serverUrl + "/User/" + userEdited.id.toString(), userEdited, { withCredentials: true });
+        return await axios.put(this.serverUrl + "/User/" + userEdited.id.toString(), userEdited, { withCredentials: true });
+    }
+
+    async register(user: User): Promise<void> {
+        return await axios.post(this.serverUrl + "/User/register", user, { withCredentials: true });
     }
 }
 

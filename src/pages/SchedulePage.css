@@ -1,0 +1,18 @@
+.card-content {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.card-content h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.card-content h3 {
+    margin-top: 10px;
+    font-weight: normal;
+}
+
+.class-card:hover {
+    background-color: #fafafa;
+}

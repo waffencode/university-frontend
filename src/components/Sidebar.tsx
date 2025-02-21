@@ -39,12 +39,14 @@ const Sidebar: React.FC = () => {
     }
 
     const onLogoutButtonClick = () => {
-        apiContext.user.logout().then(() => {
+        apiContext.user.logout().catch((error) => {
+            console.error(error);
+        }).finally(() => {
             removeCookies("token");
             userContext?.setUser(null);
             localStorage.removeItem("user");
             navigate("/");
-        })
+        });
     }
 
     const onAdminPanelButtonClick = () => {
