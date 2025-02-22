@@ -24,13 +24,13 @@ import {
 import {PasswordInput, PasswordStrengthMeter} from "../components/ui/password-input.tsx";
 import {useNavigate} from "react-router-dom";
 import {Checkbox} from "../components/ui/checkbox.tsx";
-import AppPage from "../components/AppPage.tsx";
 import {UserContext} from "../service/UserProvider.tsx";
 import User from "../entities/domain/User.ts";
 import UserRole from "../entities/domain/UserRole.ts";
 import {v4} from "uuid";
 import {UUID} from "node:crypto";
 import HeaderBar from "../components/HeaderBar.tsx";
+import {sha256} from "js-sha256";
 
 const dummyUser: User = {
     id: v4() as UUID,
@@ -50,6 +50,8 @@ const RegistrationPage: React.FC = () => {
 
     const [newUser, setNewUser] = React.useState<User>(dummyUser);
     const [password, setPassword] = React.useState<string>("");
+    const [isAgree, setIsAgree] = React.useState<boolean>(false);
+    const [confirmedPassword, setConfirmedPassword] = React.useState<string>("");
 
     const roles = createListCollection({
         items: [
@@ -61,8 +63,44 @@ const RegistrationPage: React.FC = () => {
     })
 
     function handleRegistration() {
-        userContext.setUser(newUser);
+        try {
+            if ((password !== confirmedPassword) || (!isAgree)) {
+                // TODO: Show error.
+                return;
+            }
+            const hashedPassword = sha256(password);
+
+            setNewUser((prevUser) => {return {...prevUser, passwordHash: hashedPassword}});
+
+            if (newUser.passwordHash !== hashedPassword) {
+                // TODO: Show error.
+                return;
+            }
+
+            userContext.setUser(newUser);
+        }
+        catch (e) {
+            // TODO: Show error.
+            console.log(e);
+            return;
+        }
         navigate("/register/confirm");
+    }
+
+    function setEmail(newEmail: string) {
+        setNewUser((prevUser) => {return {...prevUser, email: newEmail}});
+    }
+
+    function setUsername(newUsername: string) {
+        setNewUser((prevUser) => {return {...prevUser, username: newUsername}});
+    }
+
+    function setFullName(newFullName: string) {
+        setNewUser((prevUser) => {return {...prevUser, fullName: newFullName}});
+    }
+
+    function setRole(newRoleAsString: string[]) {
+        setNewUser((prevUser) => {return {...prevUser, role: newRoleAsString[0] as unknown as UserRole}});
     }
 
     // Do not use <AppPage> here.
@@ -89,16 +127,18 @@ const RegistrationPage: React.FC = () => {
                                 <HStack gap={30}>
                                     <VStack gap={1} w="60%">
                                         <Field label="Email">
-                                            <Input placeholder="me@example.com" />
+                                            <Input placeholder="me@example.com" onChange={(e) => setEmail(e.target.value)} />
                                         </Field>
                                         <Field label="Логин">
-                                            <Input placeholder="i.i.ivanov" />
+                                            <Input placeholder="i.i.ivanov" onChange={(e) => setUsername(e.target.value)} />
                                         </Field>
                                         <Field label="ФИО">
-                                            <Input placeholder="Иванов Иван Иванович" />
+                                            <Input placeholder="Иванов Иван Иванович" onChange={(e) => setFullName(e.target.value)}/>
                                         </Field>
                                         <Field>
-                                            <SelectRoot collection={roles} colorPalette="red">
+                                            <SelectRoot collection={roles}
+                                                        colorPalette="red"
+                                                        onValueChange={( e ) => setRole(e.value)}>
                                                 <SelectLabel>Роль пользователя</SelectLabel>
                                                 <SelectTrigger>
                                                     <SelectValueText placeholder="Выберите роль" />
@@ -124,12 +164,11 @@ const RegistrationPage: React.FC = () => {
                                         </Field>
                                         <Field label="Повторите пароль">
                                             <Stack maxW="100%">
-                                                <PasswordInput />
+                                                <PasswordInput onChange={(e) => setConfirmedPassword(e.target.value)} />
                                             </Stack>
                                         </Field>
-                                        <Checkbox marginY={3} alignItems="flex-start">
+                                        <Checkbox marginY={3} alignItems="flex-start" checked={isAgree} onCheckedChange={(e) => setIsAgree(!!e.checked)}>
                                             <Box lineHeight="1">Даю согласие на сбор, обработку и хранение персональных данных</Box>
-
                                             <Box color="fg.muted" fontWeight="normal">В соответствии с №152-ФЗ «О персональных данных»</Box>
                                         </Checkbox>
                                         <HStack>
