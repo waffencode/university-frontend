@@ -178,7 +178,7 @@ const RegistrationPage: React.FC = () => {
                                     </VStack>
                                     <Center w="50%">
                                         <VStack gap={3}>
-                                            <Image height="150px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Microsoft_.NET_logo.svg/684px-Microsoft_.NET_logo.svg.png" />
+                                            <Image height="150px" src="/static/img/logo.png" />
                                             <VStack marginY={10}>
                                                 <Heading>University</Heading>
                                                 Open-source платформа для университета

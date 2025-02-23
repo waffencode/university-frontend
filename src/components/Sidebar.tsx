@@ -61,6 +61,10 @@ const Sidebar: React.FC = () => {
         navigate("/messages");
     }
 
+    const onClassesButtonClick = () => {
+        navigate("/classes");
+    }
+
     return (
             <Box shadow="md" rounded={3} p={4} bg="white" h="100%" className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
                 <VStack w="100%" minH="100vh">
@@ -83,6 +87,7 @@ const Sidebar: React.FC = () => {
                             isCollapsed={isCollapsed}
                         />
                         <SidebarButton
+                            onClick={onClassesButtonClick}
                             icon={<LuSchool />}
                             label="Занятия"
                             isCollapsed={isCollapsed}

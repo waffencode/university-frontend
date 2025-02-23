@@ -14,6 +14,7 @@ import SettingsPage from "../pages/SettingsPage.tsx";
 import MessagesPage from "../pages/MessagesPage.tsx";
 import SchedulePage from "../pages/SchedulePage.tsx";
 import {Toaster} from "../components/ui/toaster.tsx";
+import ClassesPage from "../pages/ClassesPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -31,6 +32,7 @@ const App: React.FC = () => {
                             <Route path="/settings" element={<SettingsPage />} />
                             <Route path="/messages" element={<MessagesPage />} />
                             <Route path="/schedule" element={<SchedulePage />} />
+                            <Route path="/classes" element={<ClassesPage />} />
                         </Routes>
                         <Toaster />
                     </UserProvider>

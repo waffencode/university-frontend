@@ -103,6 +103,8 @@ const AdminPage: React.FC = () => {
                                                         <Table.Cell>
                                                             <HStack gap={2}>
                                                                 <Button onClick={() => onAuthorizeButtonClick(request.id)}>Утвердить</Button>
+
+                                                                {/*TODO: Implement reject button */}
                                                                 <Button>Отклонить</Button>
                                                             </HStack>
                                                         </Table.Cell>
