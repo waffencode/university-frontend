@@ -13,7 +13,7 @@ import {ApiContext} from "../service/ApiProvider.tsx";
 import {UserContext} from "../service/UserProvider.tsx";
 import Message from "../entities/domain/Message.ts";
 import './MessagesPage.css';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
 import {Prose} from "../components/ui/prose.tsx";
 import {Field} from "../components/ui/field.tsx";
@@ -41,6 +41,7 @@ const MessagesPage: React.FC = () => {
     const apiContext = useContext(ApiContext);
     const userContext = useContext(UserContext)!;
     const navigate = useNavigate();
+    const paramMessageId = useParams().messageId as UUID;
 
     const [isMessageViewShown, setIsMessageViewShown] = useState<boolean>(false);
     const [shownMessage, setShownMessage] = useState<Message | null>(null);
@@ -76,18 +77,13 @@ const MessagesPage: React.FC = () => {
     }
 
     function showExistingMessage(message: Message) {
-        if (isNewMessageModeActive)
-        {
-            return;
-        }
-
-        setIsMessageViewShown(true);
-        setShownMessage(message);
+        navigate("/messages/" + message.id.toString());
     }
 
     function hideExistingMessage() {
         setIsMessageViewShown(false);
         setShownMessage(null);
+        navigate("/messages");
     }
 
     function enableNewMessageMode() {
@@ -155,6 +151,19 @@ const MessagesPage: React.FC = () => {
         }
 
         loadMessages();
+
+        if (paramMessageId !== undefined && paramMessageId !== null) {
+            const shownMessage = messages?.items.find((message) => message.id === paramMessageId);
+            if (shownMessage !== undefined && shownMessage !== null) {
+                if (isNewMessageModeActive)
+                {
+                    return;
+                }
+
+                setIsMessageViewShown(true);
+                setShownMessage(shownMessage);
+            }
+        }
     }, [loadMessages, navigate, userContext]);
 
     useEffect(() => {

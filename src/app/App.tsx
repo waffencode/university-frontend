@@ -31,6 +31,7 @@ const App: React.FC = () => {
                             <Route path="/admin" element={<AdminPage />} />
                             <Route path="/settings" element={<SettingsPage />} />
                             <Route path="/messages" element={<MessagesPage />} />
+                            <Route path="/messages/:messageId" element={<MessagesPage />} />
                             <Route path="/schedule" element={<SchedulePage />} />
                             <Route path="/classes" element={<ClassesPage />} />
                         </Routes>
