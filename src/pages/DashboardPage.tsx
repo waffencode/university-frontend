@@ -7,7 +7,7 @@ const DashboardPage: React.FC = () => {
         <AppPage title="University">
             <Center>
                 <VStack gap={3}>
-                    <Image height="150px" src="/static/img/logo.png" />
+                    <Image borderRadius="10px" height="150px" src="/static/img/logo.png" />
                     <VStack marginY={10}>
                         <Heading>University</Heading>
                         Open-source платформа для университета
