@@ -22,8 +22,6 @@ import {ConfigContext} from './ConfigProvider';
  * waffencode@gmail.com
  */
 const VersionInfo: React.FC = () => {
-    require('tailwindcss/defaultTheme');
-
     // State variables for storing version information
     const [version, setVersion] = useState<string>('');
     const [frontendVersion, setFrontendVersion] = useState<string>('');
