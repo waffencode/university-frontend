@@ -17,8 +17,21 @@ class SubjectApi {
         return subjects;
     }
 
+    async getById(id: UUID): Promise<Subject> {
+        const response = await axios.get(this.serverUrl + "/Subject/" + id.toString(), {withCredentials: true});
+        return response.data;
+    }
+
+    async updateSubject(subject: Subject): Promise<void> {
+        await axios.put(this.serverUrl + "/Subject/" + subject.id.toString(), subject, {withCredentials: true});
+    }
+
     async createSubject(subject: Subject): Promise<void> {
         return await axios.post(this.serverUrl + "/Subject/", subject, { withCredentials: true });
+    }
+
+    async deleteSubject(id: UUID): Promise<void> {
+        return await axios.delete(this.serverUrl + "/Subject/" + id.toString(), { withCredentials: true });
     }
 }
 

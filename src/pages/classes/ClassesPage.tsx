@@ -1,8 +1,8 @@
 import React from 'react';
 import AppPage from "../../components/AppPage";
 import {Heading, VStack} from "@chakra-ui/react";
-import SubjectsView from "./subject/SubjectsView.tsx";
-import SubjectWorkProgramsView from "./SubjectWorkProgramsView.tsx";
+import SubjectsView from "./subject/SubjectsView";
+import SubjectWorkProgramsView from "./subject-work-program/SubjectWorkProgramsView";
 
 const ClassesPage: React.FC = () => {
     return (

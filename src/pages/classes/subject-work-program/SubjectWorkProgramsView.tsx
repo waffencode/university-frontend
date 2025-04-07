@@ -1,5 +1,5 @@
 import React from "react";
-import {SubjectWorkProgram} from "../../entities/domain/SubjectWorkProgram";
+import {SubjectWorkProgram} from "@/entities/domain/SubjectWorkProgram.ts";
 
 const SubjectWorkProgramsView: React.FC = () => {
     const [subjectWorkPrograms, setSubjectWorkPrograms] = React.useState<SubjectWorkProgram[]>([]);
