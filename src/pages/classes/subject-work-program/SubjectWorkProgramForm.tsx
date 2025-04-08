@@ -50,7 +50,7 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 ) => {
 	const prefillSubjectWorkProgram = props?.subjectWorkProgram;
 	const isEditMode: boolean = !!props.subjectWorkProgram;
-	const { register, watch, handleSubmit, control } =
+	const { register, handleSubmit, control } =
 		useForm<SubjectWorkProgramFormData>({
 			defaultValues: isEditMode
 				? {
@@ -82,7 +82,6 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 		name: "classes",
 	});
 
-	const formValues = watch();
 	const [fetchedSubjects, setFetchedSubjects] = useState<Subject[]>([]);
 
 	const convertWorkProgramFormToEntity = (
@@ -151,58 +150,6 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 
 	return (
 		<>
-			{/*TODO: Remove service component*/}
-			Данные массива:
-			{
-				<pre
-					style={{
-						whiteSpace: "pre-wrap",
-						wordWrap: "break-word",
-						background: "white",
-						padding: "1rem",
-						borderRadius: "4px",
-						marginTop: "1rem",
-					}}
-				>
-					{JSON.stringify(fetchedSubjects, null, 2)}
-				</pre>
-			}
-			Данные формы:
-			{
-				<pre
-					style={{
-						whiteSpace: "pre-wrap",
-						wordWrap: "break-word",
-						background: "white",
-						padding: "1rem",
-						borderRadius: "4px",
-						marginTop: "1rem",
-					}}
-				>
-					{JSON.stringify(formValues, null, 2)}
-				</pre>
-			}
-			Данные объекта:
-			{
-				<pre
-					style={{
-						whiteSpace: "pre-wrap",
-						wordWrap: "break-word",
-						background: "white",
-						padding: "1rem",
-						borderRadius: "4px",
-						marginTop: "1rem",
-					}}
-				>
-					{formValues?.subject &&
-						fetchedSubjects.length > 0 &&
-						JSON.stringify(
-							convertWorkProgramFormToEntity(formValues),
-							null,
-							2,
-						)}
-				</pre>
-			}
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<VStack gap={4} align="left">
 					<Field label="Дисциплина">
