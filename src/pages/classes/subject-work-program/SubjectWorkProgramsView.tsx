@@ -45,64 +45,72 @@ const SubjectWorkProgramsView: React.FC = () => {
 			<HStack gap={4}>
 				<Button onClick={handleAddClick}>Добавить...</Button>
 			</HStack>
-			<Table.Root>
-				<Table.Header>
-					<Table.Row>
-						<Table.Cell>ID</Table.Cell>
-						<Table.Cell>Дисциплина</Table.Cell>
-						<Table.Cell>Действия</Table.Cell>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{subjectWorkPrograms && subjectWorkPrograms.length > 0 ? (
-						subjectWorkPrograms.map((subjectWorkProgram) => (
-							<Table.Row key={subjectWorkProgram.id}>
-								<Table.Cell>{subjectWorkProgram.id}</Table.Cell>
-								<Table.Cell>
-									{subjectWorkProgram.subject.name}
-								</Table.Cell>
-								<Table.Cell>
-									<HStack gap={2}>
-										<Button
-											onClick={() =>
-												handleViewClick(
-													subjectWorkProgram.id,
-												)
-											}
-										>
-											Просмотр
-										</Button>
-										<Button
-											onClick={() =>
-												handleEditClick(
-													subjectWorkProgram.id,
-												)
-											}
-										>
-											Редактировать
-										</Button>
-										<Button
-											onClick={() =>
-												handleDeleteClick(
-													subjectWorkProgram.id,
-												)
-											}
-										>
-											Удалить
-										</Button>
-									</HStack>
+			<Table.ScrollArea>
+				<Table.Root size="sm">
+					<Table.Header>
+						<Table.Row>
+							<Table.Cell>ID</Table.Cell>
+							<Table.Cell>Дисциплина</Table.Cell>
+							<Table.Cell>Действия</Table.Cell>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{subjectWorkPrograms &&
+						subjectWorkPrograms.length > 0 ? (
+							subjectWorkPrograms.map((subjectWorkProgram) => (
+								<Table.Row key={subjectWorkProgram.id}>
+									<Table.Cell>
+										{subjectWorkProgram.id}
+									</Table.Cell>
+									<Table.Cell>
+										{subjectWorkProgram.subject.name}
+									</Table.Cell>
+									<Table.Cell>
+										<HStack gap={2}>
+											<Button
+												size="xs"
+												onClick={() =>
+													handleViewClick(
+														subjectWorkProgram.id,
+													)
+												}
+											>
+												Просмотр
+											</Button>
+											<Button
+												size="xs"
+												onClick={() =>
+													handleEditClick(
+														subjectWorkProgram.id,
+													)
+												}
+											>
+												Редактировать
+											</Button>
+											<Button
+												size="xs"
+												onClick={() =>
+													handleDeleteClick(
+														subjectWorkProgram.id,
+													)
+												}
+											>
+												Удалить
+											</Button>
+										</HStack>
+									</Table.Cell>
+								</Table.Row>
+							))
+						) : (
+							<Table.Row>
+								<Table.Cell colSpan={3} textAlign="center">
+									Список РПД пуст
 								</Table.Cell>
 							</Table.Row>
-						))
-					) : (
-						<Table.Row>
-							<Table.Cell colSpan={3} textAlign="center">
-								Список РПД пуст
-							</Table.Cell>
-						</Table.Row>
-					)}
-				</Table.Body>
-			</Table.Root>
+						)}
+					</Table.Body>
+				</Table.Root>
+			</Table.ScrollArea>
 		</>
 	);
 };

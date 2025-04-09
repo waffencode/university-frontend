@@ -127,7 +127,8 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 			title: "Данные успешно сохранены",
 			type: "success",
 		});
-		navigate("/classes");
+
+		navigate(`/classes/subjectWorkPrograms/view/${entity.id.toString()}`);
 	};
 
 	useEffect(() => {

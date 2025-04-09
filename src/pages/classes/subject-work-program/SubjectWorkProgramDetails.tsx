@@ -128,7 +128,7 @@ const SubjectWorkProgramDetails = () => {
 					>
 						Редактировать
 					</Button>
-					<Button onClick={() => navigate(-1)}>Назад</Button>
+					<Button onClick={() => navigate("/classes")}>Назад</Button>
 				</HStack>
 			</Stack>
 		</AppPage>

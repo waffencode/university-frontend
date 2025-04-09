@@ -43,49 +43,55 @@ const SubjectsView: React.FC = () => {
 				<Button onClick={handleAddSubject}>Добавить...</Button>
 			</HStack>
 
-			<Table.Root>
-				<Table.Header>
-					<Table.Row>
-						<Table.Cell>ID</Table.Cell>
-						<Table.Cell>Наименование</Table.Cell>
-						<Table.Cell>Действия</Table.Cell>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{data.length > 0 ? (
-						data.map((subject) => (
-							<Table.Row key={subject.id}>
-								<Table.Cell>{subject.id}</Table.Cell>
-								<Table.Cell>{subject.name}</Table.Cell>
-								<Table.Cell>
-									<HStack gap={2}>
-										<Button
-											onClick={() =>
-												handleEditClick(subject.id)
-											}
-										>
-											Редактировать
-										</Button>
-										<Button
-											onClick={() =>
-												handleDeleteClick(subject.id)
-											}
-										>
-											Удалить
-										</Button>
-									</HStack>
+			<Table.ScrollArea>
+				<Table.Root size="sm">
+					<Table.Header>
+						<Table.Row>
+							<Table.Cell>ID</Table.Cell>
+							<Table.Cell>Наименование</Table.Cell>
+							<Table.Cell>Действия</Table.Cell>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{data.length > 0 ? (
+							data.map((subject) => (
+								<Table.Row key={subject.id}>
+									<Table.Cell>{subject.id}</Table.Cell>
+									<Table.Cell>{subject.name}</Table.Cell>
+									<Table.Cell>
+										<HStack gap={2}>
+											<Button
+												size="xs"
+												onClick={() =>
+													handleEditClick(subject.id)
+												}
+											>
+												Редактировать
+											</Button>
+											<Button
+												size="xs"
+												onClick={() =>
+													handleDeleteClick(
+														subject.id,
+													)
+												}
+											>
+												Удалить
+											</Button>
+										</HStack>
+									</Table.Cell>
+								</Table.Row>
+							))
+						) : (
+							<Table.Row>
+								<Table.Cell colSpan={3} textAlign="center">
+									Список дисциплин пуст
 								</Table.Cell>
 							</Table.Row>
-						))
-					) : (
-						<Table.Row>
-							<Table.Cell colSpan={3} textAlign="center">
-								Список дисциплин пуст
-							</Table.Cell>
-						</Table.Row>
-					)}
-				</Table.Body>
-			</Table.Root>
+						)}
+					</Table.Body>
+				</Table.Root>
+			</Table.ScrollArea>
 		</>
 	);
 };
