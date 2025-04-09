@@ -22,8 +22,11 @@ const Sidebar: React.FC = () => {
 	const apiContext = useContext(ApiContext);
 	const userContext = useContext(UserContext);
 	const navigate = useNavigate();
-
-	const [isCollapsed, setIsCollapsed] = React.useState<boolean>(false);
+	const isMobile =
+		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+			navigator.userAgent,
+		);
+	const [isCollapsed, setIsCollapsed] = React.useState<boolean>(isMobile);
 
 	const [, , removeCookies] = useCookies(["token"]);
 
@@ -33,10 +36,12 @@ const Sidebar: React.FC = () => {
 
 	const onHomeButtonClick = () => {
 		navigate("/dashboard");
+		if (isMobile) setIsCollapsed(true);
 	};
 
 	const onScheduleButtonClick = () => {
 		navigate("/schedule");
+		if (isMobile) setIsCollapsed(true);
 	};
 
 	const onLogoutButtonClick = () => {
@@ -55,18 +60,22 @@ const Sidebar: React.FC = () => {
 
 	const onAdminPanelButtonClick = () => {
 		navigate("/admin");
+		if (isMobile) setIsCollapsed(true);
 	};
 
 	const onSettingsButtonClick = () => {
 		navigate("/settings");
+		if (isMobile) setIsCollapsed(true);
 	};
 
 	const onMessagesButtonClick = () => {
 		navigate("/messages");
+		if (isMobile) setIsCollapsed(true);
 	};
 
 	const onClassesButtonClick = () => {
 		navigate("/classes");
+		if (isMobile) setIsCollapsed(true);
 	};
 
 	return (
@@ -75,18 +84,25 @@ const Sidebar: React.FC = () => {
 			rounded={3}
 			p={2}
 			bg="white"
-			h="100%"
 			className={`sidebar ${isCollapsed ? "collapsed" : ""}`}
 		>
-			<VStack w="100%" minH="100vh">
-				<VStack minW="100%" gap={1} className="sticky_button">
-					<IconButton
-						minW="90%"
-						variant="ghost"
-						onClick={() => toggleSidebar()}
-					>
-						{isCollapsed ? <LuChevronsRight /> : <LuChevronsLeft />}
-					</IconButton>
+			<VStack w="100%" minH="100vh" gap={1}>
+				<VStack w="100%" gap={1}>
+					{!isMobile && (
+						<IconButton
+							onClick={toggleSidebar}
+							variant="ghost"
+							w="100%"
+							display="flex"
+							justifyContent="center"
+						>
+							{isCollapsed ? (
+								<LuChevronsRight />
+							) : (
+								<LuChevronsLeft />
+							)}
+						</IconButton>
+					)}
 					<SidebarButton
 						onClick={onHomeButtonClick}
 						icon={<LuHouse />}

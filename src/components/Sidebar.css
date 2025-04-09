@@ -1,36 +1,37 @@
 :root {
     --animation-duration-sidebar: 0.3s;
-    --sidebar-expanded-width: 12%;
-    --sidebar-collapsed-width: 5%;
+    --sidebar-expanded-width: 240px;
+    --sidebar-collapsed-width: 80px;
 }
 
 .sidebar {
     width: var(--sidebar-expanded-width);
-    animation: sidebar-coll;
-    animation-duration: var(--animation-duration-sidebar);
+    animation: sidebar-coll var(--animation-duration-sidebar) ease;
 }
 
 .sidebar.collapsed {
-    position: sticky;
     width: var(--sidebar-collapsed-width);
-    animation: sidebar-exp;
-    animation-duration: var(--animation-duration-sidebar);
+    animation: sidebar-exp var(--animation-duration-sidebar) ease;
 }
 
 @keyframes sidebar-exp {
-    from {
-        width: var(--sidebar-expanded-width);
-    }
-    to {
-        width: var(--sidebar-collapsed-width);
-    }
+    from { width: var(--sidebar-expanded-width); }
+    to { width: var(--sidebar-collapsed-width); }
 }
 
 @keyframes sidebar-coll {
-    from {
+    from { width: var(--sidebar-collapsed-width); }
+    to { width: var(--sidebar-expanded-width); }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
         width: var(--sidebar-collapsed-width);
     }
-    to {
+    .sidebar:not(.collapsed) {
         width: var(--sidebar-expanded-width);
+        position: fixed;
+        z-index: 1000;
+        height: 100%;
     }
 }

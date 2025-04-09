@@ -1,16 +1,16 @@
+import { Toaster } from "@/components/ui/toaster";
 import SubjectWorkProgramDetails from "@/pages/classes/subject-work-program/SubjectWorkProgramDetails";
+import DashboardPage from "@/pages/dashboard/DashboardPage";
 import React from "react";
 import "./App.css";
 import { CookiesProvider } from "react-cookie";
 import { Route, Routes } from "react-router-dom";
-import { Toaster } from "../components/ui/toaster.tsx";
 import AdminPage from "../pages/AdminPage.tsx";
 import ClassesPage from "../pages/classes/ClassesPage.tsx";
 import CreateSubjectWorkProgramPage from "../pages/classes/subject-work-program/CreateSubjectWorkProgramPage.tsx";
 import EditSubjectWorkProgramPage from "../pages/classes/subject-work-program/EditSubjectWorkProgramPage.tsx";
 import CreateSubjectPage from "../pages/classes/subject/CreateSubjectPage.tsx";
 import EditSubjectPage from "../pages/classes/subject/EditSubjectPage.tsx";
-import DashboardPage from "../pages/DashboardPage.tsx";
 import IndexPage from "../pages/IndexPage.tsx";
 import LoginPage from "../pages/LoginPage.tsx";
 import MessagesPage from "../pages/MessagesPage.tsx";
