@@ -28,6 +28,11 @@ const LoginPage: React.FC = () => {
 	const [response, setResponse] = React.useState<string>("");
 	const [isError, setIsError] = React.useState<boolean>(false);
 
+	const isMobile =
+		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+			navigator.userAgent,
+		);
+
 	const { serverUrl } = useContext(ConfigContext);
 	const userContext = useContext(UserContext);
 	const apiContext = useContext(ApiContext);
@@ -51,9 +56,8 @@ const LoginPage: React.FC = () => {
 			})
 			.catch((error) => {
 				setIsError(true);
-				if (error.response) {
-					setResponse(error.response.data);
-				}
+				console.error(error);
+				setResponse(error.toString());
 			});
 	}
 
@@ -71,7 +75,7 @@ const LoginPage: React.FC = () => {
 		<>
 			<HeaderBar />
 			<Center h="60vh">
-				<Box p="10" maxW="100%" w="40%">
+				<Box p="10" maxW="100%" w={isMobile ? "100%" : "40%"}>
 					<Stack>
 						<Card.Root
 							p={1}
