@@ -20,6 +20,8 @@ import { UUID } from "node:crypto";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
+// Password strength meter.
+import { zxcvbn } from "zxcvbn-typescript";
 import { Checkbox } from "../components/ui/checkbox";
 import { Field } from "../components/ui/field";
 import {
@@ -41,9 +43,6 @@ const dummyUser: User = {
 const RegistrationPage: React.FC = () => {
 	const navigate = useNavigate();
 	const userContext = React.useContext(UserContext)!;
-
-	// Password strength meter.
-	const zxcvbn = require("zxcvbn");
 
 	const [newUser, setNewUser] = React.useState<User>(dummyUser);
 	const [password, setPassword] = React.useState<string>("");
