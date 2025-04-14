@@ -1,4 +1,5 @@
 import { UserRoleNamesCollection } from "@/entities/domain/UserRole";
+import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
 import {
 	Box,
@@ -10,12 +11,32 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
+import { useCookies } from "react-cookie";
 import { LuLogOut } from "react-icons/lu";
 import "./Headerbar.css";
+import { useNavigate } from "react-router-dom";
 
 const HeaderBar: React.FC = () => {
 	const context = useContext(UserContext)!;
+	const apiContext = useContext(ApiContext);
+	const navigate = useNavigate();
 	const { user } = context;
+
+	const [, , removeCookies] = useCookies(["token"]);
+
+	const onLogoutButtonClick = () => {
+		apiContext.user
+			.logout()
+			.catch((error) => {
+				console.error(error);
+			})
+			.finally(() => {
+				removeCookies("token");
+				context?.setUser(null);
+				localStorage.removeItem("user");
+				navigate("/");
+			});
+	};
 
 	return (
 		<Box
@@ -57,6 +78,7 @@ const HeaderBar: React.FC = () => {
 							aria-label="Logout"
 							className="logout-button"
 							variant="ghost"
+							onClick={onLogoutButtonClick}
 						>
 							<LuLogOut />
 						</IconButton>
