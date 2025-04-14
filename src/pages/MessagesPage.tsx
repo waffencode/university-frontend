@@ -1,11 +1,15 @@
+import { UserRoleNamesCollection } from "@/entities/domain/UserRole";
 import {
 	Box,
 	Card,
+	CheckboxCard,
 	createListCollection,
+	Dialog,
 	Flex,
 	HStack,
 	Input,
 	ListCollection,
+	Portal,
 	StackSeparator,
 	Textarea,
 	VStack,
@@ -19,18 +23,7 @@ import { v4 } from "uuid";
 import AppPage from "../components/AppPage.tsx";
 import MessageView from "../components/MessageView.tsx";
 import { Button } from "../components/ui/button.tsx";
-import { CheckboxCard } from "../components/ui/checkbox-card";
 import { Checkbox } from "../components/ui/checkbox.tsx";
-import {
-	DialogActionTrigger,
-	DialogBody,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogRoot,
-	DialogTitle,
-	DialogTrigger,
-} from "../components/ui/dialog.tsx";
 import { Field } from "../components/ui/field.tsx";
 import { Prose } from "../components/ui/prose.tsx";
 import { toaster } from "../components/ui/toaster";
@@ -58,10 +51,8 @@ const MessagesPage: React.FC = () => {
 		null,
 	);
 	const [isPreviewEnabled, setIsPreviewEnabled] = useState<boolean>(false);
-	const [receivers, setReceivers] = useState<User[] | null>(null);
-	const [selectedReceivers, setSelectedReceivers] = useState<User[] | null>(
-		null,
-	);
+	const [proposedReceivers, setProposedReceivers] = useState<User[]>([]);
+	const [selectedReceivers, setSelectedReceivers] = useState<User[]>([]);
 
 	const loadMessages = useCallback(() => {
 		console.log(new Date().toString() + ": Loading messages");
@@ -132,25 +123,37 @@ const MessagesPage: React.FC = () => {
 
 		apiContext.user.getAllUsers().then((response) => {
 			console.log(new Date().toString() + ": Receivers loaded");
-			setReceivers(response);
+			setProposedReceivers(response);
 		});
 	}
 
 	function onDialogOpenClose() {
 		loadReceivers();
-		newMessage!.receivers = selectedReceivers!;
+		Object.assign(newMessage!.receivers, selectedReceivers);
 	}
 
 	function markReceivers(markedReceivers: string[]) {
 		setSelectedReceivers(
-			receivers!.filter((user) => markedReceivers.includes(user.id)),
+			proposedReceivers!.filter((user) =>
+				markedReceivers.includes(user.id),
+			),
 		);
 	}
 
-	function addReceiver(selectedUser: User) {
-		let newSelectedReceivers = selectedReceivers ?? [];
-		newSelectedReceivers.push(selectedUser);
-		setSelectedReceivers(newSelectedReceivers);
+	function handleReceiver(selectedUser: User, isChecked: boolean) {
+		console.log("handling ");
+		console.log(newMessage?.receivers);
+		// let newSelectedReceivers = selectedReceivers;
+		if (isChecked) {
+			selectedReceivers.push(selectedUser);
+		} else {
+			let copy = Object.assign([], selectedReceivers);
+			let index = copy.indexOf(selectedUser);
+			copy.splice(index, 1);
+			setSelectedReceivers(copy);
+		}
+
+		// setSelectedReceivers(newSelectedReceivers);
 	}
 
 	// Check messages once after page load.
@@ -208,6 +211,7 @@ const MessagesPage: React.FC = () => {
 								return (
 									<Card.Root
 										className="message_card"
+										key={message.id}
 										onClick={() =>
 											showExistingMessage(message)
 										}
@@ -265,9 +269,7 @@ const MessagesPage: React.FC = () => {
 								</Field>
 								<Checkbox
 									checked={newMessage.isImportant}
-									onCheckedChange={(
-										e: React.ChangeEvent<HTMLInputElement>,
-									) =>
+									onCheckedChange={(e) =>
 										setNewMessage({
 											...newMessage,
 											isImportant: !!e.checked,
@@ -328,78 +330,138 @@ const MessagesPage: React.FC = () => {
 										</>
 									)}
 								</Field>
-								<Field label="Получатели">
-									<DialogRoot
-										size="cover"
-										placement="center"
-										motionPreset="slide-in-bottom"
-										onOpenChange={() => onDialogOpenClose()}
-									>
-										<DialogTrigger>
-											<Button variant="outline">
-												Выбрать
-											</Button>
-										</DialogTrigger>
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>
-													Выбрать получателей
-												</DialogTitle>
-											</DialogHeader>
-											<DialogBody>
-												{receivers?.map((receiver) => (
-													<CheckboxCard
-														label={
-															receiver.fullName
-														}
-														description={
-															receiver.email
-														}
-														key={receiver.id}
-														value={receiver.id}
-														checked={selectedReceivers?.some(
-															(r) =>
-																r.id ===
-																receiver.id,
-														)}
-														onCheckedChange={() =>
-															addReceiver(
-																receiver,
-															)
-														}
-														maxW="240px"
-													/>
-												))}
-											</DialogBody>
-											<DialogFooter>
-												<DialogActionTrigger asChild>
-													<Button
-														variant="outline"
-														onClick={() =>
-															setSelectedReceivers(
-																null,
-															)
-														}
+								<Field label="Получатели"></Field>
+								<Dialog.Root
+									// size="cover"
+									placement="center"
+									motionPreset="slide-in-bottom"
+									onOpenChange={() => onDialogOpenClose()}
+								>
+									<Dialog.Trigger asChild>
+										<Button variant="outline">
+											Выбрать
+										</Button>
+									</Dialog.Trigger>
+									<Portal>
+										<Dialog.Backdrop />
+										<Dialog.Positioner>
+											<Dialog.Content>
+												<Dialog.Header>
+													<Dialog.Title>
+														Выбрать получателей
+													</Dialog.Title>
+												</Dialog.Header>
+												<Dialog.Context>
+													{(store) => (
+														<Dialog.Body>
+															{/*<CheckboxGroup>*/}
+															<VStack
+																gap={2}
+																align="left"
+															>
+																{proposedReceivers &&
+																	proposedReceivers.map(
+																		(
+																			receiverUser,
+																		) => (
+																			<CheckboxCard.Root
+																				size="sm"
+																				key={
+																					receiverUser.id
+																				}
+																				value={
+																					receiverUser.id
+																				}
+																				defaultChecked={selectedReceivers.some(
+																					(
+																						r,
+																					) =>
+																						r.id ===
+																						receiverUser.id,
+																				)}
+																				onCheckedChange={(
+																					e,
+																				) =>
+																					handleReceiver(
+																						receiverUser,
+																						!!e.checked,
+																					)
+																				}
+																				maxW="240px"
+																			>
+																				<CheckboxCard.HiddenInput />
+																				<CheckboxCard.Control>
+																					<CheckboxCard.Content>
+																						<CheckboxCard.Label>
+																							{
+																								receiverUser.fullName
+																							}
+																						</CheckboxCard.Label>
+																						<CheckboxCard.Description>
+																							{
+																								receiverUser.email
+																							}
+																						</CheckboxCard.Description>
+																					</CheckboxCard.Content>
+																					<CheckboxCard.Indicator />
+																				</CheckboxCard.Control>
+																			</CheckboxCard.Root>
+																		),
+																	)}
+															</VStack>
+															{/*</CheckboxGroup>*/}
+														</Dialog.Body>
+													)}
+												</Dialog.Context>
+												<Dialog.Footer>
+													<Dialog.ActionTrigger
+														asChild
 													>
-														Сброс
-													</Button>
-												</DialogActionTrigger>
-												<DialogActionTrigger asChild>
-													<Button>Сохранить</Button>
-												</DialogActionTrigger>
-											</DialogFooter>
-										</DialogContent>
-									</DialogRoot>
-									<HStack gap={2}>
-										{selectedReceivers?.map((receiver) => (
-											<div className="receiver_card">
-												{receiver.fullName}
-												<br />
-												{"<" + receiver.email + ">"}
-											</div>
-										))}
-									</HStack>
-								</Field>
+														<Button
+															variant="outline"
+															onClick={() =>
+																setSelectedReceivers(
+																	[],
+																)
+															}
+														>
+															Сброс
+														</Button>
+													</Dialog.ActionTrigger>
+
+													<Dialog.ActionTrigger
+														asChild
+													>
+														<Button>
+															Сохранить
+														</Button>
+													</Dialog.ActionTrigger>
+												</Dialog.Footer>
+											</Dialog.Content>
+										</Dialog.Positioner>
+									</Portal>
+								</Dialog.Root>
+								<HStack gap={2}>
+									{selectedReceivers?.map((receiver) => (
+										<Card.Root key={receiver.id}>
+											<Card.Body>
+												<Card.Title>
+													{receiver.fullName}
+												</Card.Title>
+												<Card.Description>
+													{
+														UserRoleNamesCollection.at(
+															receiver.role,
+														)?.label
+													}
+													<br />
+													{"<" + receiver.email + ">"}
+												</Card.Description>
+											</Card.Body>
+										</Card.Root>
+									))}
+								</HStack>
+
 								<Flex
 									style={{ marginTop: "1.5rem" }}
 									gap={2}
