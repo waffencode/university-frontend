@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button.tsx";
+import { toaster } from "@/components/ui/toaster";
 import { SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram.ts";
 import { ApiContext } from "@/service/ApiProvider.tsx";
 import { HStack, Table } from "@chakra-ui/react";
@@ -35,6 +36,11 @@ const SubjectWorkProgramsView: React.FC = () => {
 	async function handleDeleteClick(id: UUID) {
 		await apiContext.subjectWorkProgram.delete(id);
 		setSubjectWorkPrograms(subjectWorkPrograms.filter((s) => s.id !== id));
+
+		toaster.create({
+			type: "success",
+			title: "РПД успешно удалена!",
+		});
 	}
 
 	const handleViewClick = (id: UUID) => {

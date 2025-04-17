@@ -16,7 +16,26 @@ import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const SubjectWorkProgramDetails = () => {
+const typeMappings = {
+	[ClassType.Lecture]: {
+		text: "Лекция",
+		color: "blue",
+	},
+	[ClassType.Lab]: {
+		text: "Лабораторная",
+		color: "purple",
+	},
+	[ClassType.Seminar]: {
+		text: "Семинар",
+		color: "orange",
+	},
+	[ClassType.Exam]: {
+		text: "Экзамен",
+		color: "red",
+	},
+};
+
+const SubjectWorkProgramDetails: React.FC = () => {
 	const subjectWorkProgramId = useParams().subjectWorkProgramId as UUID;
 	const apiContext = useContext(ApiContext);
 	const [workProgram, setWorkProgram] = useState<SubjectWorkProgram | null>(
@@ -41,25 +60,6 @@ const SubjectWorkProgramDetails = () => {
 	}, [subjectWorkProgramId, apiContext.subjectWorkProgram]);
 
 	const getClassTypeBadge = (type: ClassType) => {
-		const typeMappings = {
-			[ClassType.Lecture]: {
-				text: "Лекция",
-				color: "blue",
-			},
-			[ClassType.Lab]: {
-				text: "Лабораторная",
-				color: "purple",
-			},
-			[ClassType.Seminar]: {
-				text: "Семинар",
-				color: "orange",
-			},
-			[ClassType.Exam]: {
-				text: "Экзамен",
-				color: "red",
-			},
-		};
-
 		return (
 			<Badge colorScheme={typeMappings[type].color} variant="subtle">
 				{typeMappings[type].text}
@@ -93,7 +93,7 @@ const SubjectWorkProgramDetails = () => {
 					<Heading size="md" mb={2}>
 						План занятий
 					</Heading>
-					<Table.Root colorScheme="gray">
+					<Table.Root colorScheme="gray" overflowX="auto">
 						<Table.Header>
 							<Table.Row>
 								<Table.ColumnHeader>№</Table.ColumnHeader>

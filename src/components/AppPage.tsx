@@ -15,7 +15,7 @@ const AppPage: React.FC<AppPageProps> = ({ title, children }) => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!user) {
+		if (!user || !user.id) {
 			navigate("/");
 		}
 	});

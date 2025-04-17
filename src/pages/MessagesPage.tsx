@@ -1,4 +1,11 @@
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Field } from "@/components/ui/field";
+import { Prose } from "@/components/ui/prose";
+import { toaster } from "@/components/ui/toaster";
 import { UserRoleNamesCollection } from "@/entities/domain/UserRole";
+import { ApiContext } from "@/service/ApiProvider";
+import { UserContext } from "@/service/UserProvider";
 import {
 	Box,
 	Card,
@@ -22,17 +29,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
 import AppPage from "../components/AppPage.tsx";
 import MessageView from "../components/MessageView.tsx";
-import { Button } from "../components/ui/button.tsx";
-import { Checkbox } from "../components/ui/checkbox.tsx";
-import { Field } from "../components/ui/field.tsx";
-import { Prose } from "../components/ui/prose.tsx";
-import { toaster } from "../components/ui/toaster";
 import Message from "../entities/domain/Message.ts";
 import "./MessagesPage.css";
 import User from "../entities/domain/User.ts";
-import { ApiContext } from "../service/ApiProvider.tsx";
 import formatDate from "../service/FormatDate.ts";
-import { UserContext } from "../service/UserProvider.tsx";
 
 // TODO: Refactor.
 const MessagesPage: React.FC = () => {
@@ -78,6 +78,10 @@ const MessagesPage: React.FC = () => {
 	}
 
 	function showExistingMessage(message: Message) {
+		if (isNewMessageModeActive) {
+			return;
+		}
+
 		navigate("/messages/" + message.id.toString());
 	}
 
@@ -131,19 +135,7 @@ const MessagesPage: React.FC = () => {
 		loadReceivers();
 		Object.assign(newMessage!.receivers, selectedReceivers);
 	}
-
-	function markReceivers(markedReceivers: string[]) {
-		setSelectedReceivers(
-			proposedReceivers!.filter((user) =>
-				markedReceivers.includes(user.id),
-			),
-		);
-	}
-
 	function handleReceiver(selectedUser: User, isChecked: boolean) {
-		console.log("handling ");
-		console.log(newMessage?.receivers);
-		// let newSelectedReceivers = selectedReceivers;
 		if (isChecked) {
 			selectedReceivers.push(selectedUser);
 		} else {
@@ -152,8 +144,6 @@ const MessagesPage: React.FC = () => {
 			copy.splice(index, 1);
 			setSelectedReceivers(copy);
 		}
-
-		// setSelectedReceivers(newSelectedReceivers);
 	}
 
 	// Check messages once after page load.
@@ -332,7 +322,7 @@ const MessagesPage: React.FC = () => {
 								</Field>
 								<Field label="Получатели"></Field>
 								<Dialog.Root
-									// size="cover"
+									size="cover"
 									placement="center"
 									motionPreset="slide-in-bottom"
 									onOpenChange={() => onDialogOpenClose()}
@@ -351,68 +341,62 @@ const MessagesPage: React.FC = () => {
 														Выбрать получателей
 													</Dialog.Title>
 												</Dialog.Header>
-												<Dialog.Context>
-													{(store) => (
-														<Dialog.Body>
-															{/*<CheckboxGroup>*/}
-															<VStack
-																gap={2}
-																align="left"
-															>
-																{proposedReceivers &&
-																	proposedReceivers.map(
-																		(
-																			receiverUser,
-																		) => (
-																			<CheckboxCard.Root
-																				size="sm"
-																				key={
-																					receiverUser.id
-																				}
-																				value={
-																					receiverUser.id
-																				}
-																				defaultChecked={selectedReceivers.some(
-																					(
-																						r,
-																					) =>
-																						r.id ===
-																						receiverUser.id,
-																				)}
-																				onCheckedChange={(
-																					e,
-																				) =>
-																					handleReceiver(
-																						receiverUser,
-																						!!e.checked,
-																					)
-																				}
-																				maxW="240px"
-																			>
-																				<CheckboxCard.HiddenInput />
-																				<CheckboxCard.Control>
-																					<CheckboxCard.Content>
-																						<CheckboxCard.Label>
-																							{
-																								receiverUser.fullName
-																							}
-																						</CheckboxCard.Label>
-																						<CheckboxCard.Description>
-																							{
-																								receiverUser.email
-																							}
-																						</CheckboxCard.Description>
-																					</CheckboxCard.Content>
-																					<CheckboxCard.Indicator />
-																				</CheckboxCard.Control>
-																			</CheckboxCard.Root>
-																		),
-																	)}
-															</VStack>
-															{/*</CheckboxGroup>*/}
-														</Dialog.Body>
-													)}
-												</Dialog.Context>
+												<Dialog.Body>
+													<VStack
+														gap={2}
+														align="left"
+													>
+														{proposedReceivers &&
+															proposedReceivers.map(
+																(
+																	receiverUser,
+																) => (
+																	<CheckboxCard.Root
+																		size="sm"
+																		key={
+																			receiverUser.id
+																		}
+																		value={
+																			receiverUser.id
+																		}
+																		defaultChecked={selectedReceivers.some(
+																			(
+																				r,
+																			) =>
+																				r.id ===
+																				receiverUser.id,
+																		)}
+																		onCheckedChange={(
+																			e,
+																		) =>
+																			handleReceiver(
+																				receiverUser,
+																				!!e.checked,
+																			)
+																		}
+																		maxW="240px"
+																	>
+																		<CheckboxCard.HiddenInput />
+																		<CheckboxCard.Control>
+																			<CheckboxCard.Content>
+																				<CheckboxCard.Label>
+																					{
+																						receiverUser.fullName
+																					}
+																				</CheckboxCard.Label>
+																				<CheckboxCard.Description>
+																					{
+																						receiverUser.email
+																					}
+																				</CheckboxCard.Description>
+																			</CheckboxCard.Content>
+																			<CheckboxCard.Indicator />
+																		</CheckboxCard.Control>
+																	</CheckboxCard.Root>
+																),
+															)}
+													</VStack>
+												</Dialog.Body>
 												<Dialog.Footer>
 													<Dialog.ActionTrigger
 														asChild

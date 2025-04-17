@@ -227,6 +227,8 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 										<Field>
 											<Input
 												type="number"
+												min={1}
+												max={216}
 												{...register(
 													`classes.${index}.hours`,
 													{

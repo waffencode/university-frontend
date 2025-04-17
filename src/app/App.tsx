@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import SchedulingPage from "@/pages/classes/SchedulingPage";
 import SubjectWorkProgramDetails from "@/pages/classes/subject-work-program/SubjectWorkProgramDetails";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import React from "react";
@@ -79,6 +80,10 @@ const App: React.FC = () => {
 							<Route
 								path="/classes/subjectWorkPrograms/edit/:subjectWorkProgramId"
 								element={<EditSubjectWorkProgramPage />}
+							/>
+							<Route
+								path="/classes/scheduling"
+								element={<SchedulingPage />}
 							/>
 						</Routes>
 						<Toaster />
