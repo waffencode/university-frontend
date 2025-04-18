@@ -14,6 +14,7 @@ import {
 	LuMessageCircle,
 	LuSchool,
 	LuSettings,
+	LuUsers,
 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import SidebarButton from "./SidebarButton.tsx";
@@ -119,6 +120,13 @@ const Sidebar: React.FC = () => {
 						onClick={onClassesButtonClick}
 						icon={<LuSchool />}
 						label="Занятия"
+						isCollapsed={isCollapsed}
+					/>
+					<SidebarButton
+						// TODO
+						onClick={() => {}}
+						icon={<LuUsers />}
+						label="Учебные группы"
 						isCollapsed={isCollapsed}
 					/>
 					<SidebarButton

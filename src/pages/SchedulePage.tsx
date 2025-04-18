@@ -1,46 +1,142 @@
-import React from "react";
+import ScheduleClass, {
+	ClassTypesListCollection,
+} from "@/entities/domain/ScheduleClass";
+import { ApiContext } from "@/service/ApiProvider";
+import {
+	formatDateShort,
+	formatDateWithDotsDivider,
+	formatTime,
+} from "@/service/FormatDate";
+import { Card, Heading, HStack, VStack } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+	LuMapPin,
+	LuUniversity,
+	LuUser,
+	LuUsers,
+	LuWatch,
+} from "react-icons/lu";
 import AppPage from "../components/AppPage";
 import "./SchedulePage.css";
-import {LuMapPin, LuUniversity, LuUser, LuWatch} from "react-icons/lu";
-import {Card, createListCollection, Heading, HStack, VStack} from "@chakra-ui/react";
-import ScheduleClass from "../entities/domain/ScheduleClass.ts";
-
-const classes = createListCollection<ScheduleClass>({items:
-[
-
-]});
 
 const SchedulePage: React.FC = () => {
-    return (
-        <AppPage title="Расписание">
-            <div>
-                <div className="card-content">
-                    <h2>Среда, 5 февраля 2025</h2>
-                </div>
-                <Card.Root className="class-card">
-                    <Card.Header>
-                        <Heading>1. Проектирование и архитектура программных систем</Heading>
-                    </Card.Header>
-                    <Card.Body>
-                        <VStack alignItems="flex-start">
-                            <HStack>
-                                <LuWatch />9:00–10:35
-                            </HStack>
-                            <HStack>
-                                <LuUniversity />Лекция<br/>
-                            </HStack>
-                            <HStack>
-                                <LuUser />Иванов Иван Иванович<br/>
-                            </HStack>
-                            <HStack>
-                                <LuMapPin />500/1
-                            </HStack>
-                        </VStack>
-                    </Card.Body>
-                </Card.Root>
-            </div>
-        </AppPage>
-    )
-}
+	const apiContext = useContext(ApiContext);
+	const [classesData, setClassesData] = useState<ScheduleClass[]>([]);
+
+	useEffect(() => {
+		const loadSchedule = async () => {
+			const classes = await apiContext.scheduleClass.getScheduleClasses();
+			const data = await Promise.all(
+				classes.map(
+					async (classDto) =>
+						({
+							id: classDto.id,
+							name: classDto.name,
+							teacher: await apiContext.user.getUser(
+								classDto.teacherId,
+							),
+							date: new Date(classDto.date),
+							timeSlot: await apiContext.classTimeSlots.getById(
+								classDto.timeSlotId,
+							),
+							classroom: await apiContext.classroom.getById(
+								classDto.classroomId,
+							),
+							subjectWorkProgram:
+								await apiContext.subjectWorkProgram.getById(
+									classDto.subjectWorkProgramId,
+								),
+							classType: classDto.classType,
+							groups: (
+								await apiContext.studyGroup.getAll()
+							).filter((c) => classDto.groupsId.includes(c.id)),
+						}) as ScheduleClass,
+				),
+			);
+
+			setClassesData(data);
+		};
+
+		loadSchedule();
+	}, []);
+
+	return (
+		<AppPage title="Расписание">
+			<div>
+				<div className="card-content">
+					<h2>{formatDateShort(new Date())}</h2>
+				</div>
+				<VStack gap={2} align="left" w="30%">
+					{classesData &&
+						classesData.map((scheduleClass) => (
+							<Card.Root
+								size="sm"
+								className="class-card"
+								key={scheduleClass.id}
+							>
+								<Card.Header>
+									<Heading>
+										{
+											scheduleClass.subjectWorkProgram
+												.subject.name
+										}{" "}
+										(
+										{formatDateWithDotsDivider(
+											scheduleClass.date,
+										)}
+										)
+									</Heading>
+								</Card.Header>
+								<Card.Body>
+									<VStack alignItems="flex-start">
+										<HStack>
+											<LuWatch />
+											{formatTime(
+												scheduleClass.timeSlot
+													.startTime,
+											)}
+											-
+											{formatTime(
+												scheduleClass.timeSlot.endTime,
+											)}
+										</HStack>
+										<HStack>
+											<LuUniversity />
+											{
+												ClassTypesListCollection.items.find(
+													(s) =>
+														s.key ===
+														scheduleClass.classType,
+												)?.label
+											}
+											<br />
+										</HStack>
+										<HStack>
+											<LuUser />
+											{scheduleClass.teacher.fullName}
+											<br />
+										</HStack>
+										<HStack>
+											<LuMapPin />
+											{
+												scheduleClass.classroom
+													.designation
+											}
+										</HStack>
+										<HStack>
+											<LuUsers />
+											{scheduleClass.groups
+												.map((g) => g.name)
+												.join(", ")}
+										</HStack>
+									</VStack>
+								</Card.Body>
+							</Card.Root>
+						))}
+				</VStack>
+			</div>
+		</AppPage>
+	);
+};
 
 export default SchedulePage;

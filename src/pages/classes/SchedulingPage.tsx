@@ -7,13 +7,18 @@ import {
 	ClassTypesListCollection,
 	ScheduleClassDto,
 } from "@/entities/domain/ScheduleClass";
+import StudyGroup from "@/entities/domain/StudyGroup";
 import {
 	PlannedClass,
 	SubjectWorkProgram,
 } from "@/entities/domain/SubjectWorkProgram";
 import User from "@/entities/domain/User";
+import UserRole from "@/entities/domain/UserRole";
+import CustomDatePicker from "@/pages/classes/scheduling/CustomDatePicker";
+import CustomMultipleSelectField from "@/pages/classes/scheduling/CustomMultipleSelectField";
 import { ApiContext } from "@/service/ApiProvider";
 import { Input, VStack } from "@chakra-ui/react";
+import { format } from "date-fns";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -25,18 +30,20 @@ interface SchedulingPageData {
 	subjectWorkPrograms: SubjectWorkProgram[];
 	timeSlots: ClassTimeSlot[];
 	classrooms: Classroom[];
+	studyGroups: StudyGroup[];
 }
 
 const SchedulingPage: React.FC = () => {
 	const apiContext = useContext(ApiContext);
 	const navigate = useNavigate();
-	const { register, handleSubmit, watch, setValue } =
+	const { register, handleSubmit, watch, setValue, control } =
 		useForm<ScheduleClassDto>();
 	const [scheduleData, setScheduleData] = useState<SchedulingPageData>({
 		teachers: [],
 		subjectWorkPrograms: [],
 		timeSlots: [],
 		classrooms: [],
+		studyGroups: [],
 	});
 
 	const [selectedClass, setSelectedClass] = useState<PlannedClass>();
@@ -44,7 +51,7 @@ const SchedulingPage: React.FC = () => {
 	const onSubmit = async (data: ScheduleClassDto) => {
 		data.id = v4() as UUID;
 		data.groupsId = data.groupsId ? data.groupsId : [];
-
+		data.date = format(new Date(data.date), "yyyy-MM-dd");
 		await apiContext.scheduleClass.createScheduleClass(data);
 		navigate("/classes");
 	};
@@ -56,12 +63,14 @@ const SchedulingPage: React.FC = () => {
 				await apiContext.subjectWorkProgram.getAll();
 			const timeSlots = await apiContext.classTimeSlots.getAll();
 			const classrooms = await apiContext.classroom.getAll();
+			const studyGroups = await apiContext.studyGroup.getAll();
 
 			setScheduleData({
 				teachers,
 				subjectWorkPrograms,
 				timeSlots,
 				classrooms,
+				studyGroups,
 			});
 		};
 
@@ -82,71 +91,52 @@ const SchedulingPage: React.FC = () => {
 	return (
 		<AppPage title="Формирование расписания">
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<VStack gap={4} align="left">
+				<VStack gap={2} align="left" w="50%">
 					<Field label="Дата занятия">
-						<Input
-							type="date"
-							required
-							placeholder="Дата занятия"
-							{...register("date")}
+						<CustomDatePicker
+							name={"date"}
+							control={control}
+							size="xs"
 						/>
 					</Field>
 					<Field label="Преподаватель">
-						<select
-							required
-							{...register("teacherId")}
-							defaultValue=""
-						>
-							<option value="" disabled hidden>
-								Выберите значение
-							</option>
-							{scheduleData.teachers.map((teacher) => {
-								return (
-									<option value={teacher.id}>
-										{teacher.fullName}
-									</option>
-								);
-							})}
-						</select>
+						<CustomMultipleSelectField
+							size="xs"
+							control={control}
+							name={"teacherId"}
+							options={scheduleData.teachers
+								.filter(
+									(user) => user.role === UserRole.Teacher,
+								)
+								.map((teacher) => ({
+									value: teacher.id,
+									label: teacher.fullName,
+								}))}
+						/>
 					</Field>
 					<Field label="РПД">
-						<select
-							required
-							{...register("subjectWorkProgramId")}
-							defaultValue=""
-						>
-							<option value="" disabled hidden>
-								Выберите значение
-							</option>
-							{scheduleData.subjectWorkPrograms.map(
-								(workProgram) => {
-									return (
-										<option value={workProgram.id}>
-											{workProgram.subject.name}
-										</option>
-									);
-								},
+						<CustomMultipleSelectField
+							size="xs"
+							control={control}
+							name={"subjectWorkProgramId"}
+							options={scheduleData.subjectWorkPrograms.map(
+								(workProgram) => ({
+									value: workProgram.id,
+									label: workProgram.subject.name,
+								}),
 							)}
-						</select>
+						/>
 					</Field>
-					<Field label="Номер занятия из РПД">
-						<pre>
-							{JSON.stringify(
-								scheduleData.subjectWorkPrograms.find(
-									(s) =>
-										s.id === watch("subjectWorkProgramId"),
-								),
-								null,
-								"\t",
-							)}
-						</pre>
+					<Field label="Занятие из РПД">
 						<Input
+							size="xs"
 							type="number"
 							min={1}
 							max={
 								scheduleData.subjectWorkPrograms.find(
-									(s) =>
-										s.id === watch("subjectWorkProgramId"),
+									(workProgram) =>
+										workProgram.id ===
+										watch("subjectWorkProgramId"),
 								)?.classes.length || 1
 							}
 							onChange={(e) =>
@@ -156,41 +146,40 @@ const SchedulingPage: React.FC = () => {
 						/>
 					</Field>
 					<Field label="Временной слот">
-						<select
-							required
-							{...register("timeSlotId")}
-							defaultValue=""
-						>
-							<option value="" disabled hidden>
-								Выберите значение
-							</option>
-							{scheduleData.timeSlots.map((timeSlot) => {
-								return (
-									<option value={timeSlot.id}>
-										{timeSlot.name}
-									</option>
-								);
-							})}
-						</select>
+						<CustomMultipleSelectField
+							size="xs"
+							control={control}
+							name={"timeSlotId"}
+							options={scheduleData.timeSlots.map((timeSlot) => ({
+								value: timeSlot.id,
+								label: timeSlot.name,
+							}))}
+						/>
+					</Field>
+					<Field label="Учебные группы">
+						<CustomMultipleSelectField
+							size="xs"
+							control={control}
+							name={"groupsId"}
+							multiple
+							options={scheduleData.studyGroups.map((group) => ({
+								value: group.id,
+								label: group.name,
+							}))}
+						/>
 					</Field>
 					<Field label="Аудитория">
-						<select
-							required
-							{...register("classroomId")}
-							defaultValue=""
-						>
-							<option value="" disabled hidden>
-								Выберите значение
-							</option>
-							{scheduleData.classrooms &&
-								scheduleData.classrooms.map((classroom) => {
-									return (
-										<option value={classroom.id}>
-											{classroom.designation}
-										</option>
-									);
-								})}
-						</select>
+						<CustomMultipleSelectField
+							size="xs"
+							control={control}
+							name={"classroomId"}
+							options={scheduleData.classrooms.map(
+								(classroom) => ({
+									value: classroom.id,
+									label: classroom.designation,
+								}),
+							)}
+						/>
 					</Field>
 					<Field label="Тип занятия">
 						{

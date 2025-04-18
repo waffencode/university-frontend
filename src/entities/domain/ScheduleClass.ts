@@ -26,7 +26,7 @@ export interface ScheduleClassDto {
 	id: UUID;
 	name: string;
 	teacherId: UUID;
-	date: Date;
+	date: string;
 	timeSlotId: UUID;
 	classroomId: UUID;
 	subjectWorkProgramId: UUID;

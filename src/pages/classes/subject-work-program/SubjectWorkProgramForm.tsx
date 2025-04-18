@@ -7,6 +7,7 @@ import { SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram";
 import { ApiContext } from "@/service/ApiProvider";
 import {
 	createListCollection,
+	Heading,
 	HStack,
 	Input,
 	ListCollection,
@@ -199,6 +200,7 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 							)}
 						/>
 					</Field>
+					<Heading>Тематический план</Heading>
 					<Table.Root>
 						<Table.Header>
 							<Table.Row>
