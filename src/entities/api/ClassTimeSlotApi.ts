@@ -17,6 +17,7 @@ class ClassTimeSlotApi {
 				name: element.name,
 				startTime: new Date(`2025-01-01T${element.startTime}Z`),
 				endTime: new Date(`2025-01-01T${element.endTime}Z`),
+				ordinal: element.ordinal,
 			}),
 		);
 		return timeSlots;
@@ -33,6 +34,7 @@ class ClassTimeSlotApi {
 			name: response.data.name,
 			startTime: new Date(`1970-01-01T${response.data.startTime}Z`),
 			endTime: new Date(`1970-01-01T${response.data.endTime}Z`),
+			ordinal: response.data.ordinal,
 		};
 	}
 }

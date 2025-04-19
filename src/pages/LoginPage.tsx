@@ -6,6 +6,7 @@ import {
 	Center,
 	HStack,
 	Input,
+	Spinner,
 	Stack,
 	VStack,
 } from "@chakra-ui/react";
@@ -28,6 +29,8 @@ const LoginPage: React.FC = () => {
 	const [response, setResponse] = React.useState<string>("");
 	const [isError, setIsError] = React.useState<boolean>(false);
 
+	const [isLoginPending, setIsLoginPending] = React.useState<boolean>(false);
+
 	const isMobile =
 		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
 			navigator.userAgent,
@@ -38,6 +41,8 @@ const LoginPage: React.FC = () => {
 	const apiContext = useContext(ApiContext);
 
 	function handleLogin() {
+		setIsLoginPending(true);
+
 		const hashedPassword = CryptoJS.SHA256(password).toString(
 			CryptoJS.enc.Hex,
 		);
@@ -52,9 +57,11 @@ const LoginPage: React.FC = () => {
 				setResponse("Success!");
 				const id: UUID = response.data;
 				userContext?.setUser(await apiContext.user.getUser(id));
+				setIsLoginPending(false);
 				navigate("/dashboard");
 			})
 			.catch((error) => {
+				setIsLoginPending(false);
 				setIsError(true);
 				console.error(error);
 				setResponse(error.toString());
@@ -116,6 +123,9 @@ const LoginPage: React.FC = () => {
 										/>
 										<HStack marginY={2}>
 											<Button onClick={handleLogin}>
+												{isLoginPending && (
+													<Spinner size="sm" />
+												)}
 												Войти
 											</Button>
 											<Button

@@ -38,6 +38,7 @@ const dummyUser: User = {
 	fullName: "",
 	email: "",
 	role: UserRole.Unauthorized,
+	avatarUri: "",
 };
 
 const RegistrationPage: React.FC = () => {

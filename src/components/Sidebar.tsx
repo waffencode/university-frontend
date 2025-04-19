@@ -79,6 +79,10 @@ const Sidebar: React.FC = () => {
 		if (isMobile) setIsCollapsed(true);
 	};
 
+	const onStudyGroupsPageClick = () => {
+		navigate("/studyGroups");
+	};
+
 	return (
 		<Box
 			shadow="md"
@@ -124,7 +128,7 @@ const Sidebar: React.FC = () => {
 					/>
 					<SidebarButton
 						// TODO
-						onClick={() => {}}
+						onClick={onStudyGroupsPageClick}
 						icon={<LuUsers />}
 						label="Учебные группы"
 						isCollapsed={isCollapsed}

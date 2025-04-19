@@ -19,6 +19,7 @@ const SettingsPage: React.FC = () => {
 			navigator.userAgent,
 		);
 
+	console.log(userContext.user);
 	const [userEdited] = useState<User>(userContext.user!);
 
 	const onSubmitButtonClicked = async () => {
@@ -88,6 +89,15 @@ const SettingsPage: React.FC = () => {
 								defaultValue={userContext.user.fullName}
 								onChange={(e) =>
 									(userEdited.fullName = e.target.value)
+								}
+							/>
+
+							<Heading size="xs">Аватар</Heading>
+							<Input
+								type="url"
+								defaultValue={userContext.user.avatarUri}
+								onChange={(e) =>
+									(userEdited.avatarUri = e.target.value)
 								}
 							/>
 						</VStack>

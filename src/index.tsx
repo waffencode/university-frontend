@@ -5,6 +5,7 @@ import {
 	defineConfig,
 } from "@chakra-ui/react";
 import React from "react";
+import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./app/App.tsx";
@@ -29,7 +30,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 					v7_relativeSplatPath: true,
 				}}
 			>
-				<App />
+				<CookiesProvider>
+					<App />
+				</CookiesProvider>
 			</BrowserRouter>
 		</ChakraProvider>
 	</React.StrictMode>,

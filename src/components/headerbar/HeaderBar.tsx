@@ -71,7 +71,7 @@ const HeaderBar: React.FC = () => {
 						</VStack>
 						<Image
 							className="user-avatar"
-							src="https://upload.wikimedia.org/wikipedia/ru/a/a9/Example.jpg"
+							src={user.avatarUri}
 							alt="User profile"
 						/>
 						<IconButton

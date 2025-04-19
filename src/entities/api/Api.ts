@@ -1,5 +1,6 @@
 import ClassroomApi from "@/entities/api/ClassroomApi";
 import ClassTimeSlotApi from "@/entities/api/ClassTimeSlotApi";
+import FieldOfStudyApi from "@/entities/api/FieldOfStudyApi";
 import ScheduleClassApi from "@/entities/api/ScheduleClassApi";
 import StudyGroupApi from "@/entities/api/StudyGroupApi";
 import SubjectWorkProgramApi from "@/entities/api/SubjectWorkProgramApi.ts";
@@ -18,6 +19,7 @@ interface Api {
 	classTimeSlots: ClassTimeSlotApi;
 	classroom: ClassroomApi;
 	studyGroup: StudyGroupApi;
+	fieldOfStudy: FieldOfStudyApi;
 }
 
 class Api {
@@ -31,6 +33,7 @@ class Api {
 		this.classTimeSlots = new ClassTimeSlotApi();
 		this.classroom = new ClassroomApi();
 		this.studyGroup = new StudyGroupApi();
+		this.fieldOfStudy = new FieldOfStudyApi();
 	}
 }
 

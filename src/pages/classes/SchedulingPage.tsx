@@ -7,7 +7,7 @@ import {
 	ClassTypesListCollection,
 	ScheduleClassDto,
 } from "@/entities/domain/ScheduleClass";
-import StudyGroup from "@/entities/domain/StudyGroup";
+import { StudyGroupDto } from "@/entities/domain/StudyGroup";
 import {
 	PlannedClass,
 	SubjectWorkProgram,
@@ -30,13 +30,13 @@ interface SchedulingPageData {
 	subjectWorkPrograms: SubjectWorkProgram[];
 	timeSlots: ClassTimeSlot[];
 	classrooms: Classroom[];
-	studyGroups: StudyGroup[];
+	studyGroups: StudyGroupDto[];
 }
 
 const SchedulingPage: React.FC = () => {
 	const apiContext = useContext(ApiContext);
 	const navigate = useNavigate();
-	const { register, handleSubmit, watch, setValue, control } =
+	const { handleSubmit, watch, setValue, control } =
 		useForm<ScheduleClassDto>();
 	const [scheduleData, setScheduleData] = useState<SchedulingPageData>({
 		teachers: [],
