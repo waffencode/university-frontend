@@ -33,34 +33,35 @@ const MessageView: React.FC<MessageViewProps> = ({
 					<Heading size="2xl">{shownMessage.topic}</Heading>
 				</Card.Title>
 				<VStack fontSize="sm" align="left" gap={2} padding={2}>
-					<HStack gap={3} mt="2" mb="2">
-						<LuContact size="2rem" />
-						<VStack fontSize="sm">
-							{shownMessage.sender.fullName}{" "}
-							{"<" + shownMessage.sender.email + ">"}
-							<br />
-							Отправлено: {formatDate(shownMessage.date)}
-							<br />
-							Кому:{" "}
-							{shownMessage.receivers
-								.map((r) => r.fullName)
-								.join(", ")}
-						</VStack>
-					</HStack>
-					{shownMessage.isImportant && (
-						<HStack gap={2} fontSize="sm">
-							<LuMessageCircleWarning color="red" />
-							Это сообщение с высокой важностью
+					<VStack fontSize="sm" align="left" gap={2} padding={2}>
+						<HStack gap={3} mt="2" mb="2" align="top">
+							<LuContact size="2rem" />
+							<VStack fontSize="sm">
+								{shownMessage.sender.fullName}{" "}
+								{"<" + shownMessage.sender.email + ">"}
+								<br />
+								Отправлено: {formatDate(shownMessage.date)}
+								<br />
+								Кому:{" "}
+								{shownMessage.receivers
+									.map((r) => `${r.fullName} <${r.email}>`)
+									.join(", ")}
+							</VStack>
 						</HStack>
-					)}
+						{shownMessage.isImportant && (
+							<HStack gap={2} fontSize="sm">
+								<LuMessageCircleWarning color="red" />
+								Это сообщение с высокой важностью
+							</HStack>
+						)}
+					</VStack>
+					<hr />
+					<Prose maxWidth="100%" size="md">
+						<ReactMarkdown remarkPlugins={[remarkGfm]}>
+							{shownMessage.text}
+						</ReactMarkdown>
+					</Prose>
 				</VStack>
-				<hr />
-				<Prose mt="5">
-					<ReactMarkdown remarkPlugins={[remarkGfm]}>
-						{shownMessage.text}
-					</ReactMarkdown>
-				</Prose>
-				<br />
 			</Card.Body>
 		</Card.Root>
 	);

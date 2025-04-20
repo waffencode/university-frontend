@@ -26,6 +26,10 @@ const MessagesPage: React.FC = () => {
 	const [messages, setMessages] = useState<Message[]>([]);
 
 	const loadMessages = useCallback(() => {
+		if (!userContext || !userContext.user) {
+			navigate("/login");
+		}
+
 		apiContext.message
 			.getMessages(userContext.user!.id)
 			.then((response) => {
