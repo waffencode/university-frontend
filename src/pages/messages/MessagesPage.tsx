@@ -198,16 +198,12 @@ const MessagesPage: React.FC = () => {
 								(a: Message, b: Message) =>
 									b.date.getTime() - a.date.getTime(),
 							)
-							.map((message: Message) => {
-								return (
-									<MessagePreviewCard
-										message={message}
-										showExistingMessage={
-											showExistingMessage
-										}
-									/>
-								);
-							})}
+							.map((message: Message) => (
+								<MessagePreviewCard
+									message={message}
+									showExistingMessage={showExistingMessage}
+								/>
+							))}
 				</VStack>
 				{isMessageViewShown && shownMessage && (
 					<MessageView
