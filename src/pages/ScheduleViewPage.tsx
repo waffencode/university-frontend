@@ -3,10 +3,12 @@ import ScheduleClass, {
 } from "@/entities/domain/ScheduleClass";
 import { ApiContext } from "@/service/ApiProvider";
 import { formatDateShort, formatTime } from "@/service/FormatDate";
-import { Card, Heading, HStack, VStack } from "@chakra-ui/react";
+import { Card, Heading, HStack, Input, Tabs, VStack } from "@chakra-ui/react";
 import { addDays, endOfISOWeek, startOfISOWeek } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import {
+	LuClock,
 	LuMapPin,
 	LuUniversity,
 	LuUser,
@@ -20,18 +22,8 @@ const ScheduleViewPage: React.FC = () => {
 	const apiContext = useContext(ApiContext);
 	const [classesData, setClassesData] = useState<ScheduleClass[]>([]);
 
-	const start = startOfISOWeek(new Date());
-	const end = endOfISOWeek(new Date());
-
-	const daysOfWeek: Date[] = [
-		start,
-		addDays(start, 1),
-		addDays(start, 2),
-		addDays(start, 3),
-		addDays(start, 4),
-		addDays(start, 5),
-		end,
-	];
+	const [dateToShow, setDateToShow] = useState<Date>(new Date());
+	const [daysOfWeek, setDaysOfWeek] = useState<Date[]>([]);
 
 	useEffect(() => {
 		const loadSchedule = async () => {
@@ -80,108 +72,149 @@ const ScheduleViewPage: React.FC = () => {
 			setClassesData(data);
 		};
 
+		const start = startOfISOWeek(dateToShow);
+		const end = endOfISOWeek(dateToShow);
+
+		setDaysOfWeek([
+			start,
+			addDays(start, 1),
+			addDays(start, 2),
+			addDays(start, 3),
+			addDays(start, 4),
+			addDays(start, 5),
+			end,
+		]);
+
 		loadSchedule();
-	}, []);
+	}, [dateToShow]);
 
 	return (
 		<AppPage title="Расписание">
-			<div>
-				{daysOfWeek.map((dayOfWeek) => (
-					<div key={dayOfWeek.toString()}>
-						<div className="card-content">
-							<h2>{formatDateShort(dayOfWeek)}</h2>
-						</div>
-						<VStack gap={2} align="left" w="30%">
-							{classesData &&
-								classesData
-									.filter(
-										(scheduleClass) =>
-											scheduleClass.date.getDay() ===
-											dayOfWeek.getDay(),
-									)
-									.sort(
-										(a: ScheduleClass, b: ScheduleClass) =>
-											a.timeSlot.ordinal -
-											b.timeSlot.ordinal,
-									)
-									.map((scheduleClass) => (
-										<Card.Root
-											size="sm"
-											className="class-card"
-											key={scheduleClass.id}
-										>
-											<Card.Header>
-												<Heading>
-													{
-														scheduleClass.timeSlot
-															.ordinal
-													}
-													.{" "}
-													{
-														scheduleClass
-															.subjectWorkProgram
-															.subject.name
-													}
-												</Heading>
-											</Card.Header>
-											<Card.Body>
-												<VStack alignItems="flex-start">
-													<HStack>
-														<LuWatch />
-														{formatTime(
-															scheduleClass
-																.timeSlot
-																.startTime,
-														)}
-														-
-														{formatTime(
-															scheduleClass
-																.timeSlot
-																.endTime,
-														)}
-													</HStack>
-													<HStack>
-														<LuUniversity />
-														{
-															ClassTypesListCollection.items.find(
-																(s) =>
-																	s.key ===
-																	scheduleClass.classType,
-															)?.label
-														}
-														<br />
-													</HStack>
-													<HStack>
-														<LuUser />
-														{
-															scheduleClass
-																.teacher
-																.fullName
-														}
-														<br />
-													</HStack>
-													<HStack>
-														<LuMapPin />
-														{
-															scheduleClass
-																.classroom
-																.designation
-														}
-													</HStack>
-													<HStack>
-														<LuUsers />
-														{scheduleClass.groups
-															.map((g) => g.name)
-															.join(", ")}
-													</HStack>
-												</VStack>
-											</Card.Body>
-										</Card.Root>
-									))}
-						</VStack>
-					</div>
-				))}
-			</div>
+			<VStack gap={5} align="left">
+				<p>Выберите дату для просмотра расписания на неделю:</p>
+				<DatePicker
+					locale="ru"
+					dateFormat="dd.MM.yyyy"
+					selected={dateToShow}
+					onChange={(date) => setDateToShow(date || new Date())}
+					customInput={<Input autoComplete="off" />}
+				/>
+				<Tabs.Root defaultValue={formatDateShort(dateToShow)}>
+					<Tabs.List>
+						{daysOfWeek.map((dayOfWeek) => (
+							<Tabs.Trigger value={formatDateShort(dayOfWeek)}>
+								<LuClock />
+								{formatDateShort(dayOfWeek)}
+							</Tabs.Trigger>
+						))}
+					</Tabs.List>
+					{daysOfWeek.map((dayOfWeek) => (
+						<Tabs.Content value={formatDateShort(dayOfWeek)}>
+							<div key={dayOfWeek.toString()}>
+								<div className="card-content">
+									<h2>{formatDateShort(dayOfWeek)}</h2>
+								</div>
+								<VStack gap={2} align="left" w="30%">
+									{classesData &&
+										classesData
+											.filter(
+												(scheduleClass) =>
+													scheduleClass.date.getDate() ===
+													dayOfWeek.getDate(),
+											)
+											.sort(
+												(
+													a: ScheduleClass,
+													b: ScheduleClass,
+												) =>
+													a.timeSlot.ordinal -
+													b.timeSlot.ordinal,
+											)
+											.map((scheduleClass) => (
+												<Card.Root
+													size="sm"
+													className="class-card"
+													key={scheduleClass.id}
+												>
+													<Card.Header>
+														<Heading>
+															{
+																scheduleClass
+																	.timeSlot
+																	.ordinal
+															}
+															.{" "}
+															{
+																scheduleClass
+																	.subjectWorkProgram
+																	.subject
+																	.name
+															}
+														</Heading>
+													</Card.Header>
+													<Card.Body>
+														<VStack alignItems="flex-start">
+															<HStack>
+																<LuWatch />
+																{formatTime(
+																	scheduleClass
+																		.timeSlot
+																		.startTime,
+																)}
+																-
+																{formatTime(
+																	scheduleClass
+																		.timeSlot
+																		.endTime,
+																)}
+															</HStack>
+															<HStack>
+																<LuUniversity />
+																{
+																	ClassTypesListCollection.items.find(
+																		(s) =>
+																			s.key ===
+																			scheduleClass.classType,
+																	)?.label
+																}
+																<br />
+															</HStack>
+															<HStack>
+																<LuUser />
+																{
+																	scheduleClass
+																		.teacher
+																		.fullName
+																}
+																<br />
+															</HStack>
+															<HStack>
+																<LuMapPin />
+																{
+																	scheduleClass
+																		.classroom
+																		.designation
+																}
+															</HStack>
+															<HStack>
+																<LuUsers />
+																{scheduleClass.groups
+																	.map(
+																		(g) =>
+																			g.name,
+																	)
+																	.join(", ")}
+															</HStack>
+														</VStack>
+													</Card.Body>
+												</Card.Root>
+											))}
+								</VStack>
+							</div>
+						</Tabs.Content>
+					))}
+				</Tabs.Root>
+			</VStack>
 		</AppPage>
 	);
 };
