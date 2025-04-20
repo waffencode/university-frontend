@@ -10,7 +10,7 @@ interface ICustomMultipleSelectFieldProps {
 	size?: any;
 }
 
-const CustomMultipleSelectField: React.FC<ICustomMultipleSelectFieldProps> = (
+const CustomSelectField: React.FC<ICustomMultipleSelectFieldProps> = (
 	props: ICustomMultipleSelectFieldProps,
 ) => {
 	const { control, name, multiple, size } = props;
@@ -62,4 +62,4 @@ const CustomMultipleSelectField: React.FC<ICustomMultipleSelectFieldProps> = (
 	);
 };
 
-export default CustomMultipleSelectField;
+export default CustomSelectField;

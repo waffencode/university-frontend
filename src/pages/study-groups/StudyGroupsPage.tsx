@@ -1,11 +1,11 @@
 import AppPage from "@/components/AppPage";
+import CustomSelectField from "@/components/CustomSelectField";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import FieldOfStudy from "@/entities/domain/FieldOfStudy";
 import { StudyGroupDto } from "@/entities/domain/StudyGroup";
 import User from "@/entities/domain/User";
 import UserRole from "@/entities/domain/UserRole";
-import CustomMultipleSelectField from "@/pages/classes/scheduling/CustomMultipleSelectField";
 import { ApiContext } from "@/service/ApiProvider";
 import { Input, VStack } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
@@ -42,7 +42,7 @@ const StudyGroupsPage: React.FC = () => {
 						<Input {...register("name")} />
 					</Field>
 					<Field label="Направление подготовки">
-						<CustomMultipleSelectField
+						<CustomSelectField
 							control={control}
 							name={"fieldOfStudyId"}
 							options={fieldsOfStudy.map((f) => ({
@@ -52,7 +52,7 @@ const StudyGroupsPage: React.FC = () => {
 						/>
 					</Field>
 					<Field label="Студенты">
-						<CustomMultipleSelectField
+						<CustomSelectField
 							control={control}
 							name={"studentsIdList"}
 							options={students.map((s) => ({

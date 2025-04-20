@@ -1,4 +1,6 @@
 import AppPage from "@/components/AppPage";
+import CustomDatePicker from "@/components/CustomDatePicker";
+import CustomSelectField from "@/components/CustomSelectField";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import Classroom from "@/entities/domain/Classroom";
@@ -14,8 +16,6 @@ import {
 } from "@/entities/domain/SubjectWorkProgram";
 import User from "@/entities/domain/User";
 import UserRole from "@/entities/domain/UserRole";
-import CustomDatePicker from "@/pages/classes/scheduling/CustomDatePicker";
-import CustomMultipleSelectField from "@/pages/classes/scheduling/CustomMultipleSelectField";
 import { ApiContext } from "@/service/ApiProvider";
 import { Input, VStack } from "@chakra-ui/react";
 import { format } from "date-fns";
@@ -100,7 +100,7 @@ const SchedulingPage: React.FC = () => {
 						/>
 					</Field>
 					<Field label="Преподаватель">
-						<CustomMultipleSelectField
+						<CustomSelectField
 							size="xs"
 							control={control}
 							name={"teacherId"}
@@ -115,7 +115,7 @@ const SchedulingPage: React.FC = () => {
 						/>
 					</Field>
 					<Field label="РПД">
-						<CustomMultipleSelectField
+						<CustomSelectField
 							size="xs"
 							control={control}
 							name={"subjectWorkProgramId"}
@@ -146,7 +146,7 @@ const SchedulingPage: React.FC = () => {
 						/>
 					</Field>
 					<Field label="Временной слот">
-						<CustomMultipleSelectField
+						<CustomSelectField
 							size="xs"
 							control={control}
 							name={"timeSlotId"}
@@ -157,7 +157,7 @@ const SchedulingPage: React.FC = () => {
 						/>
 					</Field>
 					<Field label="Учебные группы">
-						<CustomMultipleSelectField
+						<CustomSelectField
 							size="xs"
 							control={control}
 							name={"groupsId"}
@@ -169,7 +169,7 @@ const SchedulingPage: React.FC = () => {
 						/>
 					</Field>
 					<Field label="Аудитория">
-						<CustomMultipleSelectField
+						<CustomSelectField
 							size="xs"
 							control={control}
 							name={"classroomId"}
