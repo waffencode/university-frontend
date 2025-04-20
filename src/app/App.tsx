@@ -4,6 +4,7 @@ import SchedulingPage from "@/pages/classes/scheduling/SchedulingPage";
 import SubjectWorkProgramDetails from "@/pages/classes/subject-work-program/SubjectWorkProgramDetails";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import StudyGroupsPage from "@/pages/study-groups/StudyGroupsPage";
+import UniversityPage from "@/pages/university/UniversityPage";
 import React from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
@@ -87,6 +88,10 @@ const App: React.FC = () => {
 						<Route
 							path="/studyGroups"
 							element={<StudyGroupsPage />}
+						/>
+						<Route
+							path="/university"
+							element={<UniversityPage />}
 						/>
 					</Routes>
 					<Toaster />

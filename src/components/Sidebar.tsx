@@ -6,14 +6,15 @@ import React, { useContext } from "react";
 import { useCookies } from "react-cookie";
 import {
 	LuAppWindow,
+	LuBookMarked,
 	LuCalendarClock,
 	LuChevronsLeft,
 	LuChevronsRight,
 	LuHouse,
 	LuLogOut,
 	LuMessageCircle,
-	LuSchool,
 	LuSettings,
+	LuUniversity,
 	LuUsers,
 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -83,12 +84,16 @@ const Sidebar: React.FC = () => {
 		navigate("/studyGroups");
 	};
 
+	const onUniversityPageClick = () => {
+		navigate("/university");
+	};
+
 	return (
 		<Box
+			bg={"var(--chakra-colors-bg-panel)"}
 			shadow="md"
 			rounded={3}
 			p={2}
-			bg="white"
 			className={`sidebar ${isCollapsed ? "collapsed" : ""}`}
 		>
 			<VStack w="100%" minH="100vh" gap={1}>
@@ -122,15 +127,21 @@ const Sidebar: React.FC = () => {
 					/>
 					<SidebarButton
 						onClick={onClassesButtonClick}
-						icon={<LuSchool />}
+						icon={<LuBookMarked />}
 						label="Занятия"
 						isCollapsed={isCollapsed}
 					/>
 					<SidebarButton
-						// TODO
 						onClick={onStudyGroupsPageClick}
 						icon={<LuUsers />}
 						label="Учебные группы"
+						isCollapsed={isCollapsed}
+					/>
+					<SidebarButton
+						// TODO
+						onClick={onUniversityPageClick}
+						icon={<LuUniversity />}
+						label="Университет"
 						isCollapsed={isCollapsed}
 					/>
 					<SidebarButton

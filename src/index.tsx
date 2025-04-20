@@ -1,3 +1,4 @@
+import { ColorModeProvider } from "@/components/ui/color-mode";
 import {
 	ChakraProvider,
 	createSystem,
@@ -14,7 +15,7 @@ import "./index.css";
 const config = defineConfig({
 	globalCss: {
 		html: {
-			background: "#f5f5f5",
+			background: "var(--chakra-colors-bg-panel)",
 		},
 	},
 });
@@ -24,16 +25,18 @@ const system = createSystem(defaultConfig, config);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
 		<ChakraProvider value={system}>
-			<BrowserRouter
-				future={{
-					v7_startTransition: true,
-					v7_relativeSplatPath: true,
-				}}
-			>
-				<CookiesProvider>
-					<App />
-				</CookiesProvider>
-			</BrowserRouter>
+			<ColorModeProvider>
+				<BrowserRouter
+					future={{
+						v7_startTransition: true,
+						v7_relativeSplatPath: true,
+					}}
+				>
+					<CookiesProvider>
+						<App />
+					</CookiesProvider>
+				</BrowserRouter>
+			</ColorModeProvider>
 		</ChakraProvider>
 	</React.StrictMode>,
 );

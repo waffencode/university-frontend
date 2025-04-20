@@ -1,9 +1,6 @@
-.message_card:hover {
-    background-color: #fafafa;
-}
-
 .message_card {
     max-width: 100%;
+    cursor: pointer;
 }
 
 .message_description {

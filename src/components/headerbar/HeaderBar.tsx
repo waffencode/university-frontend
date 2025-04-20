@@ -1,3 +1,4 @@
+import { ColorModeButton } from "@/components/ui/color-mode";
 import { UserRoleNamesCollection } from "@/entities/domain/UserRole";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
@@ -40,9 +41,9 @@ const HeaderBar: React.FC = () => {
 
 	return (
 		<Box
+			bg={"var(--chakra-colors-bg-panel)"}
 			shadow="md"
 			rounded={3}
-			bg="white"
 			marginX={2}
 			className="header-container"
 		>
@@ -62,6 +63,8 @@ const HeaderBar: React.FC = () => {
 
 				{user !== null && (
 					<HStack gap={3}>
+						<ColorModeButton />
+
 						<VStack align="end" gap={1} className="user-info">
 							<Text className="user-name">{user?.fullName}</Text>
 							<Text className="user-email">{user?.email}</Text>
