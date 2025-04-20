@@ -7,7 +7,7 @@ import MessageView from "@/pages/messages/MessageView.tsx";
 import NewMessageForm from "@/pages/messages/NewMessageForm";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import { HStack, StackSeparator, VStack } from "@chakra-ui/react";
+import { HStack, Presence, StackSeparator, VStack } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -106,16 +106,38 @@ const MessagesPage: React.FC = () => {
 							))}
 				</VStack>
 				{isMessageViewShown && shownMessage && (
-					<MessageView
-						shownMessage={shownMessage}
-						hideExistingMessage={hideExistingMessage}
-					/>
+					<Presence
+						w="100%"
+						animationName={{
+							_open: "slide-from-bottom, fade-in",
+							_closed: "slide-to-bottom, fade-out",
+						}}
+						animationDuration="moderate"
+						present={isMessageViewShown}
+					>
+						<MessageView
+							shownMessage={shownMessage}
+							hideExistingMessage={hideExistingMessage}
+						/>
+					</Presence>
 				)}
 				{isNewMessageModeActive && (
-					<NewMessageForm
-						isNewMessageModeActive={isNewMessageModeActive}
-						setIsNewMessageModeActive={setIsNewMessageModeActive}
-					/>
+					<Presence
+						w="100%"
+						animationName={{
+							_open: "slide-from-bottom, fade-in",
+							_closed: "slide-to-bottom, fade-out",
+						}}
+						animationDuration="moderate"
+						present={isNewMessageModeActive}
+					>
+						<NewMessageForm
+							isNewMessageModeActive={isNewMessageModeActive}
+							setIsNewMessageModeActive={
+								setIsNewMessageModeActive
+							}
+						/>
+					</Presence>
 				)}
 			</HStack>
 		</AppPage>
