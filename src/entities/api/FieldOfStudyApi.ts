@@ -21,6 +21,28 @@ class FieldOfStudyApi {
 			})
 		).data;
 	}
+
+	async create(entity: FieldOfStudy): Promise<void> {
+		await axios.post(this.serverUrl + "/FieldOfStudy/", entity, {
+			withCredentials: true,
+		});
+	}
+
+	async update(entity: FieldOfStudy): Promise<void> {
+		await axios.put(
+			this.serverUrl + "/FieldOfStudy/" + entity.id.toString(),
+			entity,
+			{
+				withCredentials: true,
+			},
+		);
+	}
+
+	async delete(id: UUID): Promise<void> {
+		await axios.delete(this.serverUrl + "/FieldOfStudy/" + id.toString(), {
+			withCredentials: true,
+		});
+	}
 }
 
 export default FieldOfStudyApi;

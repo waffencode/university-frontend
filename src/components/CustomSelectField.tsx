@@ -8,12 +8,13 @@ interface ICustomMultipleSelectFieldProps {
 	options: { value: string; label: string }[];
 	multiple?: boolean;
 	size?: any;
+	defaultValue?: any;
 }
 
 const CustomSelectField: React.FC<ICustomMultipleSelectFieldProps> = (
 	props: ICustomMultipleSelectFieldProps,
 ) => {
-	const { control, name, multiple, size } = props;
+	const { control, name, multiple, size, defaultValue } = props;
 	const collection = createListCollection({ items: props.options });
 
 	return (
@@ -23,7 +24,11 @@ const CustomSelectField: React.FC<ICustomMultipleSelectFieldProps> = (
 			render={({ field }) => (
 				<Select.Root
 					name={field.name}
-					value={multiple ? field.value || [] : [field.value]}
+					value={
+						multiple
+							? field.value?.toString() || []
+							: [field.value?.toString()]
+					}
 					onValueChange={({ value }) =>
 						field.onChange(multiple ? value : (value?.[0] ?? null))
 					}

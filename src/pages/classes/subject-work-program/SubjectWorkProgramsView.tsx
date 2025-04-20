@@ -55,7 +55,6 @@ const SubjectWorkProgramsView: React.FC = () => {
 				<Table.Root size="sm">
 					<Table.Header>
 						<Table.Row>
-							<Table.Cell>ID</Table.Cell>
 							<Table.Cell>Дисциплина</Table.Cell>
 							<Table.Cell>Действия</Table.Cell>
 						</Table.Row>
@@ -65,9 +64,6 @@ const SubjectWorkProgramsView: React.FC = () => {
 						subjectWorkPrograms.length > 0 ? (
 							subjectWorkPrograms.map((subjectWorkProgram) => (
 								<Table.Row key={subjectWorkProgram.id}>
-									<Table.Cell>
-										{subjectWorkProgram.id}
-									</Table.Cell>
 									<Table.Cell>
 										{subjectWorkProgram.subject.name}
 									</Table.Cell>

@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
-import SchedulingPage from "@/pages/classes/SchedulingPage";
+import EditFieldOfStudyPage from "@/pages/classes/field-of-study/EditFieldOfStudyPage";
+import SchedulingPage from "@/pages/classes/scheduling/SchedulingPage";
 import SubjectWorkProgramDetails from "@/pages/classes/subject-work-program/SubjectWorkProgramDetails";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import StudyGroupsPage from "@/pages/study-groups/StudyGroupsPage";
@@ -70,6 +71,14 @@ const App: React.FC = () => {
 						<Route
 							path="/classes/subjectWorkPrograms/edit/:subjectWorkProgramId"
 							element={<EditSubjectWorkProgramPage />}
+						/>
+						<Route
+							path="/classes/fields-of-study/create"
+							element={<EditFieldOfStudyPage />}
+						/>
+						<Route
+							path="/classes/fields-of-study/edit/:fieldOfStudyId"
+							element={<EditFieldOfStudyPage />}
 						/>
 						<Route
 							path="/classes/scheduling"

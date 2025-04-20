@@ -47,7 +47,6 @@ const SubjectsView: React.FC = () => {
 				<Table.Root size="sm">
 					<Table.Header>
 						<Table.Row>
-							<Table.Cell>ID</Table.Cell>
 							<Table.Cell>Наименование</Table.Cell>
 							<Table.Cell>Действия</Table.Cell>
 						</Table.Row>
@@ -56,7 +55,6 @@ const SubjectsView: React.FC = () => {
 						{data.length > 0 ? (
 							data.map((subject) => (
 								<Table.Row key={subject.id}>
-									<Table.Cell>{subject.id}</Table.Cell>
 									<Table.Cell>{subject.name}</Table.Cell>
 									<Table.Cell>
 										<HStack gap={2}>

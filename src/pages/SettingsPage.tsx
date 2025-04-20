@@ -19,7 +19,6 @@ const SettingsPage: React.FC = () => {
 			navigator.userAgent,
 		);
 
-	console.log(userContext.user);
 	const [userEdited] = useState<User>(userContext.user!);
 
 	const onSubmitButtonClicked = async () => {

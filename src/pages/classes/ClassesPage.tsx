@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import FieldsOfStudyView from "@/pages/classes/field-of-study/FieldsOfStudyView";
-import { Heading, VStack } from "@chakra-ui/react";
+import { Heading, HStack, VStack } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import AppPage from "../../components/AppPage";
@@ -12,11 +12,13 @@ const ClassesPage: React.FC = () => {
 
 	return (
 		<AppPage title="Занятия">
-			<VStack gap={4} align={"left"}>
+			<VStack gap={4} align={"left"} w="70%">
 				<Heading size={"lg"}>Формирование расписания</Heading>
-				<Button onClick={() => navigate("./scheduling")}>
-					Перейти...
-				</Button>
+				<HStack gap={4}>
+					<Button onClick={() => navigate("./scheduling")}>
+						Перейти...
+					</Button>
+				</HStack>
 				<Heading size={"lg"}>Рабочие программы дисциплин</Heading>
 				<SubjectWorkProgramsView />
 				<Heading size={"lg"}>Дисциплины</Heading>
