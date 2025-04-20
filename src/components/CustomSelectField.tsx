@@ -25,9 +25,7 @@ const CustomSelectField: React.FC<ICustomMultipleSelectFieldProps> = (
 				<Select.Root
 					name={field.name}
 					value={
-						multiple
-							? field.value?.toString() || []
-							: [field.value?.toString()]
+						multiple ? field.value || [] : [field.value?.toString()]
 					}
 					onValueChange={({ value }) =>
 						field.onChange(multiple ? value : (value?.[0] ?? null))

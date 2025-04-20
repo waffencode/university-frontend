@@ -36,7 +36,7 @@ export default function formatDate(newDate: Date): string {
 	return `${day}, ${dayOfMonth} ${month} ${year}, ${hours}:${minutes}:${seconds}`;
 }
 
-export function formatDateShort(newDate: Date): string {
+export function formatDateShort(newDate: Date | string): string {
 	const days: string[] = [
 		"Воскресенье",
 		"Понедельник",
