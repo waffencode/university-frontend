@@ -3,6 +3,7 @@ import EditFieldOfStudyPage from "@/pages/classes/field-of-study/EditFieldOfStud
 import SchedulingPage from "@/pages/classes/scheduling/SchedulingPage";
 import SubjectWorkProgramDetails from "@/pages/classes/subject-work-program/SubjectWorkProgramDetails";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
+import MessagesPage from "@/pages/messages/MessagesPage";
 import StudyGroupsPage from "@/pages/study-groups/StudyGroupsPage";
 import UniversityPage from "@/pages/university/UniversityPage";
 import React from "react";
@@ -16,7 +17,6 @@ import CreateSubjectPage from "../pages/classes/subject/CreateSubjectPage.tsx";
 import EditSubjectPage from "../pages/classes/subject/EditSubjectPage.tsx";
 import IndexPage from "../pages/IndexPage.tsx";
 import LoginPage from "../pages/LoginPage.tsx";
-import MessagesPage from "../pages/MessagesPage.tsx";
 import RegistrationConfirmationPage from "../pages/RegistrationConfirmationPage.tsx";
 import RegistrationPage from "../pages/RegistrationPage.tsx";
 import ScheduleViewPage from "../pages/ScheduleViewPage.tsx";

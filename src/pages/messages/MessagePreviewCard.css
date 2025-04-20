@@ -1,0 +1,11 @@
+.message_card {
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.message_description {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

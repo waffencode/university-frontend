@@ -1,9 +1,15 @@
+import AppPage from "@/components/AppPage.tsx";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
 import { Prose } from "@/components/ui/prose";
 import { toaster } from "@/components/ui/toaster";
+import Message from "@/entities/domain/Message.ts";
+import "@/pages/messages/MessagesPage.css";
+import User from "@/entities/domain/User.ts";
 import { UserRoleNamesCollection } from "@/entities/domain/UserRole";
+import MessagePreviewCard from "@/pages/messages/MessagePreviewCard";
+import MessageView from "@/pages/messages/MessageView.tsx";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
 import {
@@ -27,12 +33,6 @@ import { LuSend, LuTrash } from "react-icons/lu";
 import ReactMarkdown from "react-markdown";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
-import AppPage from "../components/AppPage.tsx";
-import MessageView from "../components/MessageView.tsx";
-import Message from "../entities/domain/Message.ts";
-import "./MessagesPage.css";
-import User from "../entities/domain/User.ts";
-import formatDate from "../service/FormatDate.ts";
 
 // TODO: Refactor.
 const MessagesPage: React.FC = () => {
@@ -135,6 +135,7 @@ const MessagesPage: React.FC = () => {
 		loadReceivers();
 		Object.assign(newMessage!.receivers, selectedReceivers);
 	}
+
 	function handleReceiver(selectedUser: User, isChecked: boolean) {
 		if (isChecked) {
 			selectedReceivers.push(selectedUser);
@@ -199,27 +200,12 @@ const MessagesPage: React.FC = () => {
 							)
 							.map((message: Message) => {
 								return (
-									<Card.Root
-										className="message_card"
-										key={message.id}
-										onClick={() =>
-											showExistingMessage(message)
+									<MessagePreviewCard
+										message={message}
+										showExistingMessage={
+											showExistingMessage
 										}
-									>
-										<Card.Body>
-											<Card.Title mt="2">
-												{message.topic}
-											</Card.Title>
-											<Card.Description className="message_description">
-												{message.text}
-												<br />
-												{message.sender.fullName}
-												<br />
-												{formatDate(message.date)}
-												<br />
-											</Card.Description>
-										</Card.Body>
-									</Card.Root>
+									/>
 								);
 							})}
 				</VStack>
@@ -452,8 +438,8 @@ const MessagesPage: React.FC = () => {
 									justify="flex-end"
 								>
 									<Button
-										backgroundColor="red.500"
-										_hover={{ backgroundColor: "red.600" }}
+										colorPalette="red"
+										variant="surface"
 										onClick={() => deleteNewMessage()}
 									>
 										<LuTrash />
