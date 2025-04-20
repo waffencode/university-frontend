@@ -7,17 +7,10 @@ import MessageView from "@/pages/messages/MessageView.tsx";
 import NewMessageForm from "@/pages/messages/NewMessageForm";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import {
-	createListCollection,
-	HStack,
-	ListCollection,
-	StackSeparator,
-	VStack,
-} from "@chakra-ui/react";
+import { HStack, StackSeparator, VStack } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { v4 } from "uuid";
 
 const MessagesPage: React.FC = () => {
 	const apiContext = useContext(ApiContext);
@@ -28,23 +21,16 @@ const MessagesPage: React.FC = () => {
 	const [isMessageViewShown, setIsMessageViewShown] =
 		useState<boolean>(false);
 	const [shownMessage, setShownMessage] = useState<Message | null>(null);
-	const [newMessage, setNewMessage] = useState<Message | null>(null);
 	const [isNewMessageModeActive, setIsNewMessageModeActive] =
 		useState<boolean>(false);
-	const [messages, setMessages] = useState<ListCollection<Message> | null>(
-		null,
-	);
+	const [messages, setMessages] = useState<Message[]>([]);
 
 	const loadMessages = useCallback(() => {
-		console.log(new Date().toString() + ": Loading messages");
-
-		if (!userContext || !userContext.user) {
-			return;
-		}
-
-		apiContext.message.getMessages(userContext.user.id).then((response) => {
-			setMessages(createListCollection({ items: response }));
-		});
+		apiContext.message
+			.getMessages(userContext.user!.id)
+			.then((response) => {
+				setMessages(response);
+			});
 	}, [apiContext.message, userContext]);
 
 	function showExistingMessage(message: Message) {
@@ -61,37 +47,6 @@ const MessagesPage: React.FC = () => {
 		navigate("/messages");
 	}
 
-	function enableNewMessageMode() {
-		if (isMessageViewShown) {
-			return;
-		}
-
-		if (!newMessage) {
-			let emptyMessage: Message = {
-				id: v4() as UUID,
-				topic: "",
-				text: "",
-				date: new Date(),
-				isImportant: false,
-				sender: userContext.user!,
-				receivers: [],
-				receiversStudyGroup: [],
-			};
-
-			setNewMessage(emptyMessage);
-		}
-
-		setIsNewMessageModeActive(true);
-	}
-
-	function disableNewMessageMode() {
-		setIsNewMessageModeActive(false);
-	}
-
-	function deleteNewMessage() {
-		setNewMessage(null);
-	}
-
 	// Check messages once after page load.
 	useEffect(() => {
 		if (!userContext || !userContext.user) {
@@ -101,16 +56,16 @@ const MessagesPage: React.FC = () => {
 		loadMessages();
 
 		if (paramMessageId !== undefined && paramMessageId !== null) {
-			const shownMessage = messages?.items.find(
+			const messageToShow = messages.find(
 				(message: Message) => message.id === paramMessageId,
 			);
-			if (shownMessage !== undefined && shownMessage !== null) {
+			if (messageToShow !== undefined && messageToShow !== null) {
 				if (isNewMessageModeActive) {
 					return;
 				}
 
 				setIsMessageViewShown(true);
-				setShownMessage(shownMessage);
+				setShownMessage(messageToShow);
 			}
 		}
 	}, [loadMessages, navigate, userContext]);
@@ -127,18 +82,18 @@ const MessagesPage: React.FC = () => {
 		<AppPage title="Сообщения">
 			<Button
 				variant="surface"
-				onClick={() => enableNewMessageMode()}
+				onClick={() => setIsNewMessageModeActive(true)}
 				disabled={isNewMessageModeActive || isMessageViewShown}
 			>
 				Новое сообщение
 			</Button>
 			<HStack p={3} align="top" separator={<StackSeparator />}>
 				<VStack w="20%">
-					{(!messages || messages.items.length === 0) && (
+					{(!messages || messages.length === 0) && (
 						<div>Сообщений нет</div>
 					)}
 					{messages &&
-						messages.items
+						messages
 							.sort(
 								(a: Message, b: Message) =>
 									b.date.getTime() - a.date.getTime(),
@@ -156,12 +111,10 @@ const MessagesPage: React.FC = () => {
 						hideExistingMessage={hideExistingMessage}
 					/>
 				)}
-				{isNewMessageModeActive && newMessage && (
+				{isNewMessageModeActive && (
 					<NewMessageForm
-						newMessage={newMessage}
-						setNewMessage={setNewMessage}
-						disableNewMessageMode={disableNewMessageMode}
-						deleteNewMessage={deleteNewMessage}
+						isNewMessageModeActive={isNewMessageModeActive}
+						setIsNewMessageModeActive={setIsNewMessageModeActive}
 					/>
 				)}
 			</HStack>
