@@ -7,7 +7,7 @@ import FieldOfStudy, {
 	FormOfStudyListCollection,
 } from "@/entities/domain/FieldOfStudy";
 import { ApiContext } from "@/service/ApiProvider";
-import { Input, VStack } from "@chakra-ui/react";
+import { HStack, Input, VStack } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -81,9 +81,17 @@ const FieldOfStudyForm: React.FC<IFieldOfStudyFormProps> = ({
 						defaultValue={prefillData?.formOfStudy}
 					/>
 				</Field>
-				<Button type="submit">
-					{prefillData ? "Сохранить" : "Добавить"}
-				</Button>
+				<HStack gap={2}>
+					<Button
+						variant="surface"
+						onClick={() => navigate("/classes")}
+					>
+						Назад
+					</Button>
+					<Button type="submit">
+						{prefillData ? "Сохранить" : "Добавить"}
+					</Button>
+				</HStack>
 			</VStack>
 		</form>
 	);

@@ -9,10 +9,14 @@ import SubjectsView from "./subject/SubjectsView";
 
 const ClassesPage: React.FC = () => {
 	const navigate = useNavigate();
+	const isMobile =
+		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+			navigator.userAgent,
+		);
 
 	return (
 		<AppPage title="Занятия">
-			<VStack gap={4} align={"left"} w="70%">
+			<VStack gap={4} align={"left"} w={isMobile ? "100%" : "70%"}>
 				<Heading size={"lg"}>Формирование расписания</Heading>
 				<HStack gap={4}>
 					<Button onClick={() => navigate("./scheduling")}>

@@ -1,8 +1,9 @@
 import Subject from "@/entities/domain/Subject";
 import { ApiContext } from "@/service/ApiProvider.tsx";
-import { Button, HStack, Table } from "@chakra-ui/react";
+import { Button, Flex, HStack, Table } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
+import { LuPencil, LuTrash } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
 const SubjectsView: React.FC = () => {
@@ -44,11 +45,15 @@ const SubjectsView: React.FC = () => {
 			</HStack>
 
 			<Table.ScrollArea>
-				<Table.Root size="sm">
+				<Table.Root size="sm" showColumnBorder interactive>
 					<Table.Header>
 						<Table.Row>
-							<Table.Cell>Наименование</Table.Cell>
-							<Table.Cell>Действия</Table.Cell>
+							<Table.ColumnHeader>
+								Наименование
+							</Table.ColumnHeader>
+							<Table.ColumnHeader textAlign="end">
+								Действия
+							</Table.ColumnHeader>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -57,14 +62,19 @@ const SubjectsView: React.FC = () => {
 								<Table.Row key={subject.id}>
 									<Table.Cell>{subject.name}</Table.Cell>
 									<Table.Cell>
-										<HStack gap={2}>
+										<Flex
+											gap={2}
+											align="end"
+											justify="flex-end"
+										>
 											<Button
 												size="xs"
 												onClick={() =>
 													handleEditClick(subject.id)
 												}
+												variant="surface"
 											>
-												Редактировать
+												<LuPencil /> Редактировать
 											</Button>
 											<Button
 												size="xs"
@@ -73,10 +83,12 @@ const SubjectsView: React.FC = () => {
 														subject.id,
 													)
 												}
+												colorPalette="red"
+												variant="subtle"
 											>
-												Удалить
+												<LuTrash /> Удалить
 											</Button>
-										</HStack>
+										</Flex>
 									</Table.Cell>
 								</Table.Row>
 							))

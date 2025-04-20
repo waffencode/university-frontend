@@ -14,11 +14,13 @@ import {
 	Portal,
 	Select,
 	Table,
+	Textarea,
 	VStack,
 } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { LuPlus } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
 
@@ -201,14 +203,27 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 						/>
 					</Field>
 					<Heading>Тематический план</Heading>
+
+					<HStack gap={4}>
+						<Button
+							type="button"
+							onClick={addNewClass}
+							style={{ marginTop: "16px" }}
+						>
+							<LuPlus /> Добавить занятие
+						</Button>
+					</HStack>
+
 					<Table.Root>
 						<Table.Header>
 							<Table.Row>
-								<Table.Cell>№ п/п</Table.Cell>
-								<Table.Cell>Тема</Table.Cell>
-								<Table.Cell>Часы</Table.Cell>
-								<Table.Cell>Тип</Table.Cell>
-								<Table.Cell>Действия</Table.Cell>
+								<Table.ColumnHeader>№ п/п</Table.ColumnHeader>
+								<Table.ColumnHeader>Тема</Table.ColumnHeader>
+								<Table.ColumnHeader>Часы</Table.ColumnHeader>
+								<Table.ColumnHeader>Тип</Table.ColumnHeader>
+								<Table.ColumnHeader>
+									Действия
+								</Table.ColumnHeader>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
@@ -217,7 +232,8 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 									<Table.Cell>{index + 1}</Table.Cell>
 									<Table.Cell>
 										<Field>
-											<Input
+											<Textarea
+												autoresize
 												{...register(
 													`classes.${index}.theme`,
 												)}
@@ -296,8 +312,8 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 									<Table.Cell>
 										<Button
 											type="button"
-											variant="outline"
-											color="red"
+											variant="surface"
+											colorPalette="red"
 											onClick={() => remove(index)}
 										>
 											Удалить
@@ -308,18 +324,13 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 						</Table.Body>
 					</Table.Root>
 
-					<Button
-						type="button"
-						onClick={addNewClass}
-						style={{ marginTop: "16px" }}
-					>
-						Добавить занятие
-					</Button>
 					<HStack gap={2}>
+						<Button variant="surface" onClick={() => navigate(-1)}>
+							Назад
+						</Button>
 						<Button type="submit">
 							{isEditMode ? "Сохранить" : "Добавить"}
 						</Button>
-						<Button onClick={() => navigate(-1)}>Назад</Button>
 					</HStack>
 				</VStack>
 			</form>

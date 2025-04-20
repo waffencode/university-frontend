@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button.tsx";
 import { toaster } from "@/components/ui/toaster";
 import { SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram.ts";
 import { ApiContext } from "@/service/ApiProvider.tsx";
-import { HStack, Table } from "@chakra-ui/react";
+import { Flex, HStack, Table } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect } from "react";
+import { LuEye, LuPencil, LuTrash } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
 const SubjectWorkProgramsView: React.FC = () => {
@@ -52,11 +53,13 @@ const SubjectWorkProgramsView: React.FC = () => {
 				<Button onClick={handleAddClick}>Добавить...</Button>
 			</HStack>
 			<Table.ScrollArea>
-				<Table.Root size="sm">
+				<Table.Root size="sm" showColumnBorder interactive>
 					<Table.Header>
 						<Table.Row>
-							<Table.Cell>Дисциплина</Table.Cell>
-							<Table.Cell>Действия</Table.Cell>
+							<Table.ColumnHeader>Дисциплина</Table.ColumnHeader>
+							<Table.ColumnHeader textAlign="end">
+								Действия
+							</Table.ColumnHeader>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -68,7 +71,11 @@ const SubjectWorkProgramsView: React.FC = () => {
 										{subjectWorkProgram.subject.name}
 									</Table.Cell>
 									<Table.Cell>
-										<HStack gap={2}>
+										<Flex
+											gap={2}
+											align="end"
+											justify="flex-end"
+										>
 											<Button
 												size="xs"
 												onClick={() =>
@@ -76,8 +83,9 @@ const SubjectWorkProgramsView: React.FC = () => {
 														subjectWorkProgram.id,
 													)
 												}
+												variant="surface"
 											>
-												Просмотр
+												<LuEye /> Просмотр
 											</Button>
 											<Button
 												size="xs"
@@ -86,8 +94,9 @@ const SubjectWorkProgramsView: React.FC = () => {
 														subjectWorkProgram.id,
 													)
 												}
+												variant="surface"
 											>
-												Редактировать
+												<LuPencil /> Редактировать
 											</Button>
 											<Button
 												size="xs"
@@ -96,10 +105,12 @@ const SubjectWorkProgramsView: React.FC = () => {
 														subjectWorkProgram.id,
 													)
 												}
+												colorPalette="red"
+												variant="subtle"
 											>
-												Удалить
+												<LuTrash /> Удалить
 											</Button>
-										</HStack>
+										</Flex>
 									</Table.Cell>
 								</Table.Row>
 							))

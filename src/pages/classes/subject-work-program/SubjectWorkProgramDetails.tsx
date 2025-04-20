@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
+import { LuPencil } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 
 const typeMappings = {
@@ -120,15 +121,20 @@ const SubjectWorkProgramDetails: React.FC = () => {
 				</Box>
 				<HStack gap={2}>
 					<Button
+						variant="surface"
+						onClick={() => navigate("/classes")}
+					>
+						Назад
+					</Button>
+					<Button
 						onClick={() =>
 							navigate(
 								`/classes/subjectWorkPrograms/edit/${workProgram?.id}`,
 							)
 						}
 					>
-						Редактировать
+						<LuPencil /> Редактировать
 					</Button>
-					<Button onClick={() => navigate("/classes")}>Назад</Button>
 				</HStack>
 			</Stack>
 		</AppPage>
