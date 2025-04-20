@@ -1,3 +1,4 @@
+import UserRole from "@/entities/domain/UserRole";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
 import { Box, IconButton, VStack } from "@chakra-ui/react";
@@ -125,25 +126,33 @@ const Sidebar: React.FC = () => {
 						label="Расписание"
 						isCollapsed={isCollapsed}
 					/>
-					<SidebarButton
-						onClick={onClassesButtonClick}
-						icon={<LuBookMarked />}
-						label="Занятия"
-						isCollapsed={isCollapsed}
-					/>
-					<SidebarButton
-						onClick={onStudyGroupsPageClick}
-						icon={<LuUsers />}
-						label="Учебные группы"
-						isCollapsed={isCollapsed}
-					/>
-					<SidebarButton
-						// TODO
-						onClick={onUniversityPageClick}
-						icon={<LuUniversity />}
-						label="Университет"
-						isCollapsed={isCollapsed}
-					/>
+					{(userContext?.user?.role === UserRole.Manager ||
+						userContext?.user?.role === UserRole.Teacher ||
+						userContext?.user?.role === UserRole.Admin) && (
+						<SidebarButton
+							onClick={onClassesButtonClick}
+							icon={<LuBookMarked />}
+							label="Занятия"
+							isCollapsed={isCollapsed}
+						/>
+					)}
+					{(userContext?.user?.role === UserRole.Manager ||
+						userContext?.user?.role === UserRole.Admin) && (
+						<>
+							<SidebarButton
+								onClick={onStudyGroupsPageClick}
+								icon={<LuUsers />}
+								label="Учебные группы"
+								isCollapsed={isCollapsed}
+							/>
+							<SidebarButton
+								onClick={onUniversityPageClick}
+								icon={<LuUniversity />}
+								label="Университет"
+								isCollapsed={isCollapsed}
+							/>
+						</>
+					)}
 					<SidebarButton
 						onClick={onMessagesButtonClick}
 						icon={<LuMessageCircle />}
@@ -156,12 +165,15 @@ const Sidebar: React.FC = () => {
 						label="Настройки"
 						isCollapsed={isCollapsed}
 					/>
-					<SidebarButton
-						onClick={onAdminPanelButtonClick}
-						icon={<LuAppWindow />}
-						label="Админ-панель"
-						isCollapsed={isCollapsed}
-					/>
+					{userContext?.user?.role === UserRole.Admin && (
+						<SidebarButton
+							onClick={onAdminPanelButtonClick}
+							icon={<LuAppWindow />}
+							label="Админ-панель"
+							isCollapsed={isCollapsed}
+						/>
+					)}
+
 					<SidebarButton
 						onClick={onLogoutButtonClick}
 						icon={<LuLogOut />}

@@ -26,8 +26,9 @@ const MessagesPage: React.FC = () => {
 	const [messages, setMessages] = useState<Message[]>([]);
 
 	const loadMessages = useCallback(() => {
-		if (!userContext || !userContext.user) {
+		if (!userContext || !userContext.user?.id) {
 			navigate("/login");
+			return;
 		}
 
 		apiContext.message
@@ -35,7 +36,7 @@ const MessagesPage: React.FC = () => {
 			.then((response) => {
 				setMessages(response);
 			});
-	}, [apiContext.message, userContext]);
+	}, []);
 
 	function showExistingMessage(message: Message) {
 		if (isNewMessageModeActive) {
