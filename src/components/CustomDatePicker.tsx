@@ -33,9 +33,7 @@ const CustomDatePicker: React.FC<RHDatePickerProps> = ({
 					dateFormat="dd.MM.yyyy"
 					placeholderText={placeholder}
 					selected={field.value}
-					onChange={(date) =>
-						field.onChange(date?.toLocaleDateString())
-					}
+					onChange={(date) => field.onChange(date?.toISOString())}
 					customInput={
 						<Input
 							size={size}
