@@ -4,6 +4,8 @@ import SchedulingPage from "@/pages/classes/scheduling/SchedulingPage";
 import SubjectWorkProgramDetails from "@/pages/classes/subject-work-program/SubjectWorkProgramDetails";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import MessagesPage from "@/pages/messages/MessagesPage";
+import ClassPage from "@/pages/schedule/ClassPage";
+import ScheduleViewPage from "@/pages/schedule/ScheduleViewPage";
 import StudyGroupsPage from "@/pages/study-groups/StudyGroupsPage";
 import UniversityPage from "@/pages/university/UniversityPage";
 import React from "react";
@@ -19,7 +21,6 @@ import IndexPage from "../pages/IndexPage.tsx";
 import LoginPage from "../pages/LoginPage.tsx";
 import RegistrationConfirmationPage from "../pages/RegistrationConfirmationPage.tsx";
 import RegistrationPage from "../pages/RegistrationPage.tsx";
-import ScheduleViewPage from "../pages/ScheduleViewPage.tsx";
 import SettingsPage from "../pages/SettingsPage.tsx";
 import ApiProvider from "../service/ApiProvider.tsx";
 import UserProvider from "../service/UserProvider.tsx";
@@ -51,6 +52,10 @@ const App: React.FC = () => {
 						<Route
 							path="/schedule"
 							element={<ScheduleViewPage />}
+						/>
+						<Route
+							path="/schedule/:scheduleClassId"
+							element={<ClassPage />}
 						/>
 						<Route path="/classes" element={<ClassesPage />} />
 						<Route

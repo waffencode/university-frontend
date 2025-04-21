@@ -1,3 +1,5 @@
+import AppPage from "@/components/AppPage";
+import "@/pages/schedule/SchedulePage.css";
 import ScheduleClass, {
 	ClassTypesListCollection,
 } from "@/entities/domain/ScheduleClass";
@@ -15,12 +17,12 @@ import {
 	LuUsers,
 	LuWatch,
 } from "react-icons/lu";
-import AppPage from "../components/AppPage";
-import "./SchedulePage.css";
+import { useNavigate } from "react-router-dom";
 
 const ScheduleViewPage: React.FC = () => {
 	const apiContext = useContext(ApiContext);
 	const [classesData, setClassesData] = useState<ScheduleClass[]>([]);
+	const navigate = useNavigate();
 
 	const [dateToShow, setDateToShow] = useState<Date>(new Date());
 	const [daysOfWeek, setDaysOfWeek] = useState<Date[]>([]);
@@ -134,6 +136,11 @@ const ScheduleViewPage: React.FC = () => {
 												<Card.Root
 													size="sm"
 													className="class-card"
+													onClick={() =>
+														navigate(
+															`./${scheduleClass.id}`,
+														)
+													}
 													key={scheduleClass.id}
 												>
 													<Card.Header>
