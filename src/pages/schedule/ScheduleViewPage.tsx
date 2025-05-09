@@ -104,14 +104,20 @@ const ScheduleViewPage: React.FC = () => {
 				<Tabs.Root defaultValue={formatDateShort(dateToShow)}>
 					<Tabs.List>
 						{daysOfWeek.map((dayOfWeek) => (
-							<Tabs.Trigger value={formatDateShort(dayOfWeek)}>
+							<Tabs.Trigger
+								key={dayOfWeek.toString()}
+								value={formatDateShort(dayOfWeek)}
+							>
 								<LuClock />
 								{formatDateShort(dayOfWeek)}
 							</Tabs.Trigger>
 						))}
 					</Tabs.List>
 					{daysOfWeek.map((dayOfWeek) => (
-						<Tabs.Content value={formatDateShort(dayOfWeek)}>
+						<Tabs.Content
+							key={dayOfWeek.toString()}
+							value={formatDateShort(dayOfWeek)}
+						>
 							<div key={dayOfWeek.toString()}>
 								<div className="card-content">
 									<h2>{formatDateShort(dayOfWeek)}</h2>

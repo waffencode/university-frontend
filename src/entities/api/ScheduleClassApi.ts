@@ -1,5 +1,6 @@
 import config from "@/config.json";
 import { ScheduleClassDto } from "@/entities/domain/ScheduleClass";
+import { ScheduleClassDetailsDto } from "@/entities/domain/ScheduleClassDetails";
 import axios from "axios";
 import { UUID } from "node:crypto";
 
@@ -24,10 +25,19 @@ class ScheduleClassApi {
 	}
 
 	async createScheduleClass(entity: ScheduleClassDto) {
-		console.log("Passing: ", entity);
 		await axios.post(this.serverUrl + "/ScheduleClass", entity, {
 			withCredentials: true,
 		});
+	}
+
+	async updateClassJournal(id: UUID, entity: ScheduleClassDetailsDto) {
+		await axios.post(
+			this.serverUrl + "/ScheduleClass/" + id.toString() + "/journal",
+			entity,
+			{
+				withCredentials: true,
+			},
+		);
 	}
 }
 

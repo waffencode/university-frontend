@@ -1,8 +1,11 @@
 import AppPage from "@/components/AppPage";
 import { Button } from "@/components/ui/button";
-import ScheduleClass from "@/entities/domain/ScheduleClass";
+import ScheduleClass, {
+	ClassTypesListCollection,
+} from "@/entities/domain/ScheduleClass";
 import { ApiContext } from "@/service/ApiProvider";
 import {
+	Box,
 	HStack,
 	NativeSelect,
 	Spinner,
@@ -10,6 +13,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import { format } from "date-fns";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { LuUsers } from "react-icons/lu";
@@ -71,79 +75,118 @@ const ClassPage = () => {
 	return (
 		<AppPage title="Журнал занятия">
 			<>
-				{/*<pre*/}
-				{/*	style={{*/}
-				{/*		whiteSpace: "pre-wrap",*/}
-				{/*		wordWrap: "break-word",*/}
-				{/*		background: "white",*/}
-				{/*		padding: "1rem",*/}
-				{/*		borderRadius: "4px",*/}
-				{/*		marginTop: "1rem",*/}
-				{/*	}}*/}
-				{/*>*/}
-				{/*	{JSON.stringify(scheduleClass, null, 2)}*/}
-				{/*</pre>*/}
+				<pre
+					style={{
+						whiteSpace: "pre-wrap",
+						wordWrap: "break-word",
+						background: "white",
+						padding: "1rem",
+						borderRadius: "4px",
+						marginTop: "1rem",
+					}}
+				>
+					{JSON.stringify(scheduleClass, null, 2)}
+				</pre>
 				{scheduleClass === undefined ? (
 					<Spinner />
 				) : (
 					<>
-						<p>Учебные группы на этом занятии:</p>
-						<Tabs.Root>
-							<Tabs.List>
+						<Box>
+							<Text>
+								Дисциплина:{" "}
+								{scheduleClass.subjectWorkProgram.subject.name}
+							</Text>
+							<Text>Тема: {scheduleClass.name}</Text>
+							<Text>
+								Преподаватель: {scheduleClass.teacher.fullName}
+							</Text>
+							<Text>
+								Дата:{" "}
+								{format(
+									new Date(scheduleClass.date),
+									"dd.MM.yyyy",
+								)}
+							</Text>
+							<Text>Время: {scheduleClass.timeSlot.name}</Text>
+							<Text>
+								Аудитория: {scheduleClass.classroom.designation}
+							</Text>
+							<Text>
+								Тип занятия:{" "}
+								{
+									ClassTypesListCollection.items[
+										scheduleClass.classType
+									].label
+								}
+							</Text>
+						</Box>
+
+						<Box mt={6}>
+							<p>Учебные группы на этом занятии:</p>
+							<Tabs.Root>
+								<Tabs.List>
+									{scheduleClass.groups?.map((group) => (
+										<Tabs.Trigger
+											key={group.id}
+											value={group.id}
+										>
+											<LuUsers />
+											{group.name}
+										</Tabs.Trigger>
+									))}
+								</Tabs.List>
 								{scheduleClass.groups?.map((group) => (
-									<Tabs.Trigger
+									<Tabs.Content
 										key={group.id}
 										value={group.id}
 									>
-										<LuUsers />
-										{group.name}
-									</Tabs.Trigger>
-								))}
-							</Tabs.List>
-							{scheduleClass.groups?.map((group) => (
-								<Tabs.Content key={group.id} value={group.id}>
-									<VStack gap={3} align="stretch" w="100%">
-										{group.students.map((student) => (
-											<HStack
-												key={student.id}
-												p={1}
-												bg="white"
-												borderRadius="md"
-												borderWidth="1px"
-												borderColor="gray.100"
-												justifyContent="space-between"
-												_hover={{ bg: "gray.50" }}
-											>
-												<Text fontWeight="medium">
-													{student.fullName}
-												</Text>
+										<VStack
+											gap={3}
+											align="stretch"
+											w="100%"
+										>
+											{group.students.map((student) => (
+												<HStack
+													key={student.id}
+													p={1}
+													bg="white"
+													borderRadius="md"
+													borderWidth="1px"
+													borderColor="gray.100"
+													justifyContent="space-between"
+													_hover={{ bg: "gray.50" }}
+												>
+													<Text fontWeight="medium">
+														{student.fullName}
+													</Text>
 
-												<HStack gap={4}>
-													<NativeSelect.Root
-														size="sm"
-														defaultValue={""}
-													>
-														<NativeSelect.Field>
-															<option value="П">
-																Присутствует
-															</option>
-															<option value="Б">
-																Болел(-а)
-															</option>
-															<option value="Н">
-																Уважительная
-																причина
-															</option>
-															<option value="О">
-																Отсутствовал(-а)
-															</option>
-														</NativeSelect.Field>
-														<NativeSelect.Indicator />
-													</NativeSelect.Root>
+													<HStack gap={4}>
+														<NativeSelect.Root
+															size="sm"
+															defaultValue={""}
+														>
+															<NativeSelect.Field>
+																<option value="П">
+																	Присутствует
+																</option>
+																<option value="Б">
+																	Болел(-а)
+																</option>
+																<option value="Н">
+																	Уважительная
+																	причина
+																</option>
+																<option value="О">
+																	Отсутствовал(-а)
+																</option>
+															</NativeSelect.Field>
+															<NativeSelect.Indicator />
+														</NativeSelect.Root>
 
-													<HStack gap={2}>
-														{[1, 2, 3, 4, 5].map(
-															(grade) => (
+														<HStack gap={2}>
+															{[
+																1, 2, 3, 4, 5,
+															].map((grade) => (
 																<Button
 																	key={grade}
 																	size="sm"
@@ -162,16 +205,16 @@ const ClassPage = () => {
 																>
 																	{grade}
 																</Button>
-															),
-														)}
+															))}
+														</HStack>
 													</HStack>
 												</HStack>
-											</HStack>
-										))}
-									</VStack>
-								</Tabs.Content>
-							))}
-						</Tabs.Root>
+											))}
+										</VStack>
+									</Tabs.Content>
+								))}
+							</Tabs.Root>
+						</Box>
 					</>
 				)}
 

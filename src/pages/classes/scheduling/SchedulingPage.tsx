@@ -63,12 +63,19 @@ const SchedulingPage: React.FC = () => {
 		data.id = v4() as UUID;
 		data.groupsId = data.groupsId ? data.groupsId : [];
 		data.date = format(new Date(data.date), "yyyy-MM-dd");
-		await apiContext.scheduleClass.createScheduleClass(data);
-		toaster.create({
-			type: "success",
-			title: "Занятие запланировано!",
-		});
-		navigate("/classes");
+		try {
+			await apiContext.scheduleClass.createScheduleClass(data);
+			toaster.create({
+				type: "success",
+				title: "Занятие запланировано!",
+			});
+			navigate("/classes");
+		} catch {
+			toaster.create({
+				type: "error",
+				title: "Произошла ошибка при создании занятия!",
+			});
+		}
 	};
 
 	useEffect(() => {
