@@ -31,6 +31,7 @@ const CustomSelectField: React.FC<ICustomMultipleSelectFieldProps> = (
 						field.onChange(multiple ? value : (value?.[0] ?? null))
 					}
 					onInteractOutside={() => field.onBlur()}
+					defaultValue={defaultValue}
 					collection={collection}
 					multiple={multiple}
 					size={size}

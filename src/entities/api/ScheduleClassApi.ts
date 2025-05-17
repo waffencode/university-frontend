@@ -1,6 +1,7 @@
 import config from "@/config.json";
 import { ScheduleClassDto } from "@/entities/domain/ScheduleClass";
 import { ScheduleClassDetailsDto } from "@/entities/domain/ScheduleClassDetails";
+import { StudyGroupDto } from "@/entities/domain/StudyGroup";
 import axios from "axios";
 import { UUID } from "node:crypto";
 
@@ -38,6 +39,24 @@ class ScheduleClassApi {
 				withCredentials: true,
 			},
 		);
+	}
+
+	async getStudyGroupsForClass(id: UUID): Promise<StudyGroupDto[]> {
+		return (
+			await axios.get(
+				this.serverUrl + "/ScheduleClass/" + id.toString() + "/groups",
+				{ withCredentials: true },
+			)
+		).data;
+	}
+
+	async getScheduleClassDetails(id: UUID): Promise<ScheduleClassDetailsDto> {
+		return (
+			await axios.get(
+				this.serverUrl + "/ScheduleClass/" + id.toString() + "/details",
+				{ withCredentials: true },
+			)
+		).data;
 	}
 }
 

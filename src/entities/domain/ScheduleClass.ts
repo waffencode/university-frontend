@@ -1,5 +1,6 @@
 import Classroom from "@/entities/domain/Classroom";
 import ClassTimeSlot from "@/entities/domain/ClassTimeSlot";
+import ScheduleClassDetails from "@/entities/domain/ScheduleClassDetails";
 import StudyGroup from "@/entities/domain/StudyGroup";
 import { SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram";
 import { createListCollection } from "@chakra-ui/react";
@@ -32,6 +33,7 @@ export interface ScheduleClassDto {
 	subjectWorkProgramId: UUID;
 	classType: ClassType;
 	groupsId: UUID[];
+	detailsId: string;
 }
 
 interface ScheduleClass {
@@ -44,6 +46,7 @@ interface ScheduleClass {
 	subjectWorkProgram: SubjectWorkProgram;
 	classType: ClassType;
 	groups: StudyGroup[];
+	details: ScheduleClassDetails;
 }
 
 export default ScheduleClass;

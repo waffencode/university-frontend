@@ -6,8 +6,10 @@ import {
 	Center,
 	HStack,
 	Input,
+	Link,
 	Spinner,
 	Stack,
+	Text,
 	VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -121,6 +123,11 @@ const LoginPage: React.FC = () => {
 											value={password}
 											placeholder="Пароль"
 										/>
+										<Box textAlign="right" w={"100%"}>
+											<Text fontSize="sm">
+												<Link>Забыли пароль?..</Link>
+											</Text>
+										</Box>
 										<HStack marginY={2}>
 											<Button onClick={handleLogin}>
 												{isLoginPending && (

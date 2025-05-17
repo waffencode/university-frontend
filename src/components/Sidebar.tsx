@@ -82,7 +82,7 @@ const Sidebar: React.FC = () => {
 	};
 
 	const onStudyGroupsPageClick = () => {
-		navigate("/studyGroups");
+		navigate("/study-groups");
 	};
 
 	const onUniversityPageClick = () => {

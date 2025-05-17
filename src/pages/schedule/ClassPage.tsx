@@ -1,21 +1,21 @@
 import AppPage from "@/components/AppPage";
+import CustomSelectField from "@/components/CustomSelectField";
 import { Button } from "@/components/ui/button";
+import { toaster } from "@/components/ui/toaster";
 import ScheduleClass, {
 	ClassTypesListCollection,
 } from "@/entities/domain/ScheduleClass";
+import ScheduleClassDetails, {
+	AttendanceTypesListCollection,
+	ScheduleClassDetailsDto,
+	StudentDetails,
+} from "@/entities/domain/ScheduleClassDetails";
 import { ApiContext } from "@/service/ApiProvider";
-import {
-	Box,
-	HStack,
-	NativeSelect,
-	Spinner,
-	Tabs,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, HStack, Spinner, Tabs, Text, VStack } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { LuUsers } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -23,8 +23,41 @@ const ClassPage = () => {
 	const scheduleClassId = useParams().scheduleClassId as UUID;
 	const navigate = useNavigate();
 	const apiContext = useContext(ApiContext);
+	const { handleSubmit, watch, setValue, control, getValues } =
+		useForm<ScheduleClassDetailsDto>({
+			defaultValues: {
+				id: "",
+				studentDetailsDtoList: [],
+			},
+		});
+	const formValues = watch();
 
 	const [scheduleClass, setScheduleClass] = useState<ScheduleClass>();
+
+	const onSubmit = async (data: ScheduleClassDetailsDto) => {
+		try {
+			data.studentDetailsDtoList.forEach(
+				(sd) => (sd.attendance = Number(sd.attendance)),
+			);
+
+			// console.log(data);
+			await apiContext.scheduleClass.updateClassJournal(
+				scheduleClassId,
+				data,
+			);
+
+			toaster.create({
+				title: "Сохранено",
+				type: "success",
+			});
+		} catch (e) {
+			console.error(e);
+			toaster.create({
+				title: "Ошибка",
+				type: "error",
+			});
+		}
+	};
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -34,19 +67,43 @@ const ClassPage = () => {
 				);
 
 			const studyGroups = Promise.all(
-				(await apiContext.studyGroup.getAll())
-					.filter((s) => response.groupsId.includes(s.id))
-					.map(async (s) => ({
-						id: s.id,
-						name: s.name,
-						students: (await apiContext.user.getAllUsers()).filter(
-							(u) => s.studentsIdList.includes(u.id),
-						),
-						fieldOfStudy: await apiContext.fieldOfStudy.getById(
-							s.fieldOfStudyId,
-						),
-					})),
+				(
+					await apiContext.scheduleClass.getStudyGroupsForClass(
+						scheduleClassId,
+					)
+				).map(async (s) => ({
+					id: s.id,
+					name: s.name,
+					students: (await apiContext.user.getAllUsers()).filter(
+						(u) => s.studentsIdList.includes(u.id),
+					),
+					fieldOfStudy: await apiContext.fieldOfStudy.getById(
+						s.fieldOfStudyId,
+					),
+				})),
 			);
+
+			const detailsDto =
+				await apiContext.scheduleClass.getScheduleClassDetails(
+					scheduleClassId,
+				);
+
+			const details: ScheduleClassDetails = {
+				id: detailsDto.id,
+				studentDetailsList: await Promise.all(
+					detailsDto.studentDetailsDtoList.map(
+						async (studentDetails) =>
+							({
+								id: studentDetails.id,
+								student: await apiContext.user.getUser(
+									studentDetails.studentId as UUID,
+								),
+								attendance: studentDetails.attendance,
+								grade: studentDetails.grade,
+							}) as StudentDetails,
+					),
+				),
+			};
 
 			const entity = {
 				id: response.id,
@@ -64,9 +121,21 @@ const ClassPage = () => {
 				),
 				classType: response.classType,
 				groups: await studyGroups,
+				details: details,
 			};
 
 			setScheduleClass(entity);
+
+			setValue("id", entity.details.id);
+			setValue(
+				"studentDetailsDtoList",
+				entity.details.studentDetailsList.map((s) => ({
+					id: s.id,
+					studentId: s.student.id,
+					attendance: s.attendance,
+					grade: s.grade,
+				})),
+			);
 		};
 
 		loadData();
@@ -74,159 +143,223 @@ const ClassPage = () => {
 
 	return (
 		<AppPage title="Журнал занятия">
-			<>
-				<pre
-					style={{
-						whiteSpace: "pre-wrap",
-						wordWrap: "break-word",
-						background: "white",
-						padding: "1rem",
-						borderRadius: "4px",
-						marginTop: "1rem",
-					}}
-				>
-					{JSON.stringify(scheduleClass, null, 2)}
-				</pre>
-				{scheduleClass === undefined ? (
-					<Spinner />
-				) : (
-					<>
-						<Box>
-							<Text>
-								Дисциплина:{" "}
-								{scheduleClass.subjectWorkProgram.subject.name}
-							</Text>
-							<Text>Тема: {scheduleClass.name}</Text>
-							<Text>
-								Преподаватель: {scheduleClass.teacher.fullName}
-							</Text>
-							<Text>
-								Дата:{" "}
-								{format(
-									new Date(scheduleClass.date),
-									"dd.MM.yyyy",
-								)}
-							</Text>
-							<Text>Время: {scheduleClass.timeSlot.name}</Text>
-							<Text>
-								Аудитория: {scheduleClass.classroom.designation}
-							</Text>
-							<Text>
-								Тип занятия:{" "}
-								{
-									ClassTypesListCollection.items[
-										scheduleClass.classType
-									].label
-								}
-							</Text>
-						</Box>
+			<pre
+				style={{
+					whiteSpace: "pre-wrap",
+					wordWrap: "break-word",
+					background: "white",
+					padding: "1rem",
+					borderRadius: "4px",
+					marginTop: "1rem",
+				}}
+			>
+				{JSON.stringify(scheduleClass, null, 2)}
+			</pre>
+			{scheduleClass === undefined ? (
+				<Spinner />
+			) : (
+				<>
+					<Box>
+						<Text>
+							Дисциплина:{" "}
+							{scheduleClass.subjectWorkProgram.subject.name}
+						</Text>
+						<Text>Тема: {scheduleClass.name}</Text>
+						<Text>
+							Преподаватель: {scheduleClass.teacher.fullName}
+						</Text>
+						<Text>
+							Дата:{" "}
+							{format(new Date(scheduleClass.date), "dd.MM.yyyy")}
+						</Text>
+						<Text>Время: {scheduleClass.timeSlot.name}</Text>
+						<Text>
+							Аудитория: {scheduleClass.classroom.designation}
+						</Text>
+						<Text>
+							Тип занятия:{" "}
+							{
+								ClassTypesListCollection.items[
+									scheduleClass.classType
+								].label
+							}
+						</Text>
+					</Box>
 
-						<Box mt={6}>
-							<p>Учебные группы на этом занятии:</p>
-							<Tabs.Root>
-								<Tabs.List>
-									{scheduleClass.groups?.map((group) => (
-										<Tabs.Trigger
-											key={group.id}
-											value={group.id}
-										>
-											<LuUsers />
-											{group.name}
-										</Tabs.Trigger>
-									))}
-								</Tabs.List>
-								{scheduleClass.groups?.map((group) => (
-									<Tabs.Content
-										key={group.id}
-										value={group.id}
-									>
-										<VStack
-											gap={3}
-											align="stretch"
-											w="100%"
-										>
-											{group.students.map((student) => (
-												<HStack
-													key={student.id}
-													p={1}
-													bg="white"
-													borderRadius="md"
-													borderWidth="1px"
-													borderColor="gray.100"
-													justifyContent="space-between"
-													_hover={{ bg: "gray.50" }}
+					<Box mt={6}>
+						<p>Учебные группы на этом занятии:</p>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<VStack gap={4} align="left">
+								<Tabs.Root>
+									<Tabs.List>
+										{scheduleClass.groups
+											?.sort((a, b) =>
+												a.name.localeCompare(b.name),
+											)
+											.map((group) => (
+												<Tabs.Trigger
+													key={group.id}
+													value={group.id}
 												>
-													<Text fontWeight="medium">
-														{student.fullName}
-													</Text>
-
-													<HStack gap={4}>
-														<NativeSelect.Root
-															size="sm"
-															defaultValue={""}
-														>
-															<NativeSelect.Field>
-																<option value="П">
-																	Присутствует
-																</option>
-																<option value="Б">
-																	Болел(-а)
-																</option>
-																<option value="Н">
-																	Уважительная
-																	причина
-																</option>
-																<option value="О">
-																	Отсутствовал(-а)
-																</option>
-															</NativeSelect.Field>
-															<NativeSelect.Indicator />
-														</NativeSelect.Root>
-
-														<HStack gap={2}>
-															{[
-																1, 2, 3, 4, 5,
-															].map((grade) => (
-																<Button
-																	key={grade}
-																	size="sm"
-																	colorScheme={
-																		5 ===
-																		grade
-																			? "blue"
-																			: "gray"
-																	}
-																	variant={
-																		5 ===
-																		grade
-																			? "solid"
-																			: "outline"
-																	}
-																>
-																	{grade}
-																</Button>
-															))}
-														</HStack>
-													</HStack>
-												</HStack>
+													<LuUsers />
+													{group.name}
+												</Tabs.Trigger>
 											))}
-										</VStack>
-									</Tabs.Content>
-								))}
-							</Tabs.Root>
-						</Box>
-					</>
-				)}
+									</Tabs.List>
+									{scheduleClass.groups
+										?.sort((a, b) =>
+											a.name.localeCompare(b.name),
+										)
+										.map((group, groupIndex) => (
+											<Tabs.Content
+												key={group.id}
+												value={group.id}
+											>
+												<VStack
+													gap={3}
+													align="stretch"
+													w="100%"
+												>
+													{group.students.map(
+														(student) => {
+															const studentIndex =
+																scheduleClass.details.studentDetailsList.findIndex(
+																	(s) =>
+																		s
+																			.student
+																			.id ===
+																		student.id,
+																);
 
-				<HStack gap={4} mt={4}>
-					<Button
-						variant="surface"
-						onClick={() => navigate("/schedule")}
-					>
-						Назад
-					</Button>
-				</HStack>
-			</>
+															return (
+																<HStack
+																	key={
+																		student.id
+																	}
+																	p={1}
+																	bg="white"
+																	borderRadius="md"
+																	borderWidth="1px"
+																	borderColor="gray.100"
+																	justifyContent="space-between"
+																	_hover={{
+																		bg: "gray.50",
+																	}}
+																>
+																	<Text fontWeight="medium">
+																		{
+																			student.fullName
+																		}
+																	</Text>
+
+																	<HStack
+																		gap={2}
+																		w="40%"
+																	>
+																		<CustomSelectField
+																			control={
+																				control
+																			}
+																			name={`studentDetailsDtoList.${studentIndex}.attendance`}
+																			options={
+																				AttendanceTypesListCollection.items
+																			}
+																			defaultValue={`studentDetailsDtoList.${studentIndex}.attendance`}
+																			size={
+																				"sm"
+																			}
+																		/>
+
+																		<Button
+																			size="sm"
+																			variant={
+																				getValues(
+																					`studentDetailsDtoList.${studentIndex}.grade`,
+																				) ===
+																				null
+																					? "solid"
+																					: "outline"
+																			}
+																			onClick={() => {
+																				setValue(
+																					`studentDetailsDtoList.${studentIndex}.grade`,
+																					null!,
+																				);
+																			}}
+																		>
+																			Без
+																			оценки
+																		</Button>
+																		{[
+																			1,
+																			2,
+																			3,
+																			4,
+																			5,
+																		].map(
+																			(
+																				grade,
+																			) => (
+																				<Button
+																					key={
+																						grade
+																					}
+																					size="sm"
+																					variant={
+																						getValues(
+																							`studentDetailsDtoList.${studentIndex}.grade`,
+																						) ===
+																						grade
+																							? "solid"
+																							: "outline"
+																					}
+																					onClick={() => {
+																						setValue(
+																							`studentDetailsDtoList.${studentIndex}.grade`,
+																							grade,
+																						);
+																					}}
+																				>
+																					{
+																						grade
+																					}
+																				</Button>
+																			),
+																		)}
+																	</HStack>
+																</HStack>
+															);
+														},
+													)}
+												</VStack>
+											</Tabs.Content>
+										))}
+								</Tabs.Root>
+								<Button type="submit">Сохранить</Button>
+							</VStack>
+						</form>
+					</Box>
+				</>
+			)}
+
+			<HStack gap={4} mt={4}>
+				<Button variant="surface" onClick={() => navigate("/schedule")}>
+					Назад
+				</Button>
+			</HStack>
+
+			<pre
+				style={{
+					whiteSpace: "pre-wrap",
+					wordWrap: "break-word",
+					background: "white",
+					padding: "1rem",
+					borderRadius: "4px",
+					marginTop: "1rem",
+				}}
+			>
+				{JSON.stringify(formValues, null, 2)}
+			</pre>
 		</AppPage>
 	);
 };

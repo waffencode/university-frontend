@@ -91,7 +91,7 @@ const App: React.FC = () => {
 							element={<SchedulingPage />}
 						/>
 						<Route
-							path="/studyGroups"
+							path="/study-groups"
 							element={<StudyGroupsPage />}
 						/>
 						<Route
