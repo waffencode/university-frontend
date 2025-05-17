@@ -11,26 +11,34 @@ import ScheduleClassDetails, {
 	StudentDetails,
 } from "@/entities/domain/ScheduleClassDetails";
 import { ApiContext } from "@/service/ApiProvider";
-import { Box, HStack, Spinner, Tabs, Text, VStack } from "@chakra-ui/react";
+import { formatTime } from "@/service/FormatDate";
+import {
+	Box,
+	HStack,
+	Image,
+	Spinner,
+	Tabs,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
 import { format } from "date-fns";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { LuUsers } from "react-icons/lu";
+import { LuSave, LuUsers } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ClassPage = () => {
 	const scheduleClassId = useParams().scheduleClassId as UUID;
 	const navigate = useNavigate();
 	const apiContext = useContext(ApiContext);
-	const { handleSubmit, watch, setValue, control, getValues } =
+	const { handleSubmit, setValue, control, getValues } =
 		useForm<ScheduleClassDetailsDto>({
 			defaultValues: {
 				id: "",
 				studentDetailsDtoList: [],
 			},
 		});
-	const formValues = watch();
 
 	const [scheduleClass, setScheduleClass] = useState<ScheduleClass>();
 
@@ -40,7 +48,6 @@ const ClassPage = () => {
 				(sd) => (sd.attendance = Number(sd.attendance)),
 			);
 
-			// console.log(data);
 			await apiContext.scheduleClass.updateClassJournal(
 				scheduleClassId,
 				data,
@@ -143,54 +150,120 @@ const ClassPage = () => {
 
 	return (
 		<AppPage title="Журнал занятия">
-			<pre
-				style={{
-					whiteSpace: "pre-wrap",
-					wordWrap: "break-word",
-					background: "white",
-					padding: "1rem",
-					borderRadius: "4px",
-					marginTop: "1rem",
-				}}
-			>
-				{JSON.stringify(scheduleClass, null, 2)}
-			</pre>
 			{scheduleClass === undefined ? (
 				<Spinner />
 			) : (
 				<>
-					<Box>
-						<Text>
-							Дисциплина:{" "}
-							{scheduleClass.subjectWorkProgram.subject.name}
-						</Text>
-						<Text>Тема: {scheduleClass.name}</Text>
-						<Text>
-							Преподаватель: {scheduleClass.teacher.fullName}
-						</Text>
-						<Text>
-							Дата:{" "}
-							{format(new Date(scheduleClass.date), "dd.MM.yyyy")}
-						</Text>
-						<Text>Время: {scheduleClass.timeSlot.name}</Text>
-						<Text>
-							Аудитория: {scheduleClass.classroom.designation}
-						</Text>
-						<Text>
-							Тип занятия:{" "}
-							{
-								ClassTypesListCollection.items[
-									scheduleClass.classType
-								].label
-							}
-						</Text>
-					</Box>
+					<HStack gap={6} alignItems="flex-start">
+						<VStack gap={4} align="left" w="30%">
+							<VStack gap={0} align="left">
+								<Text
+									textStyle="sm"
+									color="gray.400"
+									fontWeight="semibold"
+								>
+									Дисциплина
+								</Text>
+								<Text fontWeight="semibold">
+									{
+										scheduleClass.subjectWorkProgram.subject
+											.name
+									}
+								</Text>
+							</VStack>
+							<VStack gap={0} align="left">
+								<Text
+									textStyle="sm"
+									color="gray.400"
+									fontWeight="semibold"
+								>
+									Дата и время
+								</Text>
+								<Text fontWeight="semibold">
+									{format(
+										new Date(scheduleClass.date),
+										"dd.MM.yyyy",
+									)}{" "}
+									(
+									{formatTime(
+										scheduleClass.timeSlot.startTime,
+									)}
+									—
+									{formatTime(scheduleClass.timeSlot.endTime)}
+									)
+								</Text>
+							</VStack>
+							<VStack gap={0} align="left">
+								<Text
+									textStyle="sm"
+									color="gray.400"
+									fontWeight="semibold"
+								>
+									Аудитория
+								</Text>
+								<Text fontWeight="semibold">
+									{scheduleClass.classroom.designation}
+								</Text>
+							</VStack>
+							<VStack gap={0} align="left">
+								<Text
+									textStyle="sm"
+									color="gray.400"
+									fontWeight="semibold"
+								>
+									Вид занятия
+								</Text>
+								<Text fontWeight="semibold">
+									{
+										ClassTypesListCollection.items[
+											scheduleClass.classType
+										].label
+									}
+								</Text>
+							</VStack>
+						</VStack>
+						<VStack gap={4} align="left" w="40%">
+							<VStack gap={1} align="left">
+								<Text
+									textStyle="sm"
+									color="gray.400"
+									fontWeight="semibold"
+								>
+									Преподаватель
+								</Text>
+								<Text fontWeight="semibold">
+									<HStack gap={2}>
+										<Image
+											w="2.5rem"
+											borderRadius="full"
+											src={
+												scheduleClass.teacher.avatarUri
+											}
+										/>
+										{scheduleClass.teacher.fullName}
+									</HStack>
+								</Text>
+							</VStack>
+							<VStack gap={0} align="left">
+								<Text
+									textStyle="sm"
+									color="gray.400"
+									fontWeight="semibold"
+								>
+									Тема
+								</Text>
+								<Text>{scheduleClass.name}</Text>
+							</VStack>
+						</VStack>
+					</HStack>
 
 					<Box mt={6}>
 						<p>Учебные группы на этом занятии:</p>
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<VStack gap={4} align="left">
-								<Tabs.Root>
+								<Tabs.Root
+									defaultValue={scheduleClass.groups[0].id}
+								>
 									<Tabs.List>
 										{scheduleClass.groups
 											?.sort((a, b) =>
@@ -335,7 +408,10 @@ const ClassPage = () => {
 											</Tabs.Content>
 										))}
 								</Tabs.Root>
-								<Button type="submit">Сохранить</Button>
+								<Button w="15%" type="submit">
+									<LuSave />
+									Сохранить журнал
+								</Button>
 							</VStack>
 						</form>
 					</Box>
@@ -347,19 +423,6 @@ const ClassPage = () => {
 					Назад
 				</Button>
 			</HStack>
-
-			<pre
-				style={{
-					whiteSpace: "pre-wrap",
-					wordWrap: "break-word",
-					background: "white",
-					padding: "1rem",
-					borderRadius: "4px",
-					marginTop: "1rem",
-				}}
-			>
-				{JSON.stringify(formValues, null, 2)}
-			</pre>
 		</AppPage>
 	);
 };
