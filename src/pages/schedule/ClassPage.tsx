@@ -32,7 +32,7 @@ const ClassPage = () => {
 	const scheduleClassId = useParams().scheduleClassId as UUID;
 	const navigate = useNavigate();
 	const apiContext = useContext(ApiContext);
-	const { handleSubmit, setValue, control, getValues } =
+	const { handleSubmit, setValue, control, getValues, watch } =
 		useForm<ScheduleClassDetailsDto>({
 			defaultValues: {
 				id: "",
@@ -40,19 +40,22 @@ const ClassPage = () => {
 			},
 		});
 
+	watch();
+
 	const [scheduleClass, setScheduleClass] = useState<ScheduleClass>();
+	const [isSaving, setIsSaving] = useState(false);
 
 	const onSubmit = async (data: ScheduleClassDetailsDto) => {
 		try {
 			data.studentDetailsDtoList.forEach(
 				(sd) => (sd.attendance = Number(sd.attendance)),
 			);
-
+			setIsSaving(true);
 			await apiContext.scheduleClass.updateClassJournal(
 				scheduleClassId,
 				data,
 			);
-
+			setIsSaving(false);
 			toaster.create({
 				title: "Сохранено",
 				type: "success",
@@ -293,123 +296,137 @@ const ClassPage = () => {
 													align="stretch"
 													w="100%"
 												>
-													{group.students.map(
-														(student) => {
-															const studentIndex =
-																scheduleClass.details.studentDetailsList.findIndex(
-																	(s) =>
-																		s
-																			.student
-																			.id ===
-																		student.id,
-																);
+													{group.students
+														.sort((a, b) =>
+															a.fullName.localeCompare(
+																b.fullName,
+															),
+														)
+														.map(
+															(
+																student,
+																rowNumber,
+															) => {
+																const studentIndex =
+																	scheduleClass.details.studentDetailsList.findIndex(
+																		(s) =>
+																			s
+																				.student
+																				.id ===
+																			student.id,
+																	);
 
-															return (
-																<HStack
-																	key={
-																		student.id
-																	}
-																	p={1}
-																	bg="white"
-																	borderRadius="md"
-																	borderWidth="1px"
-																	borderColor="gray.100"
-																	justifyContent="space-between"
-																	_hover={{
-																		bg: "gray.50",
-																	}}
-																>
-																	<Text fontWeight="medium">
-																		{
-																			student.fullName
-																		}
-																	</Text>
-
+																return (
 																	<HStack
-																		gap={2}
-																		w="40%"
+																		key={
+																			student.id
+																		}
+																		p={1}
+																		bg="white"
+																		borderRadius="md"
+																		borderWidth="1px"
+																		borderColor="gray.100"
+																		justifyContent="space-between"
+																		_hover={{
+																			bg: "gray.50",
+																		}}
 																	>
-																		<CustomSelectField
-																			control={
-																				control
+																		<Text fontWeight="medium">
+																			{rowNumber +
+																				1}
+																			.{" "}
+																			{
+																				student.fullName
 																			}
-																			name={`studentDetailsDtoList.${studentIndex}.attendance`}
-																			options={
-																				AttendanceTypesListCollection.items
-																			}
-																			defaultValue={`studentDetailsDtoList.${studentIndex}.attendance`}
-																			size={
-																				"sm"
-																			}
-																		/>
+																		</Text>
 
-																		<Button
-																			size="sm"
-																			variant={
-																				getValues(
-																					`studentDetailsDtoList.${studentIndex}.grade`,
-																				) ===
-																				null
-																					? "solid"
-																					: "outline"
+																		<HStack
+																			gap={
+																				2
 																			}
-																			onClick={() => {
-																				setValue(
-																					`studentDetailsDtoList.${studentIndex}.grade`,
-																					null!,
-																				);
-																			}}
+																			w="40%"
 																		>
-																			Без
-																			оценки
-																		</Button>
-																		{[
-																			1,
-																			2,
-																			3,
-																			4,
-																			5,
-																		].map(
-																			(
-																				grade,
-																			) => (
-																				<Button
-																					key={
-																						grade
-																					}
-																					size="sm"
-																					variant={
-																						getValues(
-																							`studentDetailsDtoList.${studentIndex}.grade`,
-																						) ===
-																						grade
-																							? "solid"
-																							: "outline"
-																					}
-																					onClick={() => {
-																						setValue(
-																							`studentDetailsDtoList.${studentIndex}.grade`,
-																							grade,
-																						);
-																					}}
-																				>
-																					{
-																						grade
-																					}
-																				</Button>
-																			),
-																		)}
+																			<CustomSelectField
+																				control={
+																					control
+																				}
+																				name={`studentDetailsDtoList.${studentIndex}.attendance`}
+																				options={
+																					AttendanceTypesListCollection.items
+																				}
+																				defaultValue={`studentDetailsDtoList.${studentIndex}.attendance`}
+																				size={
+																					"sm"
+																				}
+																			/>
+
+																			<Button
+																				size="sm"
+																				variant={
+																					getValues(
+																						`studentDetailsDtoList.${studentIndex}.grade`,
+																					) ===
+																					null
+																						? "solid"
+																						: "outline"
+																				}
+																				onClick={() => {
+																					setValue(
+																						`studentDetailsDtoList.${studentIndex}.grade`,
+																						null!,
+																					);
+																				}}
+																			>
+																				Без
+																				оценки
+																			</Button>
+																			{[
+																				1,
+																				2,
+																				3,
+																				4,
+																				5,
+																			].map(
+																				(
+																					grade,
+																				) => (
+																					<Button
+																						key={
+																							grade
+																						}
+																						size="sm"
+																						variant={
+																							getValues(
+																								`studentDetailsDtoList.${studentIndex}.grade`,
+																							) ===
+																							grade
+																								? "solid"
+																								: "outline"
+																						}
+																						onClick={() => {
+																							setValue(
+																								`studentDetailsDtoList.${studentIndex}.grade`,
+																								grade,
+																							);
+																						}}
+																					>
+																						{
+																							grade
+																						}
+																					</Button>
+																				),
+																			)}
+																		</HStack>
 																	</HStack>
-																</HStack>
-															);
-														},
-													)}
+																);
+															},
+														)}
 												</VStack>
 											</Tabs.Content>
 										))}
 								</Tabs.Root>
 								<Button w="15%" type="submit">
-									<LuSave />
+									{isSaving ? <Spinner /> : <LuSave />}
 									Сохранить журнал
 								</Button>
 							</VStack>
