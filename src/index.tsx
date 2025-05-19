@@ -26,12 +26,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
 		<ChakraProvider value={system}>
 			<ColorModeProvider>
-				<BrowserRouter
-					future={{
-						v7_startTransition: true,
-						v7_relativeSplatPath: true,
-					}}
-				>
+				<BrowserRouter>
 					<CookiesProvider>
 						<App />
 					</CookiesProvider>

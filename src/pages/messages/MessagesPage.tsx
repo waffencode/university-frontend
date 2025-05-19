@@ -105,6 +105,7 @@ const MessagesPage: React.FC = () => {
 							)
 							.map((message: Message) => (
 								<MessagePreviewCard
+									key={message.id}
 									message={message}
 									showExistingMessage={showExistingMessage}
 								/>

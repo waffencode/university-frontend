@@ -91,6 +91,7 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 				sender: userContext.user!,
 				receivers: [],
 				receiversStudyGroup: [],
+				attachments: [],
 			};
 
 			setNewMessage(emptyMessage);
@@ -147,7 +148,7 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 								Это сообщение с высокой важностью
 							</Checkbox>
 							<Field label="Текст сообщения (поддерживается Markdown)">
-								{isPreviewEnabled && (
+								{isPreviewEnabled ? (
 									<>
 										<Box
 											p="2"
@@ -173,8 +174,7 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 											Отключить предпросмотр
 										</Button>
 									</>
-								)}
-								{!isPreviewEnabled && (
+								) : (
 									<>
 										<Textarea
 											resize="vertical"
