@@ -138,7 +138,6 @@ const MessagesPage: React.FC = () => {
 						present={isNewMessageModeActive}
 					>
 						<NewMessageForm
-							isNewMessageModeActive={isNewMessageModeActive}
 							setIsNewMessageModeActive={
 								setIsNewMessageModeActive
 							}

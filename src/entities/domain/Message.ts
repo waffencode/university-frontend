@@ -3,7 +3,7 @@ import StudyGroup from "@/entities/domain/StudyGroup";
 import { UUID } from "node:crypto";
 import User from "./User.ts";
 
-interface MessageDto {
+export interface MessageDto {
 	id: string;
 	topic: string;
 	text: string;
