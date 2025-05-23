@@ -38,20 +38,27 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 	const apiContext = useContext(ApiContext);
 	const userContext = useContext(UserContext)!;
 
-	const { register, handleSubmit, control, watch, getValues, setValue } =
-		useForm<MessageDto>({
-			defaultValues: {
-				id: v4() as UUID,
-				topic: "",
-				text: "",
-				date: new Date().toISOString(),
-				isImportant: false,
-				senderId: userContext.user?.id,
-				receiversIds: [],
-				receiversStudyGroupIds: [],
-				attachments: [],
-			},
-		});
+	const {
+		register,
+		handleSubmit,
+		control,
+		watch,
+		getValues,
+		setValue,
+		reset,
+	} = useForm<MessageDto>({
+		defaultValues: {
+			id: v4() as UUID,
+			topic: "",
+			text: "",
+			date: new Date().toISOString(),
+			isImportant: false,
+			senderId: userContext.user?.id,
+			receiversIds: [],
+			receiversStudyGroupIds: [],
+			attachments: [],
+		},
+	});
 
 	watch();
 
@@ -319,7 +326,7 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 								<Button
 									colorPalette="red"
 									variant="surface"
-									onClick={setIsNewMessageModeActive(false)}
+									onClick={() => reset()}
 								>
 									<LuTrash />
 									Удалить
