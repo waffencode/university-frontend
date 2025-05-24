@@ -20,6 +20,12 @@ class ClassroomApi {
 		);
 		return response.data;
 	}
+
+	async create(classroom: Classroom): Promise<Classroom> {
+		return await axios.post(this.serverUrl + "/Classroom/", classroom, {
+			withCredentials: true,
+		});
+	}
 }
 
 export default ClassroomApi;
