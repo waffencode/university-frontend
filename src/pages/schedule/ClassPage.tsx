@@ -10,8 +10,10 @@ import ScheduleClassDetails, {
 	ScheduleClassDetailsDto,
 	StudentDetails,
 } from "@/entities/domain/ScheduleClassDetails";
+import UserRole from "@/entities/domain/UserRole";
 import { ApiContext } from "@/service/ApiProvider";
 import { formatTime } from "@/service/FormatDate";
+import { UserContext } from "@/service/UserProvider";
 import {
 	Box,
 	HStack,
@@ -29,6 +31,7 @@ import { LuSave, LuUsers } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ClassPage = () => {
+	const userContext = useContext(UserContext);
 	const scheduleClassId = useParams().scheduleClassId as UUID;
 	const navigate = useNavigate();
 	const apiContext = useContext(ApiContext);
@@ -260,178 +263,196 @@ const ClassPage = () => {
 						</VStack>
 					</HStack>
 
-					<Box mt={6}>
-						<p>Учебные группы на этом занятии:</p>
-						<form onSubmit={handleSubmit(onSubmit)}>
-							<VStack gap={4} align="left">
-								<Tabs.Root
-									defaultValue={scheduleClass.groups[0].id}
-								>
-									<Tabs.List>
-										{scheduleClass.groups
-											?.sort((a, b) =>
-												a.name.localeCompare(b.name),
-											)
-											.map((group) => (
-												<Tabs.Trigger
-													key={group.id}
-													value={group.id}
-												>
-													<LuUsers />
-													{group.name}
-												</Tabs.Trigger>
-											))}
-									</Tabs.List>
-									{scheduleClass.groups
-										?.sort((a, b) =>
-											a.name.localeCompare(b.name),
-										)
-										.map((group, groupIndex) => (
-											<Tabs.Content
-												key={group.id}
-												value={group.id}
-											>
-												<VStack
-													gap={3}
-													align="stretch"
-													w="100%"
-												>
-													{group.students
-														.sort((a, b) =>
-															a.fullName.localeCompare(
-																b.fullName,
-															),
-														)
-														.map(
-															(
-																student,
-																rowNumber,
-															) => {
-																const studentIndex =
-																	scheduleClass.details.studentDetailsList.findIndex(
-																		(s) =>
-																			s
-																				.student
-																				.id ===
-																			student.id,
-																	);
+					{userContext &&
+						userContext!.user!.role !== UserRole.Student && (
+							<Box mt={6}>
+								<p>Учебные группы на этом занятии:</p>
+								<form onSubmit={handleSubmit(onSubmit)}>
+									<VStack gap={4} align="left">
+										<Tabs.Root
+											defaultValue={
+												scheduleClass.groups[0].id
+											}
+										>
+											<Tabs.List>
+												{scheduleClass.groups
+													?.sort((a, b) =>
+														a.name.localeCompare(
+															b.name,
+														),
+													)
+													.map((group) => (
+														<Tabs.Trigger
+															key={group.id}
+															value={group.id}
+														>
+															<LuUsers />
+															{group.name}
+														</Tabs.Trigger>
+													))}
+											</Tabs.List>
+											{scheduleClass.groups
+												?.sort((a, b) =>
+													a.name.localeCompare(
+														b.name,
+													),
+												)
+												.map((group, groupIndex) => (
+													<Tabs.Content
+														key={group.id}
+														value={group.id}
+													>
+														<VStack
+															gap={3}
+															align="stretch"
+															w="100%"
+														>
+															{group.students
+																.sort((a, b) =>
+																	a.fullName.localeCompare(
+																		b.fullName,
+																	),
+																)
+																.map(
+																	(
+																		student,
+																		rowNumber,
+																	) => {
+																		const studentIndex =
+																			scheduleClass.details.studentDetailsList.findIndex(
+																				(
+																					s,
+																				) =>
+																					s
+																						.student
+																						.id ===
+																					student.id,
+																			);
 
-																return (
-																	<HStack
-																		key={
-																			student.id
-																		}
-																		p={1}
-																		bg="white"
-																		borderRadius="md"
-																		borderWidth="1px"
-																		borderColor="gray.100"
-																		justifyContent="space-between"
-																		_hover={{
-																			bg: "gray.50",
-																		}}
-																	>
-																		<Text fontWeight="medium">
-																			{rowNumber +
-																				1}
-																			.{" "}
-																			{
-																				student.fullName
-																			}
-																		</Text>
-
-																		<HStack
-																			gap={
-																				2
-																			}
-																			w="40%"
-																		>
-																			<CustomSelectField
-																				control={
-																					control
+																		return (
+																			<HStack
+																				key={
+																					student.id
 																				}
-																				name={`studentDetailsDtoList.${studentIndex}.attendance`}
-																				options={
-																					AttendanceTypesListCollection.items
+																				p={
+																					1
 																				}
-																				defaultValue={`studentDetailsDtoList.${studentIndex}.attendance`}
-																				size={
-																					"sm"
-																				}
-																			/>
-
-																			<Button
-																				size="sm"
-																				variant={
-																					getValues(
-																						`studentDetailsDtoList.${studentIndex}.grade`,
-																					) ===
-																					null
-																						? "solid"
-																						: "outline"
-																				}
-																				onClick={() => {
-																					setValue(
-																						`studentDetailsDtoList.${studentIndex}.grade`,
-																						null!,
-																					);
+																				bg="white"
+																				borderRadius="md"
+																				borderWidth="1px"
+																				borderColor="gray.100"
+																				justifyContent="space-between"
+																				_hover={{
+																					bg: "gray.50",
 																				}}
 																			>
-																				Без
-																				оценки
-																			</Button>
-																			{[
-																				1,
-																				2,
-																				3,
-																				4,
-																				5,
-																			].map(
-																				(
-																					grade,
-																				) => (
-																					<Button
-																						key={
-																							grade
+																				<Text fontWeight="medium">
+																					{rowNumber +
+																						1}
+
+																					.{" "}
+																					{
+																						student.fullName
+																					}
+																				</Text>
+
+																				<HStack
+																					gap={
+																						2
+																					}
+																					w="40%"
+																				>
+																					<CustomSelectField
+																						control={
+																							control
 																						}
+																						name={`studentDetailsDtoList.${studentIndex}.attendance`}
+																						options={
+																							AttendanceTypesListCollection.items
+																						}
+																						defaultValue={`studentDetailsDtoList.${studentIndex}.attendance`}
+																						size={
+																							"sm"
+																						}
+																					/>
+
+																					<Button
 																						size="sm"
 																						variant={
 																							getValues(
 																								`studentDetailsDtoList.${studentIndex}.grade`,
 																							) ===
-																							grade
+																							null
 																								? "solid"
 																								: "outline"
 																						}
 																						onClick={() => {
 																							setValue(
 																								`studentDetailsDtoList.${studentIndex}.grade`,
-																								grade,
+																								null!,
 																							);
 																						}}
 																					>
-																						{
-																							grade
-																						}
+																						Без
+																						оценки
 																					</Button>
-																				),
-																			)}
-																		</HStack>
-																	</HStack>
-																);
-															},
-														)}
-												</VStack>
-											</Tabs.Content>
-										))}
-								</Tabs.Root>
-								<Button w="15%" type="submit">
-									{isSaving ? <Spinner /> : <LuSave />}
-									Сохранить журнал
-								</Button>
-							</VStack>
-						</form>
-					</Box>
+																					{[
+																						1,
+																						2,
+																						3,
+																						4,
+																						5,
+																					].map(
+																						(
+																							grade,
+																						) => (
+																							<Button
+																								key={
+																									grade
+																								}
+																								size="sm"
+																								variant={
+																									getValues(
+																										`studentDetailsDtoList.${studentIndex}.grade`,
+																									) ===
+																									grade
+																										? "solid"
+																										: "outline"
+																								}
+																								onClick={() => {
+																									setValue(
+																										`studentDetailsDtoList.${studentIndex}.grade`,
+																										grade,
+																									);
+																								}}
+																							>
+																								{
+																									grade
+																								}
+																							</Button>
+																						),
+																					)}
+																				</HStack>
+																			</HStack>
+																		);
+																	},
+																)}
+														</VStack>
+													</Tabs.Content>
+												))}
+										</Tabs.Root>
+										<Button w="15%" type="submit">
+											{isSaving ? (
+												<Spinner />
+											) : (
+												<LuSave />
+											)}
+											Сохранить журнал
+										</Button>
+									</VStack>
+								</form>
+							</Box>
+						)}
 				</>
 			)}
 
