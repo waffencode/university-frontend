@@ -1,3 +1,5 @@
+import UserRole from "@/entities/domain/UserRole";
+import { UserContext } from "@/service/UserProvider";
 import {
 	Box,
 	Button,
@@ -8,13 +10,14 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AppPage from "../../components/AppPage";
 import "./DashboardPage.css";
 
 const DashboardPage: React.FC = () => {
 	const navigate = useNavigate();
+	const userRole: UserRole = useContext(UserContext)!.user!.role;
 
 	return (
 		<AppPage>
@@ -63,21 +66,23 @@ const DashboardPage: React.FC = () => {
 						</Button>
 					</Box>
 
-					<Box className="nav-card">
-						<Heading size="md" className="nav-title">
-							Дисциплины
-						</Heading>
-						<Text className="nav-description">
-							Доступ к материалам курсов, рабочим программам и
-							заданиям
-						</Text>
-						<Button
-							className="nav-button"
-							onClick={() => navigate("/classes")}
-						>
-							Перейти
-						</Button>
-					</Box>
+					{userRole !== UserRole.Student && (
+						<Box className="nav-card">
+							<Heading size="md" className="nav-title">
+								Дисциплины
+							</Heading>
+							<Text className="nav-description">
+								Доступ к материалам курсов, рабочим программам и
+								заданиям
+							</Text>
+							<Button
+								className="nav-button"
+								onClick={() => navigate("/classes")}
+							>
+								Перейти
+							</Button>
+						</Box>
+					)}
 
 					<Box className="nav-card">
 						<Heading size="md" className="nav-title">
@@ -110,37 +115,41 @@ const DashboardPage: React.FC = () => {
 						</Button>
 					</Box>
 
-					<Box className="nav-card">
-						<Heading size="md" className="nav-title">
-							Администрирование
-						</Heading>
-						<Text className="nav-description">
-							Управление пользователями, курсами и системными
-							настройками (для администраторов)
-						</Text>
-						<Button
-							className="nav-button"
-							onClick={() => navigate("/admin")}
-						>
-							Перейти
-						</Button>
-					</Box>
+					{userRole === UserRole.Admin && (
+						<Box className="nav-card">
+							<Heading size="md" className="nav-title">
+								Администрирование
+							</Heading>
+							<Text className="nav-description">
+								Управление пользователями, курсами и системными
+								настройками (для администраторов)
+							</Text>
+							<Button
+								className="nav-button"
+								onClick={() => navigate("/admin")}
+							>
+								Перейти
+							</Button>
+						</Box>
+					)}
 
-					<Box className="nav-card">
-						<Heading size="md" className="nav-title">
-							Рабочие программы
-						</Heading>
-						<Text className="nav-description">
-							Создание и редактирование рабочих программ дисциплин
-							(для преподавателей)
-						</Text>
-						<Button
-							className="nav-button"
-							onClick={() => navigate("/classes")}
-						>
-							Перейти
-						</Button>
-					</Box>
+					{userRole !== UserRole.Student && (
+						<Box className="nav-card">
+							<Heading size="md" className="nav-title">
+								Рабочие программы
+							</Heading>
+							<Text className="nav-description">
+								Создание и редактирование рабочих программ
+								дисциплин (для преподавателей)
+							</Text>
+							<Button
+								className="nav-button"
+								onClick={() => navigate("/classes")}
+							>
+								Перейти
+							</Button>
+						</Box>
+					)}
 				</SimpleGrid>
 			</Box>
 		</AppPage>
