@@ -24,6 +24,14 @@ class UserApi {
 		};
 	}
 
+	async getProfile(): Promise<User> {
+		return (
+			await axios.get(this.serverUrl + "/User/profile", {
+				withCredentials: true,
+			})
+		).data;
+	}
+
 	async getAllUsers(): Promise<User[]> {
 		const response = await axios.get(this.serverUrl + "/User/", {
 			withCredentials: true,

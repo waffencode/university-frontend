@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import CryptoJS from "crypto-js";
-import { UUID } from "node:crypto";
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ConfigContext } from "../components/ConfigProvider";
@@ -54,11 +53,10 @@ const LoginPage: React.FC = () => {
 				params: { email: email, passwordHash: hashedPassword },
 				withCredentials: true,
 			})
-			.then(async (response) => {
+			.then(async () => {
 				setIsError(false);
 				setResponse("Success!");
-				const id: UUID = response.data;
-				userContext?.setUser(await apiContext.user.getUser(id));
+				userContext?.setUser(await apiContext.user.getProfile());
 				setIsLoginPending(false);
 				navigate("/dashboard");
 			})
