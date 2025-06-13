@@ -4,56 +4,54 @@ import { Alert } from "@/components/ui/alert";
 import { PasswordInput } from "@/components/ui/password-input";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import { Box, Button, Card, Center, HStack, Input, Link, Spinner, Stack, Text, VStack } from "@chakra-ui/react";
+import { Button, Card, Center, HStack, Input, Link, Spinner, Text, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import React, { useContext, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+
+interface LoginFormData {
+	email: string;
+	password: string;
+}
 
 const LoginPage: React.FC = () => {
 	const navigate = useNavigate();
-
-	const [email, setEmail] = React.useState<string>("");
-	const [password, setPassword] = React.useState<string>("");
-	const [response, setResponse] = React.useState<string>("");
-	const [isError, setIsError] = React.useState<boolean>(false);
-
-	const [isLoginPending, setIsLoginPending] = React.useState<boolean>(false);
-
-	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
+	const { handleSubmit, register } = useForm<LoginFormData>();
 	const { serverUrl } = useContext(ConfigContext);
 	const userContext = useContext(UserContext);
 	const apiContext = useContext(ApiContext);
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-	const handleLogin = () => {
+	const [response, setResponse] = React.useState<string>("");
+	const [isError, setIsError] = React.useState<boolean>(false);
+	const [isLoginPending, setIsLoginPending] = React.useState<boolean>(false);
+
+	const handleLogin = (data: LoginFormData) => {
 		setIsLoginPending(true);
-
-		const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
 
 		axios
 			.get(serverUrl + "/User/login", {
-				params: { email: email, passwordHash: hashedPassword },
+				params: { email: data.email, passwordHash: CryptoJS.SHA256(data.password).toString(CryptoJS.enc.Hex) },
 				withCredentials: true,
 			})
 			.then(async () => {
 				setIsError(false);
-				setResponse("Success!");
 				userContext?.setUser(await apiContext.user.getProfile());
-				setIsLoginPending(false);
 				navigate("/dashboard");
 			})
 			.catch((error) => {
-				setIsLoginPending(false);
 				setIsError(true);
-				console.error(error);
-				setResponse(error.toString());
-			});
+				if (axios.isAxiosError(error) && error.response?.status === 404) {
+					setResponse("Неверный логин или пароль. Проверьте правильность введенных данных.");
+				} else {
+					console.error(error);
+					setResponse(error.toString());
+				}
+			})
+			.finally(() => setIsLoginPending(false));
 	};
-
-	function redirectToRegistrationPage() {
-		navigate("/register");
-	}
 
 	useEffect(() => {
 		if (userContext?.user) {
@@ -64,51 +62,37 @@ const LoginPage: React.FC = () => {
 	return (
 		<>
 			<HeaderBar />
-			<Center h="60vh">
-				<Box p="10" maxW="100%" w={isMobile ? "100%" : "40%"}>
-					<Stack>
-						<Card.Root p={1} rounded="md" boxShadow="md" w="90%" mx="auto" size="sm">
-							<Card.Header>
-								<Card.Title>Авторизация</Card.Title>
-							</Card.Header>
-							<Card.Body>
-								{isError && (
-									<Alert status="error" marginY={2} title="Ошибка!">
-										{response}
-									</Alert>
-								)}
-								<Center>
-									<VStack gap={2}>
-										<Input
-											onChange={(e) => setEmail(e.target.value)}
-											value={email}
-											placeholder="Логин"
-										/>
-										<PasswordInput
-											onChange={(e) => setPassword(e.target.value)}
-											value={password}
-											placeholder="Пароль"
-										/>
-										<Box textAlign="right" w={"100%"}>
-											<Text fontSize="sm">
-												<Link>Забыли пароль?..</Link>
-											</Text>
-										</Box>
-										<HStack marginY={2}>
-											<Button onClick={handleLogin}>
-												{isLoginPending && <Spinner size="sm" />}
-												Войти
-											</Button>
-											<Button variant="subtle" onClick={() => redirectToRegistrationPage()}>
-												Регистрация
-											</Button>
-										</HStack>
-									</VStack>
-								</Center>
-							</Card.Body>
-						</Card.Root>
-					</Stack>
-				</Box>
+			<Center h="60vh" px="10" maxW={isMobile ? "100%" : "40%"} w="100%" mx="auto">
+				<Card.Root p={1} rounded="md" boxShadow="md" w="90%" size="sm">
+					<Card.Header>
+						<Card.Title>Авторизация</Card.Title>
+					</Card.Header>
+					<Card.Body alignItems="center">
+						{isError && (
+							<Alert status="error" my={2} title="Ошибка!">
+								{response}
+							</Alert>
+						)}
+						<form onSubmit={handleSubmit(handleLogin)}>
+							<VStack gap={2} align="stretch">
+								<Input {...register("email")} required placeholder="Логин" />
+								<PasswordInput {...register("password")} required placeholder="Пароль" />
+								<Text fontSize="sm" textAlign="right">
+									<Link>Забыли пароль?..</Link>
+								</Text>
+								<HStack my={2}>
+									<Button type="submit" disabled={isLoginPending}>
+										{isLoginPending && <Spinner size="sm" />}
+										Войти
+									</Button>
+									<Button variant="subtle" onClick={() => navigate("/register")}>
+										Регистрация
+									</Button>
+								</HStack>
+							</VStack>
+						</form>
+					</Card.Body>
+				</Card.Root>
 			</Center>
 		</>
 	);
