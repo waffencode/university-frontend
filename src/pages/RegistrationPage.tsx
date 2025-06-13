@@ -1,117 +1,74 @@
+import CustomSelectField from "@/components/CustomSelectField";
 import HeaderBar from "@/components/headerbar/HeaderBar.tsx";
+import { Field } from "@/components/ui/field";
+import { PasswordInput, PasswordStrengthMeter } from "@/components/ui/password-input";
+import DebugView from "@/service/DebugView";
 import { UserContext } from "@/service/UserProvider";
 import {
 	Box,
 	Button,
 	Card,
 	Center,
-	createListCollection,
+	Checkbox,
 	Heading,
 	HStack,
 	Image,
 	Input,
-	Select,
 	Stack,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { sha256 } from "js-sha256";
+import CryptoJS from "crypto-js";
 import { UUID } from "node:crypto";
 import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
 // Password strength meter.
 import { zxcvbn } from "zxcvbn-typescript";
-import { Checkbox } from "../components/ui/checkbox";
-import { Field } from "../components/ui/field";
-import {
-	PasswordInput,
-	PasswordStrengthMeter,
-} from "../components/ui/password-input";
 import User from "../entities/domain/User.ts";
-import UserRole from "../entities/domain/UserRole.ts";
+import UserRole, { UserRoleNamesCollection } from "../entities/domain/UserRole.ts";
 
-const dummyUser: User = {
-	id: v4() as UUID,
-	passwordHash: "",
-	username: "",
-	fullName: "",
-	email: "",
-	role: UserRole.Unauthorized,
-	avatarUri: "",
-};
+interface UserRegistrationProps {
+	user: User;
+	password: string;
+	confirmedPassword: string;
+	isAgree: boolean;
+}
 
 const RegistrationPage: React.FC = () => {
+	const { register, handleSubmit, control, setValue, getValues, watch } = useForm<UserRegistrationProps>({
+		defaultValues: {
+			user: { id: v4() as UUID, role: UserRole.Unauthorized },
+			password: "",
+			confirmedPassword: "",
+			isAgree: false,
+		},
+	});
+
+	watch();
+
 	const navigate = useNavigate();
 	const userContext = React.useContext(UserContext)!;
 
-	const [newUser, setNewUser] = React.useState<User>(dummyUser);
-	const [password, setPassword] = React.useState<string>("");
-	const [isAgree, setIsAgree] = React.useState<boolean>(false);
-	const [confirmedPassword, setConfirmedPassword] =
-		React.useState<string>("");
-
-	const roles = createListCollection({
-		items: [
-			{ label: "Студент", value: UserRole.Student },
-			{ label: "Преподаватель", value: UserRole.Teacher },
-			{ label: "Методист", value: UserRole.Manager },
-			{ label: "Администратор", value: UserRole.Admin },
-		],
-	});
-
-	function handleRegistration() {
+	const handleRegistration = (data: UserRegistrationProps) => {
 		try {
-			if (password !== confirmedPassword || !isAgree) {
-				// TODO: Show error.
-				return;
-			}
-			const hashedPassword = sha256(password);
-
-			setNewUser((prevUser) => {
-				return { ...prevUser, passwordHash: hashedPassword };
-			});
-
-			if (newUser.passwordHash !== hashedPassword) {
+			if (data.password !== data.confirmedPassword || !data.isAgree) {
 				// TODO: Show error.
 				return;
 			}
 
-			userContext.setUser(newUser);
+			data.user.passwordHash = CryptoJS.SHA256(data.password).toString(CryptoJS.enc.Hex);
+			data.user.role = Number(getValues("user.role"));
+
+			userContext.setUser(data.user);
 		} catch (e) {
 			// TODO: Show error.
 			console.log(e);
 			return;
 		}
 		navigate("/register/confirm");
-	}
-
-	function setEmail(newEmail: string) {
-		setNewUser((prevUser) => {
-			return { ...prevUser, email: newEmail };
-		});
-	}
-
-	function setUsername(newUsername: string) {
-		setNewUser((prevUser) => {
-			return { ...prevUser, username: newUsername };
-		});
-	}
-
-	function setFullName(newFullName: string) {
-		setNewUser((prevUser) => {
-			return { ...prevUser, fullName: newFullName };
-		});
-	}
-
-	function setRole(newRoleAsString: string[]) {
-		setNewUser((prevUser) => {
-			return {
-				...prevUser,
-				role: newRoleAsString[0] as unknown as UserRole,
-			};
-		});
-	}
+	};
 
 	// Do not use <AppPage> here.
 	return (
@@ -120,155 +77,96 @@ const RegistrationPage: React.FC = () => {
 			<Center>
 				<Box p="5" maxW="100%" w="90%">
 					<Stack>
-						<Card.Root
-							p={1}
-							rounded="md"
-							boxShadow="md"
-							w="90%"
-							mx="auto"
-							size="sm"
-						>
+						<Card.Root p={1} rounded="md" boxShadow="md" w="90%" mx="auto" size="sm">
 							<Card.Header>
 								<Card.Title>Регистрация</Card.Title>
 							</Card.Header>
 							<Card.Body>
 								<HStack gap={30}>
-									<VStack gap={1} w="60%">
-										<Field label="Email">
-											<Input
-												placeholder="me@example.com"
-												onChange={(e) =>
-													setEmail(e.target.value)
-												}
-											/>
-										</Field>
-										<Field label="Логин">
-											<Input
-												placeholder="i.i.ivanov"
-												onChange={(e) =>
-													setUsername(e.target.value)
-												}
-											/>
-										</Field>
-										<Field label="ФИО">
-											<Input
-												placeholder="Иванов Иван Иванович"
-												onChange={(e) =>
-													setFullName(e.target.value)
-												}
-											/>
-										</Field>
-										<Field>
-											<Select.Root
-												collection={roles}
-												colorPalette="red"
-												onValueChange={(e) =>
-													setRole(e.value)
-												}
-											>
-												<Select.Label>
-													Роль пользователя
-												</Select.Label>
-												<Select.Trigger>
-													<Select.ValueText placeholder="Выберите роль" />
-												</Select.Trigger>
-												<Select.Content>
-													{roles.items.map((role) => (
-														<Select.Item
-															item={role}
-															key={role.value}
-															_hover={{
-																bg: "#f5f5f5",
-															}}
-														>
-															{role.label}
-														</Select.Item>
-													))}
-												</Select.Content>
-											</Select.Root>
-											<Text
-												textStyle="xs"
-												color="fg.muted"
-											>
-												Ваша роль будет проверена и
-												утверждена администратором
-												системы.
-											</Text>
-										</Field>
-										<Field label="Пароль">
-											<Stack maxW="100%">
-												<PasswordInput
-													onChange={(e) =>
-														setPassword(
-															e.target.value,
-														)
-													}
+									<VStack gap={1} w="60%" align="left">
+										<form onSubmit={handleSubmit(handleRegistration)}>
+											<Field label="Email">
+												<Input
+													placeholder="i.i.ivanov@example.com"
+													{...register("user.email")}
 												/>
-												<PasswordStrengthMeter
-													value={
-														zxcvbn(password).score
-													}
+											</Field>
+											<Field label="Логин">
+												<Input placeholder="i.i.ivanov" {...register("user.username")} />
+											</Field>
+											<Field label="ФИО">
+												<Input
+													placeholder="Иванов Иван Иванович"
+													{...register("user.fullName")}
 												/>
-											</Stack>
-										</Field>
-										<Field label="Повторите пароль">
-											<Stack maxW="100%">
-												<PasswordInput
-													onChange={(e) =>
-														setConfirmedPassword(
-															e.target.value,
-														)
-													}
+											</Field>
+											<Field label="Роль пользователя">
+												<CustomSelectField
+													control={control}
+													name={"user.role"}
+													options={UserRoleNamesCollection.items
+														.slice(1, UserRoleNamesCollection.items.length)
+														.map((i) => ({
+															label: i.label,
+															value: i.value.toString(),
+														}))}
 												/>
-											</Stack>
-										</Field>
-										<Checkbox
-											marginY={3}
-											alignItems="flex-start"
-											checked={isAgree}
-											onCheckedChange={(e) =>
-												setIsAgree(!!e.checked)
-											}
-										>
-											<Box lineHeight="1">
-												Даю согласие на сбор, обработку
-												и хранение персональных данных
-											</Box>
-											<Box
-												color="fg.muted"
-												fontWeight="normal"
-											>
-												В соответствии с №152-ФЗ «О
-												персональных данных»
-											</Box>
-										</Checkbox>
-										<HStack>
-											<Button
-												variant="subtle"
-												onClick={() => navigate(-1)}
-											>
-												Назад
-											</Button>
-											<Button
-												onClick={() =>
-													handleRegistration()
-												}
-											>
-												Зарегистрироваться
-											</Button>
-										</HStack>
+												<Text textStyle="xs" color="fg.muted">
+													Ваша роль будет проверена и утверждена администратором системы.
+												</Text>
+											</Field>
+											<Field label="Пароль">
+												<Stack maxW="100%">
+													<PasswordInput {...register("password")} />
+													<PasswordStrengthMeter
+														value={zxcvbn(getValues("password")).score}
+													/>
+												</Stack>
+											</Field>
+											<Field label="Повторите пароль">
+												<Stack maxW="100%">
+													<PasswordInput {...register("confirmedPassword")} />
+												</Stack>
+											</Field>
+											<Controller
+												control={control}
+												name="isAgree"
+												render={({ field }) => (
+													<Checkbox.Root
+														my={3}
+														checked={field.value}
+														onCheckedChange={({ checked }) => field.onChange(checked)}
+													>
+														<Checkbox.HiddenInput />
+														<Checkbox.Control />
+														<Checkbox.Label>
+															<Box lineHeight="1">
+																Даю согласие на сбор, обработку и хранение персональных
+																данных
+															</Box>
+															<Box color="fg.muted" fontWeight="normal">
+																В соответствии с №152-ФЗ «О персональных данных»
+															</Box>
+														</Checkbox.Label>
+													</Checkbox.Root>
+												)}
+											/>
+											<HStack>
+												<Button variant="subtle" onClick={() => navigate(-1)}>
+													Назад
+												</Button>
+												<Button type="submit">Зарегистрироваться</Button>
+											</HStack>
+										</form>
 									</VStack>
+
 									<Center w="50%">
 										<VStack gap={3}>
-											<Image
-												borderRadius="10px"
-												height="150px"
-												src="/static/img/logo.png"
-											/>
+											<DebugView data={getValues()} />
+											<Image borderRadius="10px" height="150px" src="/static/img/logo.png" />
 											<VStack marginY={10}>
 												<Heading>University</Heading>
-												Open-source платформа для
-												университета
+												Open-source платформа для университета
 											</VStack>
 										</VStack>
 									</Center>

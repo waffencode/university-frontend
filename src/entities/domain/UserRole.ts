@@ -1,21 +1,21 @@
-import {createListCollection} from "@chakra-ui/react";
+import { createListCollection } from "@chakra-ui/react";
 
 enum UserRole {
-    Unauthorized,
-    Student,
-    Teacher,
-    Manager,
-    Admin
+	Unauthorized,
+	Student,
+	Teacher,
+	Manager,
+	Admin,
 }
 
 export default UserRole;
 
 export const UserRoleNamesCollection = createListCollection({
-    items: [
-        { key: UserRole.Unauthorized, label: "Неавторизованный", value: "unauthorized" },
-        { key: UserRole.Student, label: "Студент", value: "student" },
-        { key: UserRole.Teacher, label: "Преподаватель", value: "teacher" },
-        { key: UserRole.Manager, label: "Методист", value: "manager" },
-        { key: UserRole.Admin, label: "Администратор", value: "administrator" },
-    ],
-})
+	items: [
+		{ key: UserRole.Unauthorized, label: "Неавторизованный", value: UserRole.Unauthorized },
+		{ key: UserRole.Student, label: "Студент", value: UserRole.Student },
+		{ key: UserRole.Teacher, label: "Преподаватель", value: UserRole.Teacher },
+		{ key: UserRole.Manager, label: "Методист", value: UserRole.Manager },
+		{ key: UserRole.Admin, label: "Администратор", value: UserRole.Admin },
+	],
+});
