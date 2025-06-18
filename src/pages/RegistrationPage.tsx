@@ -2,7 +2,6 @@ import CustomSelectField from "@/components/CustomSelectField";
 import HeaderBar from "@/components/headerbar/HeaderBar.tsx";
 import { Field } from "@/components/ui/field";
 import { PasswordInput, PasswordStrengthMeter } from "@/components/ui/password-input";
-import DebugView from "@/service/DebugView";
 import { UserContext } from "@/service/UserProvider";
 import {
 	Box,
@@ -37,7 +36,7 @@ interface UserRegistrationProps {
 }
 
 const RegistrationPage: React.FC = () => {
-	const { register, handleSubmit, control, setValue, getValues, watch } = useForm<UserRegistrationProps>({
+	const { register, handleSubmit, control, getValues, watch } = useForm<UserRegistrationProps>({
 		defaultValues: {
 			user: { id: v4() as UUID, role: UserRole.Unauthorized },
 			password: "",
@@ -87,15 +86,21 @@ const RegistrationPage: React.FC = () => {
 										<form onSubmit={handleSubmit(handleRegistration)}>
 											<Field label="Email">
 												<Input
+													required
 													placeholder="i.i.ivanov@example.com"
 													{...register("user.email")}
 												/>
 											</Field>
 											<Field label="Логин">
-												<Input placeholder="i.i.ivanov" {...register("user.username")} />
+												<Input
+													required
+													placeholder="i.i.ivanov"
+													{...register("user.username")}
+												/>
 											</Field>
 											<Field label="ФИО">
 												<Input
+													required
 													placeholder="Иванов Иван Иванович"
 													{...register("user.fullName")}
 												/>
@@ -117,7 +122,7 @@ const RegistrationPage: React.FC = () => {
 											</Field>
 											<Field label="Пароль">
 												<Stack maxW="100%">
-													<PasswordInput {...register("password")} />
+													<PasswordInput required {...register("password")} />
 													<PasswordStrengthMeter
 														value={zxcvbn(getValues("password")).score}
 													/>
@@ -125,7 +130,7 @@ const RegistrationPage: React.FC = () => {
 											</Field>
 											<Field label="Повторите пароль">
 												<Stack maxW="100%">
-													<PasswordInput {...register("confirmedPassword")} />
+													<PasswordInput required {...register("confirmedPassword")} />
 												</Stack>
 											</Field>
 											<Controller
@@ -133,6 +138,7 @@ const RegistrationPage: React.FC = () => {
 												name="isAgree"
 												render={({ field }) => (
 													<Checkbox.Root
+														required
 														my={3}
 														checked={field.value}
 														onCheckedChange={({ checked }) => field.onChange(checked)}
@@ -162,7 +168,6 @@ const RegistrationPage: React.FC = () => {
 
 									<Center w="50%">
 										<VStack gap={3}>
-											<DebugView data={getValues()} />
 											<Image borderRadius="10px" height="150px" src="/static/img/logo.png" />
 											<VStack marginY={10}>
 												<Heading>University</Heading>
