@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
 import Subject from "@/entities/domain/Subject";
 import { ApiContext } from "@/service/ApiProvider";
-import { HStack, Input, VStack } from "@chakra-ui/react";
+import { Button, Field, HStack, Input, VStack } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -46,7 +44,8 @@ const SubjectForm: React.FC<SubjectFormProps> = (props: SubjectFormProps) => {
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<VStack gap={8} align="left" width="40%">
-					<Field label="Наименование дисциплины">
+					<Field.Root>
+						<Field.Label>Наименование дисциплины</Field.Label>
 						<Input
 							id="name"
 							{...register("name")}
@@ -55,17 +54,12 @@ const SubjectForm: React.FC<SubjectFormProps> = (props: SubjectFormProps) => {
 							type="text"
 							maxLength={50}
 						/>
-					</Field>
+					</Field.Root>
 					<HStack gap={2}>
-						<Button
-							variant="surface"
-							onClick={() => navigate("/classes")}
-						>
+						<Button variant="surface" onClick={() => navigate("/classes")}>
 							Назад
 						</Button>
-						<Button type="submit">
-							{isEditMode ? "Сохранить" : "Добавить"}
-						</Button>
+						<Button type="submit">{isEditMode ? "Сохранить" : "Добавить"}</Button>
 					</HStack>
 				</VStack>
 			</form>

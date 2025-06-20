@@ -1,5 +1,4 @@
 import CustomSelectField from "@/components/CustomSelectField";
-import { Button } from "@/components/ui/button";
 import { Prose } from "@/components/ui/prose";
 import { toaster } from "@/components/ui/toaster";
 import { MessageDto } from "@/entities/domain/Message";
@@ -8,19 +7,7 @@ import User from "@/entities/domain/User";
 import ReceiversSelectDialog from "@/pages/messages/ReceiversSelectDialog";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import {
-	Badge,
-	Box,
-	Card,
-	Checkbox,
-	Field,
-	Flex,
-	HStack,
-	Input,
-	Text,
-	Textarea,
-	Wrap,
-} from "@chakra-ui/react";
+import { Badge, Box, Button, Card, Checkbox, Field, Flex, HStack, Input, Text, Textarea, Wrap } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -32,21 +19,11 @@ interface INewMessageFormProps {
 	setIsNewMessageModeActive: Function;
 }
 
-const NewMessageForm: React.FC<INewMessageFormProps> = ({
-	setIsNewMessageModeActive,
-}: INewMessageFormProps) => {
+const NewMessageForm: React.FC<INewMessageFormProps> = ({ setIsNewMessageModeActive }: INewMessageFormProps) => {
 	const apiContext = useContext(ApiContext);
 	const userContext = useContext(UserContext)!;
 
-	const {
-		register,
-		handleSubmit,
-		control,
-		watch,
-		getValues,
-		setValue,
-		reset,
-	} = useForm<MessageDto>({
+	const { register, handleSubmit, control, watch, getValues, setValue, reset } = useForm<MessageDto>({
 		defaultValues: {
 			id: v4() as UUID,
 			topic: "",
@@ -87,9 +64,7 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 		};
 
 		const loadReceivers = async () => {
-			const response = await apiContext.message.getAvailableReceivers(
-				userContext.user!.id,
-			);
+			const response = await apiContext.message.getAvailableReceivers(userContext.user!.id);
 			setProposedReceivers(response);
 		};
 
@@ -139,12 +114,7 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 						<Flex justify="flex-start" gap={5} direction="column">
 							<Field.Root>
 								<Field.Label>Тема</Field.Label>
-								<Input
-									required
-									maxLength={120}
-									placeholder="Тема"
-									{...register("topic")}
-								/>
+								<Input required maxLength={120} placeholder="Тема" {...register("topic")} />
 							</Field.Root>
 							<Controller
 								control={control}
@@ -153,24 +123,17 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 									<Field.Root>
 										<Checkbox.Root
 											checked={field.value}
-											onCheckedChange={({ checked }) =>
-												field.onChange(checked)
-											}
+											onCheckedChange={({ checked }) => field.onChange(checked)}
 										>
 											<Checkbox.HiddenInput />
 											<Checkbox.Control />
-											<Checkbox.Label>
-												Это сообщение с высокой
-												важностью
-											</Checkbox.Label>
+											<Checkbox.Label>Это сообщение с высокой важностью</Checkbox.Label>
 										</Checkbox.Root>
 									</Field.Root>
 								)}
 							/>
 							<Field.Root>
-								<Field.Label>
-									Текст сообщения (поддерживается Markdown)
-								</Field.Label>
+								<Field.Label>Текст сообщения (поддерживается Markdown)</Field.Label>
 								{isPreviewEnabled ? (
 									<>
 										<Box
@@ -182,18 +145,11 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 											w="100%"
 										>
 											<Prose>
-												<ReactMarkdown>
-													{getValues("text")}
-												</ReactMarkdown>
+												<ReactMarkdown>{getValues("text")}</ReactMarkdown>
 											</Prose>
 										</Box>
 
-										<Button
-											variant="outline"
-											onClick={() =>
-												setIsPreviewEnabled(false)
-											}
-										>
+										<Button variant="outline" onClick={() => setIsPreviewEnabled(false)}>
 											Отключить предпросмотр
 										</Button>
 									</>
@@ -206,12 +162,7 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 											placeholder="Текст сообщения"
 											{...register("text")}
 										/>
-										<Button
-											variant="outline"
-											onClick={() =>
-												setIsPreviewEnabled(true)
-											}
-										>
+										<Button variant="outline" onClick={() => setIsPreviewEnabled(true)}>
 											Предпросмотр
 										</Button>
 									</>
@@ -230,36 +181,28 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 							/>
 
 							<Wrap gap={2}>
-								{getValues("receiversIds")?.map(
-									(receiverId) => {
-										const receiver = proposedReceivers.find(
-											(s) => s.id === receiverId,
-										);
-										if (!receiver) return null;
+								{getValues("receiversIds")?.map((receiverId) => {
+									const receiver = proposedReceivers.find((s) => s.id === receiverId);
+									if (!receiver) return null;
 
-										return (
-											<Badge key={receiver.id}>
-												{receiver.fullName} &lt;
-												{receiver.email}&gt;
-												<LuX />
-											</Badge>
-										);
-									},
-								)}
+									return (
+										<Badge key={receiver.id}>
+											{receiver.fullName} &lt;
+											{receiver.email}&gt;
+											<LuX />
+										</Badge>
+									);
+								})}
 							</Wrap>
 
 							<Field.Root>
-								<Field.Label>
-									Отправить сообщение группам...
-								</Field.Label>
+								<Field.Label>Отправить сообщение группам...</Field.Label>
 								<CustomSelectField
 									control={control}
 									name={"receiversStudyGroupIds"}
 									multiple
 									options={studyGroups
-										.sort((a, b) =>
-											a.name.localeCompare(b.name),
-										)
+										.sort((a, b) => a.name.localeCompare(b.name))
 										.map((studyGroup) => ({
 											key: studyGroup.id,
 											value: studyGroup.id.toString(),
@@ -278,29 +221,20 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 										</HStack>
 									</Text>
 								)}
-								{getValues("attachments").map(
-									(_field, index) => (
-										<HStack key={index} gap={2}>
-											<LuLink />
+								{getValues("attachments").map((_field, index) => (
+									<HStack key={index} gap={2}>
+										<LuLink />
 
-											<Input
-												type="url"
-												placeholder="Ссылка на файл..."
-												{...register(
-													`attachments.${index}`,
-												)}
-											/>
-											<Button
-												variant="ghost"
-												onClick={() =>
-													removeAttachment(index)
-												}
-											>
-												<LuTrash />
-											</Button>
-										</HStack>
-									),
-								)}
+										<Input
+											type="url"
+											placeholder="Ссылка на файл..."
+											{...register(`attachments.${index}`)}
+										/>
+										<Button variant="ghost" onClick={() => removeAttachment(index)}>
+											<LuTrash />
+										</Button>
+									</HStack>
+								))}
 							</Field.Root>
 
 							<Button
@@ -318,16 +252,8 @@ const NewMessageForm: React.FC<INewMessageFormProps> = ({
 								Добавить вложение
 							</Button>
 
-							<Flex
-								style={{ marginTop: "1.5rem" }}
-								gap={2}
-								justify="flex-end"
-							>
-								<Button
-									colorPalette="red"
-									variant="surface"
-									onClick={() => reset()}
-								>
+							<Flex style={{ marginTop: "1.5rem" }} gap={2} justify="flex-end">
+								<Button colorPalette="red" variant="surface" onClick={() => reset()}>
 									<LuTrash />
 									Удалить
 								</Button>

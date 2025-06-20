@@ -1,10 +1,9 @@
 import { ConfigContext } from "@/components/ConfigProvider";
 import HeaderBar from "@/components/headerbar/HeaderBar";
-import { Alert } from "@/components/ui/alert";
 import { PasswordInput } from "@/components/ui/password-input";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import { Button, Card, Center, HStack, Input, Link, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Alert, Button, Card, Center, HStack, Input, Link, Spinner, Text, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import React, { useContext, useEffect } from "react";
@@ -69,9 +68,13 @@ const LoginPage: React.FC = () => {
 					</Card.Header>
 					<Card.Body alignItems="center">
 						{isError && (
-							<Alert status="error" my={2} title="Ошибка!">
-								{response}
-							</Alert>
+							<Alert.Root status="error" my={2}>
+								<Alert.Indicator />
+								<Alert.Content>
+									<Alert.Title>Ошибка!</Alert.Title>
+									<Alert.Description>{response}</Alert.Description>
+								</Alert.Content>
+							</Alert.Root>
 						)}
 						<form onSubmit={handleSubmit(handleLogin)}>
 							<VStack gap={2} align="stretch">

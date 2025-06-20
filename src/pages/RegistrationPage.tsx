@@ -1,6 +1,5 @@
 import CustomSelectField from "@/components/CustomSelectField";
 import HeaderBar from "@/components/headerbar/HeaderBar.tsx";
-import { Field } from "@/components/ui/field";
 import { PasswordInput, PasswordStrengthMeter } from "@/components/ui/password-input";
 import { UserContext } from "@/service/UserProvider";
 import {
@@ -9,6 +8,7 @@ import {
 	Card,
 	Center,
 	Checkbox,
+	Field,
 	Heading,
 	HStack,
 	Image,
@@ -84,28 +84,32 @@ const RegistrationPage: React.FC = () => {
 								<HStack gap={30}>
 									<VStack gap={1} w="60%" align="left">
 										<form onSubmit={handleSubmit(handleRegistration)}>
-											<Field label="Email">
+											<Field.Root>
+												<Field.Label>Email</Field.Label>
 												<Input
 													required
 													placeholder="i.i.ivanov@example.com"
 													{...register("user.email")}
 												/>
-											</Field>
-											<Field label="Логин">
+											</Field.Root>
+											<Field.Root>
+												<Field.Label>Логин</Field.Label>
 												<Input
 													required
 													placeholder="i.i.ivanov"
 													{...register("user.username")}
 												/>
-											</Field>
-											<Field label="ФИО">
+											</Field.Root>
+											<Field.Root>
+												<Field.Label>ФИО</Field.Label>
 												<Input
 													required
 													placeholder="Иванов Иван Иванович"
 													{...register("user.fullName")}
 												/>
-											</Field>
-											<Field label="Роль пользователя">
+											</Field.Root>
+											<Field.Root>
+												<Field.Label>Роль пользователя</Field.Label>
 												<CustomSelectField
 													control={control}
 													name={"user.role"}
@@ -119,20 +123,22 @@ const RegistrationPage: React.FC = () => {
 												<Text textStyle="xs" color="fg.muted">
 													Ваша роль будет проверена и утверждена администратором системы.
 												</Text>
-											</Field>
-											<Field label="Пароль">
+											</Field.Root>
+											<Field.Root>
+												<Field.Label>Пароль</Field.Label>
 												<Stack maxW="100%">
 													<PasswordInput required {...register("password")} />
 													<PasswordStrengthMeter
 														value={zxcvbn(getValues("password")).score}
 													/>
 												</Stack>
-											</Field>
-											<Field label="Повторите пароль">
+											</Field.Root>
+											<Field.Root>
+												<Field.Label>Повторите пароль</Field.Label>
 												<Stack maxW="100%">
 													<PasswordInput required {...register("confirmedPassword")} />
 												</Stack>
-											</Field>
+											</Field.Root>
 											<Controller
 												control={control}
 												name="isAgree"

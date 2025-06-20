@@ -1,17 +1,8 @@
 import AppPage from "@/components/AppPage";
-import { Button } from "@/components/ui/button";
 import { ClassType } from "@/entities/domain/ScheduleClass";
 import { SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram";
 import { ApiContext } from "@/service/ApiProvider";
-import {
-	Badge,
-	Box,
-	Heading,
-	HStack,
-	Stack,
-	Table,
-	Text,
-} from "@chakra-ui/react";
+import { Badge, Box, Button, Heading, HStack, Stack, Table, Text } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { LuPencil } from "react-icons/lu";
@@ -39,18 +30,13 @@ const typeMappings = {
 const SubjectWorkProgramDetails: React.FC = () => {
 	const subjectWorkProgramId = useParams().subjectWorkProgramId as UUID;
 	const apiContext = useContext(ApiContext);
-	const [workProgram, setWorkProgram] = useState<SubjectWorkProgram | null>(
-		null,
-	);
+	const [workProgram, setWorkProgram] = useState<SubjectWorkProgram | null>(null);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const data =
-					await apiContext.subjectWorkProgram.getById(
-						subjectWorkProgramId,
-					);
+				const data = await apiContext.subjectWorkProgram.getById(subjectWorkProgramId);
 				setWorkProgram(data);
 			} catch (error) {
 				console.error(error);
@@ -77,15 +63,11 @@ const SubjectWorkProgramDetails: React.FC = () => {
 					</Heading>
 					<Stack gap={3}>
 						<Text>
-							<strong>Дисциплина:</strong>{" "}
-							{workProgram?.subject.name}
+							<strong>Дисциплина:</strong> {workProgram?.subject.name}
 						</Text>
 						<Text>
 							<strong>Всего часов:</strong>{" "}
-							{workProgram?.classes.reduce(
-								(sum, cls) => sum + cls.hours,
-								0,
-							)}
+							{workProgram?.classes.reduce((sum, cls) => sum + cls.hours, 0)}
 						</Text>
 					</Stack>
 				</Box>
@@ -99,9 +81,7 @@ const SubjectWorkProgramDetails: React.FC = () => {
 							<Table.Row>
 								<Table.ColumnHeader>№</Table.ColumnHeader>
 								<Table.ColumnHeader>Тема</Table.ColumnHeader>
-								<Table.ColumnHeader>
-									Тип занятия
-								</Table.ColumnHeader>
+								<Table.ColumnHeader>Тип занятия</Table.ColumnHeader>
 								<Table.ColumnHeader>Часы</Table.ColumnHeader>
 							</Table.Row>
 						</Table.Header>
@@ -110,9 +90,7 @@ const SubjectWorkProgramDetails: React.FC = () => {
 								<Table.Row key={cls.id}>
 									<Table.Cell>{index + 1}</Table.Cell>
 									<Table.Cell>{cls.theme}</Table.Cell>
-									<Table.Cell>
-										{getClassTypeBadge(cls.classType)}
-									</Table.Cell>
+									<Table.Cell>{getClassTypeBadge(cls.classType)}</Table.Cell>
 									<Table.Cell>{cls.hours}</Table.Cell>
 								</Table.Row>
 							))}
@@ -120,19 +98,10 @@ const SubjectWorkProgramDetails: React.FC = () => {
 					</Table.Root>
 				</Box>
 				<HStack gap={2}>
-					<Button
-						variant="surface"
-						onClick={() => navigate("/classes")}
-					>
+					<Button variant="surface" onClick={() => navigate("/classes")}>
 						Назад
 					</Button>
-					<Button
-						onClick={() =>
-							navigate(
-								`/classes/subjectWorkPrograms/edit/${workProgram?.id}`,
-							)
-						}
-					>
+					<Button onClick={() => navigate(`/classes/subjectWorkPrograms/edit/${workProgram?.id}`)}>
 						<LuPencil /> Редактировать
 					</Button>
 				</HStack>

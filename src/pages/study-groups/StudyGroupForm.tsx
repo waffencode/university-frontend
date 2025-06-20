@@ -1,12 +1,10 @@
 import CustomSelectField from "@/components/CustomSelectField";
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
 import FieldOfStudy from "@/entities/domain/FieldOfStudy";
 import { StudyGroupDto } from "@/entities/domain/StudyGroup";
 import User from "@/entities/domain/User";
 import UserRole from "@/entities/domain/UserRole";
 import { ApiContext } from "@/service/ApiProvider";
-import { Input, VStack } from "@chakra-ui/react";
+import { Button, Field, Input, VStack } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -20,9 +18,7 @@ const StudyGroupForm: React.FC = () => {
 		const loadData = async () => {
 			setFieldsOfStudy(await apiContext.fieldOfStudy.getAll());
 
-			const result = (await apiContext.user.getAllUsers()).filter(
-				(u) => u.role === UserRole.Student,
-			);
+			const result = (await apiContext.user.getAllUsers()).filter((u) => u.role === UserRole.Student);
 			setStudents(result);
 		};
 
@@ -37,10 +33,12 @@ const StudyGroupForm: React.FC = () => {
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<VStack gap={2} align="left" w="50%">
-					<Field label="Название">
+					<Field.Root>
+						<Field.Label>Название</Field.Label>
 						<Input {...register("name")} />
-					</Field>
-					<Field label="Направление подготовки">
+					</Field.Root>
+					<Field.Root>
+						<Field.Label>Направление подготовки</Field.Label>
 						<CustomSelectField
 							control={control}
 							name={"fieldOfStudyId"}
@@ -49,8 +47,9 @@ const StudyGroupForm: React.FC = () => {
 								value: f.id,
 							}))}
 						/>
-					</Field>
-					<Field label="Студенты">
+					</Field.Root>
+					<Field.Root>
+						<Field.Label>Студенты</Field.Label>
 						<CustomSelectField
 							control={control}
 							name={"studentsIdList"}
@@ -60,7 +59,7 @@ const StudyGroupForm: React.FC = () => {
 							}))}
 							multiple
 						/>
-					</Field>
+					</Field.Root>
 					<Button type="submit">Создать</Button>
 				</VStack>
 			</form>

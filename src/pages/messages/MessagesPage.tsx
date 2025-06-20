@@ -1,5 +1,4 @@
 import AppPage from "@/components/AppPage.tsx";
-import { Button } from "@/components/ui/button";
 import Message from "@/entities/domain/Message.ts";
 import "@/pages/messages/MessagesPage.css";
 import MessagePreviewCard from "@/pages/messages/MessagePreviewCard";
@@ -7,7 +6,7 @@ import MessageView from "@/pages/messages/MessageView.tsx";
 import NewMessageForm from "@/pages/messages/NewMessageForm";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import { HStack, Presence, StackSeparator, VStack } from "@chakra-ui/react";
+import { Button, HStack, Presence, StackSeparator, VStack } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";

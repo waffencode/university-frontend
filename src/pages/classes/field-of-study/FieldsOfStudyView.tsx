@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import FieldOfStudy, {
 	FormOfStudyListCollection,
 } from "@/entities/domain/FieldOfStudy";
 import { ApiContext } from "@/service/ApiProvider";
-import { Flex, HStack, Table } from "@chakra-ui/react";
+import { Button, Flex, HStack, Table } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
 import { LuPencil, LuTrash } from "react-icons/lu";

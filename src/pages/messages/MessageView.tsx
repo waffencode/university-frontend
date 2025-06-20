@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { Prose } from "@/components/ui/prose";
 import Message from "@/entities/domain/Message";
 import "@/pages/messages/MessagesPage.css";
 import formatDate from "@/service/FormatDate.ts";
-import { Card, Heading, HStack, VStack } from "@chakra-ui/react";
+import { Button, Card, Heading, HStack, VStack } from "@chakra-ui/react";
 import React from "react";
 import { LuContact, LuMessageCircleWarning } from "react-icons/lu";
 import "@/service/FormatDate.ts";

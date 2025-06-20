@@ -1,13 +1,8 @@
 import CustomSelectField from "@/components/CustomSelectField";
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
 import { toaster } from "@/components/ui/toaster";
-import FieldOfStudy, {
-	FormOfStudy,
-	FormOfStudyListCollection,
-} from "@/entities/domain/FieldOfStudy";
+import FieldOfStudy, { FormOfStudy, FormOfStudyListCollection } from "@/entities/domain/FieldOfStudy";
 import { ApiContext } from "@/service/ApiProvider";
-import { HStack, Input, VStack } from "@chakra-ui/react";
+import { Button, Field, HStack, Input, VStack } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -18,9 +13,7 @@ interface IFieldOfStudyFormProps {
 	prefillData?: FieldOfStudy;
 }
 
-const FieldOfStudyForm: React.FC<IFieldOfStudyFormProps> = ({
-	prefillData,
-}: IFieldOfStudyFormProps) => {
+const FieldOfStudyForm: React.FC<IFieldOfStudyFormProps> = ({ prefillData }: IFieldOfStudyFormProps) => {
 	const { control, register, handleSubmit, reset } = useForm<FieldOfStudy>({
 		defaultValues: {
 			id: prefillData?.id || (v4() as UUID),
@@ -61,16 +54,20 @@ const FieldOfStudyForm: React.FC<IFieldOfStudyFormProps> = ({
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<VStack gap={2} align="left" w="50%">
-				<Field label="Код">
+				<Field.Root>
+					<Field.Label>Код</Field.Label>
 					<Input {...register("code")} />
-				</Field>
-				<Field label="Название направления">
+				</Field.Root>
+				<Field.Root>
+					<Field.Label>Название направления</Field.Label>
 					<Input {...register("name")} />
-				</Field>
-				<Field label="Профиль (направленность)">
+				</Field.Root>
+				<Field.Root>
+					<Field.Label>Профиль (направленность)</Field.Label>
 					<Input {...register("specialization")} />
-				</Field>
-				<Field label="Форма обучения">
+				</Field.Root>
+				<Field.Root>
+					<Field.Label>Форма обучения</Field.Label>
 					<CustomSelectField
 						control={control}
 						name={"formOfStudy"}
@@ -80,17 +77,12 @@ const FieldOfStudyForm: React.FC<IFieldOfStudyFormProps> = ({
 						}))}
 						defaultValue={prefillData?.formOfStudy}
 					/>
-				</Field>
+				</Field.Root>
 				<HStack gap={2}>
-					<Button
-						variant="surface"
-						onClick={() => navigate("/classes")}
-					>
+					<Button variant="surface" onClick={() => navigate("/classes")}>
 						Назад
 					</Button>
-					<Button type="submit">
-						{prefillData ? "Сохранить" : "Добавить"}
-					</Button>
+					<Button type="submit">{prefillData ? "Сохранить" : "Добавить"}</Button>
 				</HStack>
 			</VStack>
 		</form>

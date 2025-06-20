@@ -11,13 +11,13 @@ import {
   HStack,
   IconButton,
   Input,
+  InputGroup,
   Stack,
   mergeRefs,
   useControllableState,
 } from "@chakra-ui/react"
 import * as React from "react"
 import { LuEye, LuEyeOff } from "react-icons/lu"
-import { InputGroup } from "./input-group"
 
 export interface PasswordVisibilityProps {
   defaultVisible?: boolean
@@ -55,7 +55,6 @@ export const PasswordInput = React.forwardRef<
 
   return (
     <InputGroup
-      width="full"
       endElement={
         <VisibilityTrigger
           disabled={rest.disabled}
@@ -139,10 +138,10 @@ export const PasswordStrengthMeter = React.forwardRef<
 function getColorPalette(percent: number) {
   switch (true) {
     case percent < 33:
-      return { label: "Простой пароль", colorPalette: "red" }
+      return { label: "Low", colorPalette: "red" }
     case percent < 66:
-      return { label: "Средний пароль", colorPalette: "orange" }
+      return { label: "Medium", colorPalette: "orange" }
     default:
-      return { label: "Сложный пароль", colorPalette: "green" }
+      return { label: "High", colorPalette: "green" }
   }
 }

@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button.tsx";
 import { toaster } from "@/components/ui/toaster";
 import { SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram.ts";
 import { ApiContext } from "@/service/ApiProvider.tsx";
-import { Flex, HStack, Table } from "@chakra-ui/react";
+import { Button, Flex, HStack, Table } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect } from "react";
 import { LuEye, LuPencil, LuTrash } from "react-icons/lu";

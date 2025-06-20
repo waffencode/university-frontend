@@ -1,34 +1,17 @@
 import AppPage from "@/components/AppPage";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import CustomSelectField from "@/components/CustomSelectField";
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
 import { toaster } from "@/components/ui/toaster";
 import Classroom from "@/entities/domain/Classroom";
 import ClassTimeSlot from "@/entities/domain/ClassTimeSlot";
-import {
-	ClassTypesListCollection,
-	ScheduleClassDto,
-} from "@/entities/domain/ScheduleClass";
+import { ClassTypesListCollection, ScheduleClassDto } from "@/entities/domain/ScheduleClass";
 import { StudyGroupDto } from "@/entities/domain/StudyGroup";
-import {
-	PlannedClass,
-	SubjectWorkProgram,
-} from "@/entities/domain/SubjectWorkProgram";
+import { PlannedClass, SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram";
 import User from "@/entities/domain/User";
 import UserRole from "@/entities/domain/UserRole";
 import { ApiContext } from "@/service/ApiProvider";
 import { formatDateShort, formatTime } from "@/service/FormatDate";
-import {
-	Box,
-	Flex,
-	Heading,
-	HStack,
-	Input,
-	Separator,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Field, Flex, Heading, HStack, Input, Separator, Text, VStack } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { UUID } from "node:crypto";
 import React, { useContext, useEffect, useState } from "react";
@@ -47,8 +30,7 @@ interface SchedulingPageData {
 const SchedulingPage: React.FC = () => {
 	const apiContext = useContext(ApiContext);
 	const navigate = useNavigate();
-	const { handleSubmit, watch, setValue, control } =
-		useForm<ScheduleClassDto>();
+	const { handleSubmit, watch, setValue, control } = useForm<ScheduleClassDto>();
 	const [scheduleData, setScheduleData] = useState<SchedulingPageData>({
 		teachers: [],
 		subjectWorkPrograms: [],
@@ -81,8 +63,7 @@ const SchedulingPage: React.FC = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const teachers = await apiContext.user.getAllUsers();
-			const subjectWorkPrograms =
-				await apiContext.subjectWorkProgram.getAll();
+			const subjectWorkPrograms = await apiContext.subjectWorkProgram.getAll();
 			const timeSlots = await apiContext.classTimeSlots.getAll();
 			const classrooms = await apiContext.classroom.getAll();
 			const studyGroups = await apiContext.studyGroup.getAll();
@@ -116,116 +97,96 @@ const SchedulingPage: React.FC = () => {
 				<Flex gap={2} align="flex-start">
 					<VStack gap={2} align="left" w="50%">
 						<Heading size="sm">Дата и время</Heading>
-						<Field label="Дата занятия">
-							<CustomDatePicker
-								name={"date"}
-								control={control}
-								size="xs"
-							/>
-						</Field>
-						<Field label="Временной слот">
+						<Field.Root>
+							<Field.Label>Дата занятия</Field.Label>
+							<CustomDatePicker name={"date"} control={control} size="xs" />
+						</Field.Root>
+						<Field.Root>
+							<Field.Label>Временной слот</Field.Label>
 							<CustomSelectField
 								size="xs"
 								control={control}
 								name={"timeSlotId"}
-								options={scheduleData.timeSlots.map(
-									(timeSlot) => ({
-										value: timeSlot.id,
-										label: timeSlot.name,
-									}),
-								)}
+								options={scheduleData.timeSlots.map((timeSlot) => ({
+									value: timeSlot.id,
+									label: timeSlot.name,
+								}))}
 							/>
-						</Field>
-						<Field label="Аудитория">
+						</Field.Root>
+						<Field.Root>
+							<Field.Label>Аудитория</Field.Label>
 							<CustomSelectField
 								size="xs"
 								control={control}
 								name={"classroomId"}
-								options={scheduleData.classrooms.map(
-									(classroom) => ({
-										value: classroom.id,
-										label: classroom.designation,
-									}),
-								)}
+								options={scheduleData.classrooms.map((classroom) => ({
+									value: classroom.id,
+									label: classroom.designation,
+								}))}
 							/>
-						</Field>
+						</Field.Root>
 						<Separator />
 						<Heading size="sm">Содержание</Heading>
-						<Field label="РПД">
+						<Field.Root>
+							<Field.Label>РПД</Field.Label>
 							<CustomSelectField
 								size="xs"
 								control={control}
 								name={"subjectWorkProgramId"}
-								options={scheduleData.subjectWorkPrograms.map(
-									(workProgram) => ({
-										value: workProgram.id,
-										label: workProgram.subject.name,
-									}),
-								)}
+								options={scheduleData.subjectWorkPrograms.map((workProgram) => ({
+									value: workProgram.id,
+									label: workProgram.subject.name,
+								}))}
 							/>
-						</Field>
-						<Field label="Занятие из РПД">
+						</Field.Root>
+						<Field.Root>
+							<Field.Label>Занятие из РПД</Field.Label>
 							<Input
 								size="xs"
 								type="number"
 								min={1}
 								max={
 									scheduleData.subjectWorkPrograms.find(
-										(workProgram) =>
-											workProgram.id ===
-											watch("subjectWorkProgramId"),
+										(workProgram) => workProgram.id === watch("subjectWorkProgramId"),
 									)?.classes.length || 1
 								}
-								onChange={(e) =>
-									setSelectedClassByIndex(
-										Number(e.target.value),
-									)
-								}
+								onChange={(e) => setSelectedClassByIndex(Number(e.target.value))}
 								placeholder="Номер занятия из РПД..."
 							/>
-						</Field>
+						</Field.Root>
 						<Separator />
 						<Heading size="sm">Преподаватель и студенты</Heading>
-						<Field label="Преподаватель">
+						<Field.Root>
+							<Field.Label>Преподаватель</Field.Label>
 							<CustomSelectField
 								size="xs"
 								control={control}
 								name={"teacherId"}
 								options={scheduleData.teachers
-									.filter(
-										(user) =>
-											user.role === UserRole.Teacher,
-									)
+									.filter((user) => user.role === UserRole.Teacher)
 									.map((teacher) => ({
 										value: teacher.id,
 										label: teacher.fullName,
 									}))}
 							/>
-						</Field>
-						<Field label="Учебные группы">
+						</Field.Root>
+						<Field.Root>
+							<Field.Label>Учебные группы</Field.Label>
 							<CustomSelectField
 								size="xs"
 								control={control}
 								name={"groupsId"}
 								multiple
-								options={scheduleData.studyGroups.map(
-									(group) => ({
-										value: group.id,
-										label: group.name,
-									}),
-								)}
+								options={scheduleData.studyGroups.map((group) => ({
+									value: group.id,
+									label: group.name,
+								}))}
 							/>
-						</Field>
+						</Field.Root>
 						<Button type="submit">Добавить</Button>
 					</VStack>
 
-					<Box
-						padding={5}
-						borderWidth="1px"
-						borderRadius="md"
-						maxW="50%"
-						textStyle="sm"
-					>
+					<Box padding={5} borderWidth="1px" borderRadius="md" maxW="50%" textStyle="sm">
 						Ваше сформированное занятие:
 						<br />
 						{!watch("timeSlotId") || !watch("date") ? (
@@ -233,61 +194,41 @@ const SchedulingPage: React.FC = () => {
 						) : (
 							<HStack gap="4">
 								<Text>
-									<br /> 📅 {formatDateShort(watch("date"))}{" "}
-									{" | "}
+									<br /> 📅 {formatDateShort(watch("date"))} {" | "}
 									{watch("timeSlotId") &&
 										formatTime(
-											scheduleData.timeSlots.find(
-												(s) =>
-													s.id ===
-													watch("timeSlotId"),
-											)?.startTime || "",
+											scheduleData.timeSlots.find((s) => s.id === watch("timeSlotId"))
+												?.startTime || "",
 										)}
 									-
 									{watch("timeSlotId") &&
 										formatTime(
-											scheduleData.timeSlots.find(
-												(s) =>
-													s.id ===
-													watch("timeSlotId"),
-											)?.endTime || "",
+											scheduleData.timeSlots.find((s) => s.id === watch("timeSlotId"))?.endTime ||
+												"",
 										)}
 									<br />
 									🔗 Дисциплина:{" "}
 									{(watch("subjectWorkProgramId") &&
 										scheduleData.subjectWorkPrograms.find(
-											(s) =>
-												s.id ===
-												watch("subjectWorkProgramId"),
+											(s) => s.id === watch("subjectWorkProgramId"),
 										)?.subject.name) ||
 										"Не выбрана"}
 									<br />
 									🏫 Аудитория:{" "}
-									{scheduleData.classrooms.find(
-										(s) => s.id === watch("classroomId"),
-									)?.designation || "Не выбрана"}
+									{scheduleData.classrooms.find((s) => s.id === watch("classroomId"))?.designation ||
+										"Не выбрана"}
 									<br />
 									👨‍🏫 Преподаватель:{" "}
-									{scheduleData.teachers.find(
-										(s) => s.id === watch("teacherId"),
-									)?.fullName || "Не выбран"}
-									<br /> 📚 Тема: {selectedClass?.theme || ""}{" "}
-									(
-									{
-										ClassTypesListCollection.items[
-											selectedClass?.classType || 0
-										].label
-									}
+									{scheduleData.teachers.find((s) => s.id === watch("teacherId"))?.fullName ||
+										"Не выбран"}
+									<br /> 📚 Тема: {selectedClass?.theme || ""} (
+									{ClassTypesListCollection.items[selectedClass?.classType || 0].label}
 									)
 									<br />
 									👥 Группы:{" "}
 									{watch("groupsId") &&
 										scheduleData.studyGroups
-											.filter((g) =>
-												watch("groupsId").includes(
-													g.id,
-												),
-											)
+											.filter((g) => watch("groupsId").includes(g.id))
 											.map((g) => g.name)
 											.join(", ")}
 									<br />

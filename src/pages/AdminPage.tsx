@@ -1,15 +1,8 @@
 import AppPage from "@/components/AppPage";
-import { Button } from "@/components/ui/button";
-import {
-	PaginationItems,
-	PaginationNextTrigger,
-	PaginationPrevTrigger,
-	PaginationRoot,
-} from "@/components/ui/pagination";
 import { UserRoleNamesCollection } from "@/entities/domain/UserRole";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import { Card, Center, Heading, HStack, Table, Text, VStack } from "@chakra-ui/react";
+import { Button, Card, Center, Heading, HStack, IconButton, Pagination, Table, Text, VStack } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useCallback, useContext, useEffect } from "react";
 import { LuBookmarkCheck, LuMail } from "react-icons/lu";
@@ -106,13 +99,18 @@ const AdminPage: React.FC = () => {
 										</Table.Body>
 									</Table.Root>
 
-									<PaginationRoot count={requests.length * 5} pageSize={5} page={1}>
-										<HStack wrap="wrap">
-											<PaginationPrevTrigger />
-											<PaginationItems />
-											<PaginationNextTrigger />
-										</HStack>
-									</PaginationRoot>
+									<Pagination.Root count={requests.length} pageSize={5} page={1}>
+										<Pagination.PrevTrigger />
+										<Pagination.Items
+											render={(page) => (
+												<IconButton variant={{ base: "ghost", _selected: "outline" }}>
+													{page.value}
+												</IconButton>
+											)}
+										/>
+										<Pagination.PageText />
+										<Pagination.NextTrigger />
+									</Pagination.Root>
 								</VStack>
 							) : (
 								<Center textAlign="center">

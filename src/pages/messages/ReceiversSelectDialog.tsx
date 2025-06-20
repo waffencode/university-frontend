@@ -1,12 +1,5 @@
-import { Button } from "@/components/ui/button";
 import User from "@/entities/domain/User";
-import {
-	CheckboxCard,
-	CheckboxGroup,
-	Dialog,
-	VStack,
-	Wrap,
-} from "@chakra-ui/react";
+import { Button, CheckboxCard, CheckboxGroup, Dialog, VStack, Wrap } from "@chakra-ui/react";
 import React from "react";
 
 interface IReceiversDialogContentProps {
@@ -21,12 +14,7 @@ const ReceiversSelectDialog: React.FC<IReceiversDialogContentProps> = ({
 	setSelectedReceivers,
 }: IReceiversDialogContentProps) => {
 	return (
-		<Dialog.Root
-			size="cover"
-			placement="center"
-			motionPreset="slide-in-bottom"
-			scrollBehavior="inside"
-		>
+		<Dialog.Root size="cover" placement="center" motionPreset="slide-in-bottom" scrollBehavior="inside">
 			<Dialog.Trigger asChild>
 				<Button variant="outline">Выбрать</Button>
 			</Dialog.Trigger>
@@ -39,48 +27,34 @@ const ReceiversSelectDialog: React.FC<IReceiversDialogContentProps> = ({
 					<Dialog.Body>
 						<VStack gap={2} align="left">
 							<Wrap gap={5}>
-								<CheckboxGroup
-									defaultValue={selectedReceivers}
-									onValueChange={setSelectedReceivers}
-								>
+								<CheckboxGroup defaultValue={selectedReceivers} onValueChange={setSelectedReceivers}>
 									{proposedReceivers &&
-										proposedReceivers.map(
-											(receiverUser) => (
-												<CheckboxCard.Root
-													size="sm"
-													key={receiverUser.id}
-													value={receiverUser.id}
-													maxW="240px"
-												>
-													<CheckboxCard.HiddenInput />
-													<CheckboxCard.Control>
-														<CheckboxCard.Content>
-															<CheckboxCard.Label>
-																{
-																	receiverUser.fullName
-																}
-															</CheckboxCard.Label>
-															<CheckboxCard.Description>
-																{
-																	receiverUser.email
-																}
-															</CheckboxCard.Description>
-														</CheckboxCard.Content>
-														<CheckboxCard.Indicator />
-													</CheckboxCard.Control>
-												</CheckboxCard.Root>
-											),
-										)}
+										proposedReceivers.map((receiverUser) => (
+											<CheckboxCard.Root
+												size="sm"
+												key={receiverUser.id}
+												value={receiverUser.id}
+												maxW="240px"
+											>
+												<CheckboxCard.HiddenInput />
+												<CheckboxCard.Control>
+													<CheckboxCard.Content>
+														<CheckboxCard.Label>{receiverUser.fullName}</CheckboxCard.Label>
+														<CheckboxCard.Description>
+															{receiverUser.email}
+														</CheckboxCard.Description>
+													</CheckboxCard.Content>
+													<CheckboxCard.Indicator />
+												</CheckboxCard.Control>
+											</CheckboxCard.Root>
+										))}
 								</CheckboxGroup>
 							</Wrap>
 						</VStack>
 					</Dialog.Body>
 					<Dialog.Footer>
 						<Dialog.ActionTrigger asChild>
-							<Button
-								variant="outline"
-								onClick={() => setSelectedReceivers([])}
-							>
+							<Button variant="outline" onClick={() => setSelectedReceivers([])}>
 								Сброс
 							</Button>
 						</Dialog.ActionTrigger>

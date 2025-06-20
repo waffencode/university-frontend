@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
 import { toaster } from "@/components/ui/toaster";
 import { ClassType } from "@/entities/domain/ScheduleClass";
 import Subject from "@/entities/domain/Subject";
 import { SubjectWorkProgram } from "@/entities/domain/SubjectWorkProgram";
 import { ApiContext } from "@/service/ApiProvider";
 import {
+	Button,
 	createListCollection,
+	Field,
 	Heading,
 	HStack,
 	Input,
@@ -48,26 +48,21 @@ const classTypes = createListCollection({
 	],
 });
 
-const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
-	props: SubjectWorkProgramFormProps,
-) => {
+const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (props: SubjectWorkProgramFormProps) => {
 	const prefillSubjectWorkProgram = props?.subjectWorkProgram;
 	const isEditMode: boolean = !!props.subjectWorkProgram;
-	const { register, handleSubmit, control } =
-		useForm<SubjectWorkProgramFormData>({
-			defaultValues: isEditMode
-				? {
-						subject: [prefillSubjectWorkProgram?.subject.id],
-						classes: prefillSubjectWorkProgram?.classes.map(
-							(c) => ({
-								theme: c.theme,
-								hours: c.hours,
-								classType: [Number(c.classType).toString()],
-							}),
-						),
-					}
-				: {},
-		});
+	const { register, handleSubmit, control } = useForm<SubjectWorkProgramFormData>({
+		defaultValues: isEditMode
+			? {
+					subject: [prefillSubjectWorkProgram?.subject.id],
+					classes: prefillSubjectWorkProgram?.classes.map((c) => ({
+						theme: c.theme,
+						hours: c.hours,
+						classType: [Number(c.classType).toString()],
+					})),
+				}
+			: {},
+	});
 	const navigate = useNavigate();
 	const apiContext = useContext(ApiContext);
 	const [subjects, setSubjects] = useState<ListCollection>(
@@ -87,29 +82,18 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 
 	const [fetchedSubjects, setFetchedSubjects] = useState<Subject[]>([]);
 
-	const convertWorkProgramFormToEntity = (
-		formData: SubjectWorkProgramFormData,
-	): SubjectWorkProgram => {
-		const workProgramId: UUID =
-			prefillSubjectWorkProgram?.id || (v4() as UUID);
-		const fetchedSubject = fetchedSubjects.find(
-			(s) => s.id === formData.subject?.at(0),
-		);
+	const convertWorkProgramFormToEntity = (formData: SubjectWorkProgramFormData): SubjectWorkProgram => {
+		const workProgramId: UUID = prefillSubjectWorkProgram?.id || (v4() as UUID);
+		const fetchedSubject = fetchedSubjects.find((s) => s.id === formData.subject?.at(0));
 
 		return {
 			id: workProgramId,
 			subject: fetchedSubject || throwError("Subject is required"),
 			classes: (formData.classes || []).map((classData) => ({
-				id:
-					prefillSubjectWorkProgram?.classes?.find(
-						(c) => c.theme === classData.theme,
-					)?.id || (v4() as UUID),
+				id: prefillSubjectWorkProgram?.classes?.find((c) => c.theme === classData.theme)?.id || (v4() as UUID),
 				theme: classData.theme || "",
 				hours: classData.hours || 0,
-				classType: Number(
-					classData.classType?.[0] ||
-						throwError("ClassType is required"),
-				) as ClassType,
+				classType: Number(classData.classType?.[0] || throwError("ClassType is required")) as ClassType,
 			})),
 		};
 	};
@@ -156,7 +140,8 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<VStack gap={4} align="left">
-					<Field label="Дисциплина">
+					<Field.Root>
+						<Field.Label>Дисциплина</Field.Label>
 						<Controller
 							control={control}
 							name="subject"
@@ -164,13 +149,8 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 								<Select.Root
 									name={field.name}
 									value={field.value}
-									onValueChange={({ value }) =>
-										field.onChange(value)
-									}
-									defaultValue={[
-										prefillSubjectWorkProgram?.subject.id.toString() ||
-											"",
-									]}
+									onValueChange={({ value }) => field.onChange(value)}
+									defaultValue={[prefillSubjectWorkProgram?.subject.id.toString() || ""]}
 									onInteractOutside={() => field.onBlur()}
 									required
 									collection={subjects}
@@ -188,10 +168,7 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 										<Select.Positioner>
 											<Select.Content>
 												{subjects.items.map((item) => (
-													<Select.Item
-														item={item}
-														key={item.value}
-													>
+													<Select.Item item={item} key={item.value}>
 														{item.label}
 													</Select.Item>
 												))}
@@ -201,15 +178,11 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 								</Select.Root>
 							)}
 						/>
-					</Field>
+					</Field.Root>
 					<Heading>Тематический план</Heading>
 
 					<HStack gap={4}>
-						<Button
-							type="button"
-							onClick={addNewClass}
-							style={{ marginTop: "16px" }}
-						>
+						<Button type="button" onClick={addNewClass} style={{ marginTop: "16px" }}>
 							<LuPlus /> Добавить занятие
 						</Button>
 					</HStack>
@@ -221,9 +194,7 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 								<Table.ColumnHeader>Тема</Table.ColumnHeader>
 								<Table.ColumnHeader>Часы</Table.ColumnHeader>
 								<Table.ColumnHeader>Тип</Table.ColumnHeader>
-								<Table.ColumnHeader>
-									Действия
-								</Table.ColumnHeader>
+								<Table.ColumnHeader>Действия</Table.ColumnHeader>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
@@ -231,30 +202,25 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 								<Table.Row key={field.id}>
 									<Table.Cell>{index + 1}</Table.Cell>
 									<Table.Cell>
-										<Field>
+										<Field.Root>
 											<Textarea
 												autoresize
-												{...register(
-													`classes.${index}.theme`,
-												)}
+												{...register(`classes.${index}.theme`)}
 												placeholder="Введите тему"
 											/>
-										</Field>
+										</Field.Root>
 									</Table.Cell>
 									<Table.Cell>
-										<Field>
+										<Field.Root>
 											<Input
 												type="number"
 												min={1}
 												max={216}
-												{...register(
-													`classes.${index}.hours`,
-													{
-														valueAsNumber: true,
-													},
-												)}
+												{...register(`classes.${index}.hours`, {
+													valueAsNumber: true,
+												})}
 											/>
-										</Field>
+										</Field.Root>
 									</Table.Cell>
 									<Table.Cell>
 										<Controller
@@ -265,13 +231,9 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 													name={field.name}
 													value={field.value}
 													onValueChange={(value) => {
-														field.onChange(
-															value.value,
-														);
+														field.onChange(value.value);
 													}}
-													onInteractOutside={() =>
-														field.onBlur()
-													}
+													onInteractOutside={() => field.onBlur()}
 													collection={classTypes}
 												>
 													<Select.HiddenSelect />
@@ -286,22 +248,11 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 													<Portal>
 														<Select.Positioner>
 															<Select.Content>
-																{classTypes.items.map(
-																	(item) => (
-																		<Select.Item
-																			key={
-																				item.value
-																			}
-																			item={
-																				item
-																			}
-																		>
-																			{
-																				item.label
-																			}
-																		</Select.Item>
-																	),
-																)}
+																{classTypes.items.map((item) => (
+																	<Select.Item key={item.value} item={item}>
+																		{item.label}
+																	</Select.Item>
+																))}
 															</Select.Content>
 														</Select.Positioner>
 													</Portal>
@@ -328,9 +279,7 @@ const SubjectWorkProgramForm: React.FC<SubjectWorkProgramFormProps> = (
 						<Button variant="surface" onClick={() => navigate(-1)}>
 							Назад
 						</Button>
-						<Button type="submit">
-							{isEditMode ? "Сохранить" : "Добавить"}
-						</Button>
+						<Button type="submit">{isEditMode ? "Сохранить" : "Добавить"}</Button>
 					</HStack>
 				</VStack>
 			</form>

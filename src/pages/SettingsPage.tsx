@@ -1,10 +1,9 @@
 import AppPage from "@/components/AppPage";
-import { Button } from "@/components/ui/button";
 import { toaster } from "@/components/ui/toaster";
 import { UserRoleNamesCollection } from "@/entities/domain/UserRole";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import { Box, Heading, HStack, Input, VStack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Input, VStack } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { LuInfo } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
