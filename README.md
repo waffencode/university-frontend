@@ -13,5 +13,6 @@
 ```bash
 npm install
 npx @chakra-ui/cli snippet add
+npx @chakra-ui/cli snippet add password-input prose
 npm start
 ```
