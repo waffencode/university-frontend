@@ -28,4 +28,3 @@ yarn-error.log*
 
 package-lock.json
 /src/components/ui/**
-!/src/components/ui/password-input.tsx
