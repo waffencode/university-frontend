@@ -1,19 +1,7 @@
 import HeaderBar from "@/components/headerbar/HeaderBar.tsx";
-import {
-	Box,
-	Button,
-	Card,
-	Center,
-	Heading,
-	HStack,
-	Image,
-	Stack,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Card, Center, Heading, HStack, Image, PinInput, Stack, Text, VStack } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { PinInput } from "../components/ui/pin-input.tsx";
 import { ApiContext } from "../service/ApiProvider.tsx";
 import { UserContext } from "../service/UserProvider.tsx";
 
@@ -45,62 +33,41 @@ const RegistrationConfirmationPage: React.FC = () => {
 			<Center>
 				<Box p="5" maxW="100%" w="90%">
 					<Stack>
-						<Card.Root
-							p={1}
-							rounded="md"
-							boxShadow="md"
-							w="90%"
-							mx="auto"
-							size="sm"
-						>
+						<Card.Root p={1} rounded="md" boxShadow="md" w="90%" mx="auto" size="sm">
 							<Card.Header>
-								<Card.Title>
-									Подтверждение регистрации
-								</Card.Title>
+								<Card.Title>Подтверждение регистрации</Card.Title>
 							</Card.Header>
 							<Card.Body>
 								<HStack gap={30}>
 									<VStack gap={5} w="60%">
 										<Text textStyle="sm" textAlign="center">
-											На электронную почту, указанную при
-											регистрации, отправлен 4-значный
-											одноразовый код подтверждения.{" "}
+											На электронную почту, указанную при регистрации, отправлен 4-значный
+											одноразовый код подтверждения. <br />
 											<br />
-											<br />
-											Для завершения регистрации введите
-											код в поле ниже.
+											Для завершения регистрации введите код в поле ниже.
 										</Text>
-										<PinInput
-											otp
-											value={otp}
-											onValueChange={(e: any) =>
-												setOtp(e.value)
-											}
-										/>
+										<PinInput.Root otp value={otp} onValueChange={(e: any) => setOtp(e.value)}>
+											<PinInput.HiddenInput />
+											<PinInput.Control>
+												<PinInput.Input index={0} />
+												<PinInput.Input index={1} />
+												<PinInput.Input index={2} />
+												<PinInput.Input index={3} />
+											</PinInput.Control>
+										</PinInput.Root>
 										<HStack>
-											<Button
-												variant="subtle"
-												onClick={() => navigate(-1)}
-											>
+											<Button variant="subtle" onClick={() => navigate(-1)}>
 												Назад
 											</Button>
-											<Button
-												onClick={() => handleSubmit()}
-											>
-												Подтвердить
-											</Button>
+											<Button onClick={() => handleSubmit()}>Подтвердить</Button>
 										</HStack>
 									</VStack>
 									<Center w="50%">
 										<VStack gap={3}>
-											<Image
-												height="150px"
-												src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Microsoft_.NET_logo.svg/684px-Microsoft_.NET_logo.svg.png"
-											/>
+											<Image height="150px" src="/static/img/logo.png" />
 											<VStack marginY={10}>
 												<Heading>University</Heading>
-												Open-source платформа для
-												университета
+												Open-source платформа для университета
 											</VStack>
 										</VStack>
 									</Center>
