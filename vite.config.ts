@@ -21,4 +21,7 @@ export default defineConfig({
 	build: {
 		outDir: "build",
 	},
+	define: {
+		"import.meta.env.APP_VERSION": JSON.stringify(process.env.npm_package_version),
+	},
 });
