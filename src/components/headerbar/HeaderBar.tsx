@@ -39,26 +39,27 @@ const HeaderBar: React.FC = () => {
 					<Text className="header-title">University</Text>
 				</HStack>
 
-				{user !== null && (
-					<HStack gap={3}>
-						<ColorModeButton />
-
-						<VStack align="end" gap={1} className="user-info">
-							<Text className="user-name">{user?.fullName}</Text>
-							<Text className="user-email">{user?.email}</Text>
-							<Text className="user-role">{UserRoleNamesCollection.at(user?.role)?.label}</Text>
-						</VStack>
-						<Image className="user-avatar" src={user.avatarUri} />
-						<IconButton
-							aria-label="Logout"
-							className="logout-button"
-							variant="ghost"
-							onClick={onLogoutButtonClick}
-						>
-							<LuLogOut />
-						</IconButton>
-					</HStack>
-				)}
+				<HStack gap={3}>
+					<ColorModeButton />
+					{user !== null && (
+						<>
+							<VStack align="end" gap={1} className="user-info">
+								<Text className="user-name">{user?.fullName}</Text>
+								<Text className="user-email">{user?.email}</Text>
+								<Text className="user-role">{UserRoleNamesCollection.at(user?.role)?.label}</Text>
+							</VStack>
+							<Image className="user-avatar" src={user.avatarUri} />
+							<IconButton
+								aria-label="Logout"
+								className="logout-button"
+								variant="ghost"
+								onClick={onLogoutButtonClick}
+							>
+								<LuLogOut />
+							</IconButton>
+						</>
+					)}
+				</HStack>
 			</Flex>
 		</Box>
 	);
