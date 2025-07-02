@@ -42,6 +42,8 @@ const LoginForm = () => {
 				setIsError(true);
 				if (axios.isAxiosError(error) && error.response?.status === 404) {
 					setResponse("Неверный логин или пароль. Проверьте правильность введенных данных.");
+				} else if (axios.isAxiosError(error) && error.code === "ERR_NETWORK") {
+					setResponse("Сервис недоступен. Повторите попытку позже.");
 				} else {
 					console.error(error);
 					setResponse(error.toString());
