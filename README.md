@@ -1,5 +1,7 @@
 # University Frontend
 
+Фронтенд-часть открытой информационной системы для студентов и преподавателей университета.
+
 Используемый стек:
 
 [![React, TS, Tailwind](https://skillicons.dev/icons?i=react,ts,tailwind)](https://skillicons.dev/)
@@ -8,11 +10,4 @@
 * [TailwindCSS](https://github.com/tailwindlabs/tailwindcss)
 * [ChakraUI](https://github.com/chakra-ui/chakra-ui)
 
-Для сборки и запуска приложения:
-
-```bash
-npm install
-npx @chakra-ui/cli snippet add
-npx @chakra-ui/cli snippet add password-input prose
-npm start
-```
+Подробную инструкцию по развёртыванию системы см. в README репозитория бэкенд-части: https://github.com/waffencode/University/blob/main/README.md
