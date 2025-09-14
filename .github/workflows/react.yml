@@ -30,14 +30,12 @@ jobs:
           END
       - name: Deploy project
         run:
-          ssh target "
-          cd ~/deployments/university-frontend
-          git pull origin main
-          npm install
-          npx @chakra-ui/cli snippet add
-          npx @chakra-ui/cli snippet add password-input prose
-          npm run build
-          cp build/ /var/www/university-frontend/ -r
-          "
+          ssh target "cd ~/deployments/university-frontend && \
+          git pull origin main && \
+          npm install && \
+          npx @chakra-ui/cli snippet add && \
+          npx @chakra-ui/cli snippet add password-input prose && \
+          npm run build && \
+          cp build/ /var/www/university-frontend/ -r"
 
 
