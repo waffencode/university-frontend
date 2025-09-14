@@ -1,10 +1,5 @@
 import { ColorModeProvider } from "@/components/ui/color-mode";
-import {
-	ChakraProvider,
-	createSystem,
-	defaultConfig,
-	defineConfig,
-} from "@chakra-ui/react";
+import { ChakraProvider, createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 import React from "react";
 import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom/client";
@@ -15,7 +10,7 @@ import "./index.css";
 const config = defineConfig({
 	globalCss: {
 		html: {
-			background: "var(--chakra-colors-bg-panel)",
+			background: "var(--chakra-colors-bg-muted)",
 		},
 	},
 });

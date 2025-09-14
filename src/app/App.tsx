@@ -18,7 +18,7 @@ import EditSubjectWorkProgramPage from "../pages/classes/subject-work-program/Ed
 import CreateSubjectPage from "../pages/classes/subject/CreateSubjectPage.tsx";
 import EditSubjectPage from "../pages/classes/subject/EditSubjectPage.tsx";
 import IndexPage from "../pages/IndexPage.tsx";
-import LoginPage from "../pages/LoginPage.tsx";
+import LoginPage from "../pages/login/LoginPage.tsx";
 import RegistrationConfirmationPage from "../pages/RegistrationConfirmationPage.tsx";
 import RegistrationPage from "../pages/RegistrationPage.tsx";
 import SettingsPage from "../pages/SettingsPage.tsx";
@@ -33,43 +33,19 @@ const App: React.FC = () => {
 					<Routes>
 						<Route path="/" element={<IndexPage />} />
 						<Route path="/login" element={<LoginPage />} />
-						<Route
-							path="/register"
-							element={<RegistrationPage />}
-						/>
-						<Route
-							path="/register/confirm"
-							element={<RegistrationConfirmationPage />}
-						/>
+						<Route path="/register" element={<RegistrationPage />} />
+						<Route path="/register/confirm" element={<RegistrationConfirmationPage />} />
 						<Route path="/dashboard" element={<DashboardPage />} />
 						<Route path="/admin" element={<AdminPage />} />
 						<Route path="/settings" element={<SettingsPage />} />
 						<Route path="/messages" element={<MessagesPage />} />
-						<Route
-							path="/messages/:messageId"
-							element={<MessagesPage />}
-						/>
-						<Route
-							path="/schedule"
-							element={<ScheduleViewPage />}
-						/>
-						<Route
-							path="/schedule/:scheduleClassId"
-							element={<ClassPage />}
-						/>
+						<Route path="/messages/:messageId" element={<MessagesPage />} />
+						<Route path="/schedule" element={<ScheduleViewPage />} />
+						<Route path="/schedule/:scheduleClassId" element={<ClassPage />} />
 						<Route path="/classes" element={<ClassesPage />} />
-						<Route
-							path="/classes/subjects/create"
-							element={<CreateSubjectPage />}
-						/>
-						<Route
-							path="/classes/subjects/edit/:subjectId"
-							element={<EditSubjectPage />}
-						/>
-						<Route
-							path="/classes/subjectWorkPrograms/create"
-							element={<CreateSubjectWorkProgramPage />}
-						/>
+						<Route path="/classes/subjects/create" element={<CreateSubjectPage />} />
+						<Route path="/classes/subjects/edit/:subjectId" element={<EditSubjectPage />} />
+						<Route path="/classes/subjectWorkPrograms/create" element={<CreateSubjectWorkProgramPage />} />
 						<Route
 							path="/classes/subjectWorkPrograms/view/:subjectWorkProgramId"
 							element={<SubjectWorkProgramDetails />}
@@ -78,26 +54,14 @@ const App: React.FC = () => {
 							path="/classes/subjectWorkPrograms/edit/:subjectWorkProgramId"
 							element={<EditSubjectWorkProgramPage />}
 						/>
-						<Route
-							path="/classes/fields-of-study/create"
-							element={<EditFieldOfStudyPage />}
-						/>
+						<Route path="/classes/fields-of-study/create" element={<EditFieldOfStudyPage />} />
 						<Route
 							path="/classes/fields-of-study/edit/:fieldOfStudyId"
 							element={<EditFieldOfStudyPage />}
 						/>
-						<Route
-							path="/classes/scheduling"
-							element={<SchedulingPage />}
-						/>
-						<Route
-							path="/study-groups"
-							element={<StudyGroupsPage />}
-						/>
-						<Route
-							path="/university"
-							element={<UniversityPage />}
-						/>
+						<Route path="/classes/scheduling" element={<SchedulingPage />} />
+						<Route path="/study-groups" element={<StudyGroupsPage />} />
+						<Route path="/university" element={<UniversityPage />} />
 					</Routes>
 					<Toaster />
 				</UserProvider>

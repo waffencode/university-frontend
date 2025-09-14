@@ -4,13 +4,9 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import viteTsconfigPaths from "vite-tsconfig-paths";
-import postcssConfig from "./postcss.config";
 
 export default defineConfig({
 	plugins: [react(), viteTsconfigPaths(), mkcert(), tailwindcss()],
-	css: {
-		postcss: postcssConfig,
-	},
 	resolve: {
 		alias: [{ find: "@", replacement: resolve(__dirname, "./src") }],
 	},

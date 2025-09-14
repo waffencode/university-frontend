@@ -6,9 +6,10 @@ import MessageView from "@/pages/messages/MessageView.tsx";
 import NewMessageForm from "@/pages/messages/NewMessageForm";
 import { ApiContext } from "@/service/ApiProvider";
 import { UserContext } from "@/service/UserProvider";
-import { Button, HStack, Presence, StackSeparator, VStack } from "@chakra-ui/react";
+import { Button, EmptyState, HStack, Presence, StackSeparator, VStack } from "@chakra-ui/react";
 import { UUID } from "node:crypto";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import { LuMessageSquare } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 
 const MessagesPage: React.FC = () => {
@@ -17,11 +18,9 @@ const MessagesPage: React.FC = () => {
 	const navigate = useNavigate();
 	const paramMessageId = useParams().messageId as UUID;
 
-	const [isMessageViewShown, setIsMessageViewShown] =
-		useState<boolean>(false);
+	const [isMessageViewShown, setIsMessageViewShown] = useState<boolean>(false);
 	const [shownMessage, setShownMessage] = useState<Message | null>(null);
-	const [isNewMessageModeActive, setIsNewMessageModeActive] =
-		useState<boolean>(false);
+	const [isNewMessageModeActive, setIsNewMessageModeActive] = useState<boolean>(false);
 	const [messages, setMessages] = useState<Message[]>([]);
 
 	const loadMessages = useCallback(() => {
@@ -30,11 +29,9 @@ const MessagesPage: React.FC = () => {
 			return;
 		}
 
-		apiContext.message
-			.getMessages(userContext.user!.id)
-			.then((response) => {
-				setMessages(response);
-			});
+		apiContext.message.getMessages(userContext.user!.id).then((response) => {
+			setMessages(response);
+		});
 	}, []);
 
 	function showExistingMessage(message: Message) {
@@ -60,9 +57,7 @@ const MessagesPage: React.FC = () => {
 		loadMessages();
 
 		if (paramMessageId !== undefined && paramMessageId !== null) {
-			const messageToShow = messages.find(
-				(message: Message) => message.id === paramMessageId,
-			);
+			const messageToShow = messages.find((message: Message) => message.id === paramMessageId);
 			if (messageToShow !== undefined && messageToShow !== null) {
 				if (isNewMessageModeActive) {
 					return;
@@ -94,14 +89,23 @@ const MessagesPage: React.FC = () => {
 			<HStack p={3} align="top" separator={<StackSeparator />}>
 				<VStack w="20%">
 					{(!messages || messages.length === 0) && (
-						<div>Сообщений нет</div>
+						<EmptyState.Root>
+							<EmptyState.Content>
+								<EmptyState.Indicator>
+									<LuMessageSquare />
+								</EmptyState.Indicator>
+								<VStack textAlign="center">
+									<EmptyState.Title>Сообщений нет</EmptyState.Title>
+									<EmptyState.Description>
+										Напишите сообщение, нажав кнопку "Новое сообщение"
+									</EmptyState.Description>
+								</VStack>
+							</EmptyState.Content>
+						</EmptyState.Root>
 					)}
 					{messages &&
 						messages
-							.sort(
-								(a: Message, b: Message) =>
-									b.date.getTime() - a.date.getTime(),
-							)
+							.sort((a: Message, b: Message) => b.date.getTime() - a.date.getTime())
 							.map((message: Message) => (
 								<MessagePreviewCard
 									key={message.id}
@@ -120,10 +124,7 @@ const MessagesPage: React.FC = () => {
 						animationDuration="moderate"
 						present={isMessageViewShown}
 					>
-						<MessageView
-							shownMessage={shownMessage}
-							hideExistingMessage={hideExistingMessage}
-						/>
+						<MessageView shownMessage={shownMessage} hideExistingMessage={hideExistingMessage} />
 					</Presence>
 				)}
 				{isNewMessageModeActive && (
@@ -136,11 +137,7 @@ const MessagesPage: React.FC = () => {
 						animationDuration="moderate"
 						present={isNewMessageModeActive}
 					>
-						<NewMessageForm
-							setIsNewMessageModeActive={
-								setIsNewMessageModeActive
-							}
-						/>
+						<NewMessageForm setIsNewMessageModeActive={setIsNewMessageModeActive} />
 					</Presence>
 				)}
 			</HStack>
